@@ -12,4 +12,4 @@ Version 1.0.0-SNAPSHOT:
 In this version our prodcuer is mapped as a GET request that takes in a message String and pushes that string onto our broker's topic.
 
 Version 1.0.1-SNAPSHOT: 
-Coming soon.
+Coming soon
