@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 @Service
 public class KafkaProducerExample {
 
-    private final static String TOPIC_NAME = "TutorialTopic";
+    private final static String TOPIC_NAME = "FlightData";
     private final static String BOOTSTRAP_SERVER = "ec2-35-173-74-249.compute-1.amazonaws.com:9092";
 
     private static Logger logger = Logger.getLogger(String.valueOf(KafkaProducerExample.class));
@@ -23,7 +23,6 @@ public class KafkaProducerExample {
         props.put(ProducerConfig.CLIENT_ID_CONFIG, "KafkaExampleProducer-TESTER");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-
         return new KafkaProducer<>(props);
     }
 
