@@ -1,4 +1,4 @@
-package com.capstone.producer.config;
+package com.capstone.producer.common.config;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;

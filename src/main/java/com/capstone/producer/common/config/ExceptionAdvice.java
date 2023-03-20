@@ -1,4 +1,4 @@
-package com.capstone.producer.config;
+package com.capstone.producer.common.config;
 
 import com.capstone.producer.exceptions.RequestInvalidException;
 import org.slf4j.Logger;
