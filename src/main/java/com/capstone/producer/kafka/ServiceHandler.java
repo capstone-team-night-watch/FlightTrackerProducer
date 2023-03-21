@@ -1,8 +1,8 @@
 package com.capstone.producer.kafka;
 
 import com.capstone.producer.clients.AviationStackClientCaller;
+import com.capstone.producer.common.bindings.FlightInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.slf4j.Logger;
@@ -18,25 +18,24 @@ public class ServiceHandler {
     private AviationStackClientCaller aviationStackClientCaller;
 
 
-    public ServiceHandler() {}
+    public ServiceHandler() {
+    }
 
-    public String handle(String flight_icao) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-
+    public String handle(String flight_icao) {
         LOGGER.debug("Received request: {}", flight_icao);
 
         //Validate request?
 
+        // Gets a FlightInfo Object from client
+        FlightInfo flightResp = aviationStackClientCaller.getFlight(flight_icao);
+        String flightRespStr = flightResp.toString();
 
-
-        JsonNode response = aviationStackClientCaller.getFlight(flight_icao);
-        String jsonAsString = objectMapper.writeValueAsString(response);
         //Push response to topic?
-        RecordMetadata metadata = KafkaProducerExample.runProducer(jsonAsString);
+        RecordMetadata metadata = KafkaProducerExample.runProducer(flightRespStr);
+        LOGGER.debug("Metadata: {}", metadata.toString());
 
-
-        //Return response to user on page
-        return jsonAsString;
+        // Return toString of FlightInfo Object to user on page
+        return flightRespStr;
     }
 
 

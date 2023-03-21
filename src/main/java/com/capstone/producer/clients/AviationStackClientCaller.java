@@ -1,6 +1,11 @@
 package com.capstone.producer.clients;
 
+import com.capstone.producer.common.bindings.Flight;
+import com.capstone.producer.common.bindings.FlightInfo;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
@@ -13,7 +18,10 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class AviationStackClientCaller {
     private static final Logger LOGGER = LoggerFactory.getLogger(AviationStackClientCaller.class);
@@ -26,14 +34,18 @@ public class AviationStackClientCaller {
     private String baseUrl;
 
     private String key;
-    public AviationStackClientCaller(RestTemplate client, String baseUrl, String key){
+
+    private ObjectMapper objectMapper;
+
+    public AviationStackClientCaller(RestTemplate client, String baseUrl, String key) {
         this.client = client;
         this.baseUrl = baseUrl;
         this.key = key;
+        objectMapper = new ObjectMapper();
     }
 
-    public JsonNode getFlight(String flightIcao) {
-        UriComponents urlComponents = UriComponentsBuilder.fromHttpUrl(baseUrl+SERVICE_NAME)
+    public FlightInfo getFlight(String flightIcao) {
+        UriComponents urlComponents = UriComponentsBuilder.fromHttpUrl(baseUrl + SERVICE_NAME)
                 .queryParam("access_key", key)
                 .queryParam("flight_icao", flightIcao)
                 .build();
@@ -44,11 +56,43 @@ public class AviationStackClientCaller {
 
         try {
             HttpEntity<String> requestEntity = new HttpEntity<>(headers);
-            JsonNode response = client.exchange(urlComponents.toString(), HttpMethod.GET, requestEntity, JsonNode.class).getBody();
-            return response;
+            JsonNode rootNode = client.exchange(urlComponents.toString(), HttpMethod.GET, requestEntity, JsonNode.class).getBody();
+
+            if (rootNode == null ) {
+                return new FlightInfo();
+            }
+
+            String dataNodeStr = rootNode.path("data").toString();
+
+            try (JsonParser jsonParser = objectMapper.createParser(dataNodeStr)) {
+                // Skipping the pagination block
+                jsonParser.nextToken();
+
+                List<FlightInfo> flightInfos = new ArrayList<>();
+
+                while (jsonParser.nextToken() == JsonToken.START_OBJECT) {
+                    FlightInfo flightInfo = jsonParser.readValueAs(FlightInfo.class);
+                    flightInfos.add(flightInfo);
+                }
+
+                if (flightInfos.size() > 1) {
+                    LOGGER.warn("Multiple ({}) flights found for this icao: {}", flightInfos.size(), flightIcao);
+                } else if (flightInfos.size() == 1) {
+                    LOGGER.info("Flight found: {}", flightInfos.get(0));
+                } else {
+                    LOGGER.warn("No flights were found with this icao: {}", flightIcao);
+                    return new FlightInfo();
+                }
+
+                // Temporarily only returning 1
+                return flightInfos.get(0);
+            }
+
         } catch (HttpClientErrorException e) {
             throw new RuntimeException(e);
         } catch (HttpServerErrorException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
