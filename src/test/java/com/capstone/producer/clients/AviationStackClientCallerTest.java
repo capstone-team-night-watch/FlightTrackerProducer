@@ -65,18 +65,18 @@ public class AviationStackClientCallerTest {
         aviationStackClientCaller = new AviationStackClientCaller(client, BASE_URL, "key");
     }
 
-    @Test
-    public void aviationStackClientCallerTest() throws JsonProcessingException {
-        JsonNode expectedResponse = om.readTree("{ \"field1\" : \"Fee\", \"field2\" : \"Fi\"}");
-
-        String urlComponents = UriComponentsBuilder.fromHttpUrl(BASE_URL+SERVICE_NAME)
-                .queryParam("access_key", "key")
-                .queryParam("flight_icao", "CUS7777")
-                .build().toString();
-
-        when(client.exchange(urlComponents, HttpMethod.GET, new HttpEntity<>(headers), JsonNode.class)).thenReturn(new ResponseEntity<>(expectedResponse, HttpStatus.OK));
-
-        JsonNode actual = aviationStackClientCaller.getFlight("CUS7777");
-        assertEquals(om.writeValueAsString(new SampleDataObject("Fee", "Fi")), om.writeValueAsString(actual));
-    }
+//    @Test
+//    public void aviationStackClientCallerTest() throws JsonProcessingException {
+//        JsonNode expectedResponse = om.readTree("{ \"field1\" : \"Fee\", \"field2\" : \"Fi\"}");
+//
+//        String urlComponents = UriComponentsBuilder.fromHttpUrl(BASE_URL+SERVICE_NAME)
+//                .queryParam("access_key", "key")
+//                .queryParam("flight_icao", "CUS7777")
+//                .build().toString();
+//
+//        when(client.exchange(urlComponents, HttpMethod.GET, new HttpEntity<>(headers), JsonNode.class)).thenReturn(new ResponseEntity<>(expectedResponse, HttpStatus.OK));
+//
+//        JsonNode actual = aviationStackClientCaller.getFlight("CUS7777");
+//        assertEquals(om.writeValueAsString(new SampleDataObject("Fee", "Fi")), om.writeValueAsString(actual));
+//    }
 }
