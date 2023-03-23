@@ -10,62 +10,62 @@ public class Codeshared {
 
     @Override
     public String toString() {
-        return String.format("Codeshared { airline_name: %s | airline_iata: %s | airline_icao: %s | flight_number: %s |" +
+        return String.format("airline_name: %s | airline_iata: %s | airline_icao: %s | flight_number: %s |" +
                         " flight_iata: %s | flight_icao: %s", airline_name, airline_iata, airline_icao, flight_number,
                 flight_iata, flight_icao);
     }
 
-    public String getAirlineName() {
+    public String getAirline_name() {
         return airline_name;
     }
 
-    public Codeshared setAirlineName(String airlineName) {
-        this.airline_name = airlineName;
+    public Codeshared setAirline_name(String airline_name) {
+        this.airline_name = airline_name;
         return this;
     }
 
-    public String getAirlineIata() {
+    public String getAirline_iata() {
         return airline_iata;
     }
 
-    public Codeshared setAirlineIata(String airlineIata) {
-        this.airline_iata = airlineIata;
+    public Codeshared setAirline_iata(String airline_iata) {
+        this.airline_iata = airline_iata;
         return this;
     }
 
-    public String getAirlineIcao() {
+    public String getAirline_icao() {
         return airline_icao;
     }
 
-    public Codeshared setAirlineIcao(String airlineIcao) {
-        this.airline_icao = airlineIcao;
+    public Codeshared setAirline_icao(String airline_icao) {
+        this.airline_icao = airline_icao;
         return this;
     }
 
-    public int getFlightNumber() {
+    public int getFlight_number() {
         return flight_number;
     }
 
-    public Codeshared setFlightNumber(int flightNumber) {
-        this.flight_number = flightNumber;
+    public Codeshared setFlight_number(int flight_number) {
+        this.flight_number = flight_number;
         return this;
     }
 
-    public String getFlightIata() {
+    public String getFlight_iata() {
         return flight_iata;
     }
 
-    public Codeshared setFlightIata(String flightIata) {
-        this.flight_iata = flightIata;
+    public Codeshared setFlight_iata(String flight_iata) {
+        this.flight_iata = flight_iata;
         return this;
     }
 
-    public String getFlightIcao() {
+    public String getFlight_icao() {
         return flight_icao;
     }
 
-    public Codeshared setFlightIcao(String flightIcao) {
-        this.flight_icao = flightIcao;
+    public Codeshared setFlight_icao(String flight_icao) {
+        this.flight_icao = flight_icao;
         return this;
     }
 }

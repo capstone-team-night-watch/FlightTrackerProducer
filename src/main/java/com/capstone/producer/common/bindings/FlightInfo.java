@@ -7,13 +7,13 @@ public class FlightInfo {
     private Arrival arrival;
     private Airline airline;
     private Flight flight;
-    private Object aircraft;
-    private Object live;
+    private Aircraft aircraft;
+    private Live live;
 
     @Override
     public String toString() {
-        return String.format("flight_date: %s | flight_status: %s | departure: { %s } | arrival: { %s } |" +
-                        " airline: { %s } | flight: { %s } | aircraft: { %s } | live: { %s }", flight_date, flight_status,
+        return String.format("flight_date: %s | flight_status: %s | Departure: { %s } | Arrival: { %s } |" +
+                        " Airline: { %s } | Flight: { %s } | Aircraft: { %s } | Live: { %s }", flight_date, flight_status,
                 departure, arrival, airline, flight, aircraft, live);
     }
 
@@ -65,19 +65,19 @@ public class FlightInfo {
         this.flight = flight;
     }
 
-    public Object getAircraft() {
+    public Aircraft getAircraft() {
         return aircraft;
     }
 
-    public void setAircraft(Object aircraft) {
+    public void setAircraft(Aircraft aircraft) {
         this.aircraft = aircraft;
     }
 
-    public Object getLive() {
+    public Live getLive() {
         return live;
     }
 
-    public void setLive(Object live) {
+    public void setLive(Live live) {
         this.live = live;
     }
 }

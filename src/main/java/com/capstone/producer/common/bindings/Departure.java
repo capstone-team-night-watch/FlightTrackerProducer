@@ -16,7 +16,7 @@ public class Departure {
 
     @Override
     public String toString() {
-        return String.format("Arrival { airport: %s | timezone: %s | iata: %s | icao: %s | terminal: %s | gate: %s |" +
+        return String.format("airport: %s | timezone: %s | iata: %s | icao: %s | terminal: %s | gate: %s |" +
                         " delay: %s | scheduled: %s | estimated: %s | actual: %s | estimated_runway: %s |" + " actual_runway: %s",
                 airport, timezone, iata, icao, terminal, gate, delay, scheduled, estimated, actual, estimated_runway, actual_runway);
     }

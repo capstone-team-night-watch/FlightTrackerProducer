@@ -7,7 +7,7 @@ public class Airline {
 
     @Override
     public String toString() {
-        return String.format("Airline: %s | icao: %s | iata: %s", name, iata, icao);
+        return String.format("name: %s | icao: %s | iata: %s", name, iata, icao);
     }
 
     public String getName() {
