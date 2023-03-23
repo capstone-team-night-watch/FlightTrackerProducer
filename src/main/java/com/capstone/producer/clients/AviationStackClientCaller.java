@@ -1,6 +1,5 @@
 package com.capstone.producer.clients;
 
-import com.capstone.producer.common.bindings.Flight;
 import com.capstone.producer.common.bindings.FlightInfo;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -37,22 +36,25 @@ public class AviationStackClientCaller {
 
     private ObjectMapper objectMapper;
 
+    private HttpHeaders headers;
+
     public AviationStackClientCaller(RestTemplate client, String baseUrl, String key) {
         this.client = client;
         this.baseUrl = baseUrl;
         this.key = key;
         objectMapper = new ObjectMapper();
+
+        headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
     }
 
-    public FlightInfo getFlight(String flightIcao) {
+    public FlightInfo getFlightByIcao(String flightIcao) {
         UriComponents urlComponents = UriComponentsBuilder.fromHttpUrl(baseUrl + SERVICE_NAME)
                 .queryParam("access_key", key)
                 .queryParam("flight_icao", flightIcao)
                 .build();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
         try {
             HttpEntity<String> requestEntity = new HttpEntity<>(headers);
@@ -88,13 +90,89 @@ public class AviationStackClientCaller {
                 return flightInfos.get(0);
             }
 
-        } catch (HttpClientErrorException e) {
-            throw new RuntimeException(e);
-        } catch (HttpServerErrorException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (HttpClientErrorException | HttpServerErrorException | IOException e) {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public List<FlightInfo> getAllActiveFlights() {
+        UriComponents urlComponents = UriComponentsBuilder.fromHttpUrl(baseUrl + SERVICE_NAME)
+                .queryParam("access_key", key)
+                .queryParam("flight_status", "active")
+                .build();
+
+        try {
+            HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+            JsonNode rootNode = client.exchange(urlComponents.toString(), HttpMethod.GET, requestEntity, JsonNode.class).getBody();
+
+            if (rootNode == null ) {
+                return Collections.emptyList();
+            }
+
+            String dataNodeStr = rootNode.path("data").toString();
+
+            try (JsonParser jsonParser = objectMapper.createParser(dataNodeStr)) {
+                // Skipping the pagination block
+                jsonParser.nextToken();
+
+                List<FlightInfo> flightInfos = new ArrayList<>();
+
+                while (jsonParser.nextToken() == JsonToken.START_OBJECT) {
+                    FlightInfo flightInfo = jsonParser.readValueAs(FlightInfo.class);
+                    flightInfos.add(flightInfo);
+                }
+
+                if (flightInfos.isEmpty()) {
+                    LOGGER.error("No active flights found. This shouldn't happen!");
+                }
+
+                return flightInfos;
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<FlightInfo> getAllActiveFlightsWithLive() {
+        UriComponents urlComponents = UriComponentsBuilder.fromHttpUrl(baseUrl + SERVICE_NAME)
+                .queryParam("access_key", key)
+                .queryParam("flight_status", "active")
+                .build();
+
+        try {
+            HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+            JsonNode rootNode = client.exchange(urlComponents.toString(), HttpMethod.GET, requestEntity, JsonNode.class).getBody();
+
+            if (rootNode == null ) {
+                return Collections.emptyList();
+            }
+
+            String dataNodeStr = rootNode.path("data").toString();
+
+            try (JsonParser jsonParser = objectMapper.createParser(dataNodeStr)) {
+                // Skipping the pagination block
+                jsonParser.nextToken();
+
+                List<FlightInfo> flightInfos = new ArrayList<>();
+
+                while (jsonParser.nextToken() == JsonToken.START_OBJECT) {
+                    FlightInfo flightInfo = jsonParser.readValueAs(FlightInfo.class);
+                    if (flightInfo.getLive() != null) {
+                        flightInfos.add(flightInfo);
+                    }
+                }
+
+                if (flightInfos.isEmpty()) {
+                    LOGGER.error("No active flights found. This shouldn't happen!");
+                }
+
+                return flightInfos;
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
