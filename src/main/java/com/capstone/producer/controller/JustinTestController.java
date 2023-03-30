@@ -3,9 +3,10 @@ package com.capstone.producer.controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200/")
+@CrossOrigin
 public class JustinTestController {
 
+    @CrossOrigin
     @RequestMapping(
             path = "/hello_world",
             method = RequestMethod.GET
