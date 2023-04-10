@@ -15,7 +15,15 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Collections;
 
-
+/**
+ * @file
+ * @author Nick Horihan
+ * @version 1.0.0
+ *
+ * @section DESCRIPTION
+ *
+ * This class represents an AviationStack Client Caller
+ */
 public class AviationStackClientCaller {
     private static final Logger LOGGER = LoggerFactory.getLogger(AviationStackClientCaller.class);
 
