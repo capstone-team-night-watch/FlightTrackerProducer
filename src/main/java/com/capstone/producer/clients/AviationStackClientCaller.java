@@ -15,6 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Collections;
 
+
 public class AviationStackClientCaller {
     private static final Logger LOGGER = LoggerFactory.getLogger(AviationStackClientCaller.class);
 
@@ -26,11 +27,25 @@ public class AviationStackClientCaller {
     private String baseUrl;
 
     private String key;
+
+    /**
+     * This is the contructor for a class that will call the Aviation
+     * Stack API
+     * @param client RestTemplate
+     * @param baseUrl baseUrl of aviation stack
+     * @param key API key
+     */
     public AviationStackClientCaller(RestTemplate client, String baseUrl, String key){
         this.client = client;
         this.baseUrl = baseUrl;
         this.key = key;
     }
+
+    /**
+     * This function is used to return a JSON NODE when given a flightICAO number
+     * @param flightIcao flight Icao number
+     * @return JsonNode containing flight information
+     */
 
     public JsonNode getFlight(String flightIcao) {
         UriComponents urlComponents = UriComponentsBuilder.fromHttpUrl(baseUrl+SERVICE_NAME)
