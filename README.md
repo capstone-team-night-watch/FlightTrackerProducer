@@ -9,7 +9,7 @@ a decent amount to keep running 24/7,so we shut it down when not developing or t
 
 **Release Notes**
 Version 1.0.0-SNAPSHOT:
-In this version our prodcuer is mapped as a GET request that takes in a message String and pushes that string onto our broker's topic.
+In this version our producer is mapped as a GET request that takes in a message String and pushes that string onto our broker's topic.
 
 Version 1.0.1-SNAPSHOT: 
 In this version mapping is baseurl/flighticao/{flighticao}. Where the flight icao is the flight you wish to collect data on. The producer will then send the message
