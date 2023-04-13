@@ -22,6 +22,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * @file
+ * @author Nick Horihan
+ * @version 1.0.0
+ *
+ * @section DESCRIPTION
+ *
+ * This class represents an AviationStack Client Caller
+ */
 public class AviationStackClientCaller {
     private static final Logger LOGGER = LoggerFactory.getLogger(AviationStackClientCaller.class);
 
@@ -39,6 +48,15 @@ public class AviationStackClientCaller {
     private HttpHeaders headers;
 
     public AviationStackClientCaller(RestTemplate client, String baseUrl, String key) {
+    
+    /**
+     * This is the contructor for a class that will call the Aviation
+     * Stack API
+     * @param client RestTemplate
+     * @param baseUrl baseUrl of aviation stack
+     * @param key API key
+     */
+    public AviationStackClientCaller(RestTemplate client, String baseUrl, String key){
         this.client = client;
         this.baseUrl = baseUrl;
         this.key = key;
@@ -50,8 +68,13 @@ public class AviationStackClientCaller {
 
     }
 
+    /**
+     * This function is used to return a JSON NODE when given a flightICAO number
+     * @param flightIcao flight Icao number
+     * @return JsonNode containing flight information
+     */
     public FlightInfo getFlightByIcao(String flightIcao) {
-        UriComponents urlComponents = UriComponentsBuilder.fromHttpUrl(baseUrl + SERVICE_NAME)
+        UriComponents urlComponents = UriComponentsBuilder.fromHttpUrl(baseUrl+SERVICE_NAME)
                 .queryParam("access_key", key)
                 .queryParam("flight_icao", flightIcao)
                 .build();
