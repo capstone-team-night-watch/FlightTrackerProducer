@@ -48,17 +48,4 @@ public class ProducerController {
 
         return serviceHandler.handleLiveRequest();
     }
-
-    @RequestMapping(
-            path = "/liveflights",
-            method = RequestMethod.GET,
-            produces = {MediaType.APPLICATION_JSON_VALUE}
-    )
-    @ResponseBody
-    public String controller() throws JsonProcessingException {
-        //RecordMetadata metadata = KafkaProducerExample.runProducer(message);
-        //return "Message Sent to Kafka Broker was: " + message + "\n" + "MetaData from send topic: " + metadata.topic() + " Partition: " + metadata.partition() + " Timestamp: " + metadata.timestamp() + " Offset: "+ metadata.offset();
-
-        return serviceHandler.handleLiveFlights();
-    }
 }
