@@ -1,14 +1,12 @@
 package com.capstone.producer.controller;
 
+import com.capstone.producer.common.bindings.GenerateRequest;
 import com.capstone.producer.kafka.ServiceHandler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collections;
 
 @RestController
 public class ProducerController {
@@ -22,7 +20,7 @@ public class ProducerController {
     @RequestMapping(
             path = "/flighticao/{icao}",
             method = RequestMethod.GET,
-            produces = {MediaType.APPLICATION_JSON_VALUE}
+            produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseBody
     @CrossOrigin("*")
@@ -38,7 +36,7 @@ public class ProducerController {
     @RequestMapping(
             path = "/flighticao/getLive",
             method = RequestMethod.GET,
-            produces = {MediaType.APPLICATION_JSON_VALUE}
+            produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseBody
     @CrossOrigin("*")
@@ -47,5 +45,18 @@ public class ProducerController {
         //return "Message Sent to Kafka Broker was: " + message + "\n" + "MetaData from send topic: " + metadata.topic() + " Partition: " + metadata.partition() + " Timestamp: " + metadata.timestamp() + " Offset: "+ metadata.offset();
 
         return serviceHandler.handleLiveRequest();
+    }
+
+
+    @RequestMapping(
+            path= "/flighticao/generate",
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseBody
+    @CrossOrigin("*")
+    public String generateController(@RequestBody GenerateRequest generateRequest) {
+        return serviceHandler.handleGenerateRequest(generateRequest);
     }
 }

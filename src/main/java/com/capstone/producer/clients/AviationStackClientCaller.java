@@ -37,15 +37,15 @@ public class AviationStackClientCaller {
     private static final String SERVICE_NAME = "/flights";
 
 
-    private RestTemplate client;
+    private final RestTemplate client;
 
-    private String baseUrl;
+    private final String baseUrl;
 
-    private String key;
+    private final String key;
 
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
-    private HttpHeaders headers;
+    private final HttpHeaders headers;
 
     /**
      * This is the contructor for a class that will call the Aviation
@@ -73,7 +73,7 @@ public class AviationStackClientCaller {
      * @param flightIcao flight Icao number
      * @return JsonNode containing flight information
      */
-    public JsonNode getFlightByIcao(String flightIcao) {
+    public JsonNode getFlightByIcao_json(String flightIcao) {
         UriComponents urlComponents = UriComponentsBuilder.fromHttpUrl(baseUrl + SERVICE_NAME)
                 .queryParam("access_key", key)
                 .queryParam("flight_icao", flightIcao)
@@ -95,18 +95,23 @@ public class AviationStackClientCaller {
 
     }
 
-    public List<FlightInfo> getAllActiveFlights() {
+    public FlightInfo getFlightByIcao_flightInfo(String flightIcao) {
         UriComponents urlComponents = UriComponentsBuilder.fromHttpUrl(baseUrl + SERVICE_NAME)
                 .queryParam("access_key", key)
-                .queryParam("flight_status", "active")
+                .queryParam("flight_icao", flightIcao)
                 .build();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
         try {
             HttpEntity<String> requestEntity = new HttpEntity<>(headers);
             JsonNode rootNode = client.exchange(urlComponents.toString(), HttpMethod.GET, requestEntity, JsonNode.class).getBody();
 
             if (rootNode == null) {
-                return Collections.emptyList();
+                LOGGER.error("Nothing obtained from AviationStack");
+                return null;
             }
 
             String dataNodeStr = rootNode.path("data").toString();
@@ -115,23 +120,28 @@ public class AviationStackClientCaller {
                 // Skipping the pagination block
                 jsonParser.nextToken();
 
-                List<FlightInfo> flightInfos = new ArrayList<>();
-
-                while (jsonParser.nextToken() == JsonToken.START_OBJECT) {
-                    FlightInfo flightInfo = jsonParser.readValueAs(FlightInfo.class);
-                    flightInfos.add(flightInfo);
+                while (jsonParser.nextToken() != JsonToken.START_OBJECT) {
+                    if (jsonParser.nextToken() == null) {
+                        break;
+                    }
                 }
 
-                if (flightInfos.isEmpty()) {
-                    LOGGER.error("No active flights found. This shouldn't happen!");
+                FlightInfo flightInfo = jsonParser.readValueAs(FlightInfo.class);
+
+                if (flightInfo == null || flightInfo.getFlight() == null) {
+                    LOGGER.error("No flight found! This shouldn't happen!");
                 }
 
-                return flightInfos;
+                return flightInfo;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+           LOGGER.error("Exception caught: {}", e.toString());
+           throw e;
         }
+
     }
 
     public List<FlightInfo> getAllActiveFlightsWithLive() {
@@ -170,7 +180,7 @@ public class AviationStackClientCaller {
                     }
 
                     if (flightInfos.isEmpty()) {
-                        LOGGER.error("No active flights found. This shouldn't happen!");
+                        LOGGER.warn("No active flights found for pagination:{}", count);
                     }
                 }
 
@@ -179,7 +189,7 @@ public class AviationStackClientCaller {
             }
 
             offsetVal = ++count * 100;
-        } while (flightInfos.isEmpty() || count < 3);
+        } while (flightInfos.isEmpty() || flightInfos.size() < 3);
 
         return flightInfos;
     }

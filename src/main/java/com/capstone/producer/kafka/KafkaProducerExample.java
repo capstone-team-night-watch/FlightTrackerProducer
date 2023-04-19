@@ -15,7 +15,7 @@ public class KafkaProducerExample {
     private final static String TOPIC_NAME = "FlightData";
     private final static String BOOTSTRAP_SERVER = "ec2-35-173-74-249.compute-1.amazonaws.com:9092";
 
-    private static Logger logger = Logger.getLogger(String.valueOf(KafkaProducerExample.class));
+    private static final Logger logger = Logger.getLogger(String.valueOf(KafkaProducerExample.class));
 
     private static Producer<Long, String> createProducer() {
         Properties props = new Properties();
