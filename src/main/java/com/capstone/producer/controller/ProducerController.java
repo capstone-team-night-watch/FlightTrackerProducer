@@ -26,7 +26,7 @@ public class ProducerController {
     )
     @ResponseBody
     @CrossOrigin("*")
-    public String controller(@PathVariable("icao") String message) throws JsonProcessingException {
+    public String getICAO(@PathVariable("icao") String message) throws JsonProcessingException {
         //RecordMetadata metadata = KafkaProducerExample.runProducer(message);
         //return "Message Sent to Kafka Broker was: " + message + "\n" + "MetaData from send topic: " + metadata.topic() + " Partition: " + metadata.partition() + " Timestamp: " + metadata.timestamp() + " Offset: "+ metadata.offset();
 
@@ -42,7 +42,7 @@ public class ProducerController {
     )
     @ResponseBody
     @CrossOrigin("*")
-    public String controller() throws JsonProcessingException {
+    public String getLive() throws JsonProcessingException {
         //RecordMetadata metadata = KafkaProducerExample.runProducer(message);
         //return "Message Sent to Kafka Broker was: " + message + "\n" + "MetaData from send topic: " + metadata.topic() + " Partition: " + metadata.partition() + " Timestamp: " + metadata.timestamp() + " Offset: "+ metadata.offset();
 
