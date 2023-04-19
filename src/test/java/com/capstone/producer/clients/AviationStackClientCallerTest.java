@@ -1,5 +1,6 @@
 package com.capstone.producer.clients;
 
+import com.capstone.producer.common.bindings.FlightInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,9 +16,11 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -27,6 +30,8 @@ public class AviationStackClientCallerTest {
 
     @Mock
     private RestTemplate client;
+    @Mock
+    private ResponseEntity<JsonNode> responseEntity;
 
     private HttpHeaders headers;
 
@@ -86,21 +91,40 @@ public class AviationStackClientCallerTest {
     @Test
     public void shouldThrow_RunTimeException_OnHttpClientError(){
 
-        String urlComponents = UriComponentsBuilder.fromHttpUrl(BASE_URL+SERVICE_NAME)
-                .queryParam("access_key", "key")
-                .queryParam("flight_icao", "CUS7777")
-                .build().toString();
+        when(client.exchange(anyString(), any(), any(), eq(JsonNode.class))).thenThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST));
+
 
         Exception e = assertThrows(RuntimeException.class, () -> {
-           aviationStackClientCaller.getFlightByIcao("ICAO");
+           aviationStackClientCaller.getFlightByIcao_json("ICAO");
         });
     }
 
     @Test
     public void shouldThrow_RunTimeException_OnHttpServerError(){
 
+        when(client.exchange(anyString(), any(), any(), eq(JsonNode.class))).thenThrow(new HttpServerErrorException(HttpStatus.BAD_REQUEST));
+
         Exception e = assertThrows(RuntimeException.class, () -> {
-            aviationStackClientCaller.getFlightByIcao("ICAO");
+            aviationStackClientCaller.getFlightByIcao_json("ICAO");
+        });
+    }
+
+    @Test
+    public void shouldReturnEmptyListWithNullRootNode(){
+        when(client.exchange(anyString(), any(), any(), eq(JsonNode.class))).thenReturn(responseEntity);
+        when(responseEntity.getBody()).thenReturn(null);
+
+        List<FlightInfo> flightInfoList = aviationStackClientCaller.getAllActiveFlightsWithLive();
+
+        assertEquals(Collections.emptyList(), flightInfoList);
+    }
+
+    @Test
+    public void getAllActiveFLightsWithLiveShouldThrowRunTimeExceptionWhenExceptionIsThrown(){
+        when(client.exchange(anyString(), any(), any(), eq(JsonNode.class))).thenThrow(new HttpServerErrorException(HttpStatus.BAD_REQUEST));
+
+        assertThrows(RuntimeException.class, () -> {
+            aviationStackClientCaller.getAllActiveFlightsWithLive();
         });
     }
 }

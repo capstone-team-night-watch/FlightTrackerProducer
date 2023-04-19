@@ -1,8 +1,7 @@
 package com.capstone.producer.kafka;
 
 import com.capstone.producer.clients.AviationStackClientCaller;
-import com.capstone.producer.common.bindings.Flight;
-import com.capstone.producer.common.bindings.FlightInfo;
+import com.capstone.producer.common.bindings.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,11 +40,14 @@ public class ServiceHandlerTest {
 
     @Test
     public void handleFlightIcao() throws JsonProcessingException {
-        when(caller.getFlightByIcao(anyString())).thenReturn(JSON_NODE);
+        FlightInfo flightInfo = new FlightInfo();
+        flightInfo.setAirline(new Airline().setName("NAME"));
+        flightInfo.setLive(new Live());
+        when(caller.getFlightByIcao_flightInfo(anyString())).thenReturn(flightInfo);
 
         String result = serviceHandler.handleFlightIcao("JD123");
 
-        assertEquals("{\"field1\":\"Fee\",\"field2\":\"Fi\"}", result);
+        assertEquals("{\"icao\":\"JD123\",\"airline\":\"NAME\",\"live\":\"{\\\"updated\\\":\\\"null\\\",\\\"latitude\\\":0.00,\\\"longitude\\\":0.00,\\\"altitude\\\":0.00,\\\"direction\\\":0,\\\"speed_horizontal\\\":0.00,\\\"speed_vertical\\\":0.00,\\\"is_ground\\\":false}\"}", result);
     }
 
     @Test
@@ -60,6 +62,15 @@ public class ServiceHandlerTest {
         String result = serviceHandler.handleLiveRequest();
 
         assertEquals("{\"icaos\":\"ICAO\"}", result);
+    }
+
+    @Test
+    public void handleGenerateRequest(){
+        GenerateRequest generateRequest = new GenerateRequest().setAirlineName("AIRLINE").setFlightIcao("ICAO");
+
+        String toBeSent = serviceHandler.handleGenerateRequest(generateRequest);
+
+        assertEquals("{\"icao\":\"ICAO\",\"airline\":\"AIRLINE\",\"live\":\"{\\\"updated\\\":\\\"null\\\",\\\"latitude\\\":0.00,\\\"longitude\\\":0.00,\\\"altitude\\\":0.00,\\\"direction\\\":0,\\\"speed_horizontal\\\":0.00,\\\"speed_vertical\\\":0.00,\\\"is_ground\\\":false}\"}", toBeSent);
     }
 
 }

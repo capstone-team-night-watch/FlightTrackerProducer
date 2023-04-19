@@ -45,7 +45,7 @@ public class LiveTest {
     @Test
     public void getAndSetAltitude(){
         live.setAltitude(1);
-        int result = live.getAltitude();
+        float result = live.getAltitude();
 
         assertEquals(1, result);
     }
