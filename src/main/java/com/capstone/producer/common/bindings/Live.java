@@ -4,7 +4,7 @@ public class Live {
     private String updated;
     private float latitude;
     private float longitude;
-    private int altitude;
+    private float altitude;
     private int direction;
     private float speed_horizontal;
     private float speed_vertical;
@@ -13,20 +13,20 @@ public class Live {
     @Override
     public String toString() {
 
-        return String.format("updated: %s | latitude: %.2f | longitude: %.2f | altitude: %d | direction: %d | speed_horizontal: %.2f |" +
-                " speed_vertical: %.2f | is_ground: %b", updated, latitude, longitude, altitude, direction,
-                speed_horizontal, speed_vertical, is_ground);
+        return String.format("{\"updated\":\"%s\",\"latitude\":%.2f,\"longitude\":%.2f,\"altitude\":%.2f," +
+                        "\"direction\":%d,\"speed_horizontal\":%.2f,\"speed_vertical\":%.2f,\"is_ground\":%b}",
+                updated, latitude, longitude, altitude, direction, speed_horizontal, speed_vertical, is_ground);
     }
 
     public String getUpdated() {
         return updated;
     }
 
-    public int getAltitude() {
+    public float getAltitude() {
         return altitude;
     }
 
-    public Live setAltitude(int altitude) {
+    public Live setAltitude(float altitude) {
         this.altitude = altitude;
         return this;
     }
