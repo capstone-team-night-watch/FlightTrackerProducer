@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,10 +32,14 @@ public class ServiceHandler {
 
     private boolean generationHappening;
     private final Map<String, GenerateRequest> generatedFlights;
+    private final Map<String, Integer> liveFlightUpdateRecord;
+    private final Map<String, Integer> mockFlightUpdateRecord;
 
     public ServiceHandler() {
         flightIcaos = new CopyOnWriteArrayList<>();
         generatedFlights = new ConcurrentHashMap<>();
+        liveFlightUpdateRecord = new ConcurrentHashMap<>();
+        mockFlightUpdateRecord = new ConcurrentHashMap<>();
     }
 
 
@@ -43,15 +48,10 @@ public class ServiceHandler {
         this.prev_flight_icao = flight_icao;
         this.flightIcaos.add(flight_icao);
 
-        //JsonNode response = aviationStackClientCaller.getFlightByIcao(flight_icao);
-        //String jsonAsString = objectMapper.writeValueAsString(response);
-        //RecordMetadata metadata = KafkaProducerExample.runProducer(jsonAsString);
-
         FlightInfo response = aviationStackClientCaller.getFlightByIcao_flightInfo(flight_icao);
 
-
         if (response == null || response.getLive() == null) {
-            return "NO DATA";
+            return "NO LIVE DATA ACQUIRED";
         }
 
         LOGGER.info(response.toString());
@@ -60,7 +60,7 @@ public class ServiceHandler {
         LOGGER.info("Sending: {}", toBeSent);
 
         RecordMetadata metadata = KafkaProducerExample.runProducer(toBeSent);
-        LOGGER.info("Kafka metadata: {}", metadata);
+        LOGGER.debug("Kafka metadata: {}", metadata);
         //Return response to user on page
         return toBeSent;
     }
@@ -88,7 +88,7 @@ public class ServiceHandler {
         LOGGER.info("Sending: {}", toBeSent);
 
         RecordMetadata metadata = KafkaProducerExample.runProducer(toBeSent);
-        LOGGER.info("Kafka metadata: {}", metadata);
+        LOGGER.debug("Kafka metadata: {}", metadata);
 
         //Return response to user on page
         return toBeSent;
@@ -118,21 +118,41 @@ public class ServiceHandler {
         return jsonObject.toString();
     }
 
-    @Scheduled(fixedRate = 30000, initialDelay = 60000)
+    @Scheduled(fixedRate = 60000, initialDelay = 60000)
     public void updateFlightInfo() {
         if (this.prev_flight_icao == null || this.prev_flight_icao.isEmpty() || this.flightIcaos.isEmpty()) {
             return;
         }
 
+        List<String> toBeRemoved = new ArrayList<>();
+
         for (String flightIcao : flightIcaos) {
+            int count;
+            liveFlightUpdateRecord.putIfAbsent(flightIcao, 0);
+            count = liveFlightUpdateRecord.get(flightIcao) + 1;
+
+            LOGGER.debug("Live Flight ICAO: {} | Update Count: {}", flightIcao, count);
+
+            if (count > 15) {
+                LOGGER.info("Count Threshold has been reached. Terminating flight tracking for: {}", flightIcao);
+                toBeRemoved.add(flightIcao);
+                liveFlightUpdateRecord.remove(flightIcao);
+                continue;
+            }
+
             LOGGER.info("Updating Live information for {}", flightIcao);
             FlightInfo response = aviationStackClientCaller.getFlightByIcao_flightInfo(flightIcao);
+
             String toBeSent = buildKafkaMessageFromFlightInfo(response, flightIcao);
             LOGGER.info("Sending: {}", toBeSent);
 
             RecordMetadata metadata = KafkaProducerExample.runProducer(toBeSent);
-            LOGGER.info("Kafka metadata: {}", metadata);
+            LOGGER.debug("Kafka metadata: {}", metadata);
+
+            liveFlightUpdateRecord.put(flightIcao, count);
         }
+
+        flightIcaos.removeAll(toBeRemoved);
     }
 
     @Scheduled(fixedRate = 30000, initialDelay = 60000)
@@ -141,7 +161,23 @@ public class ServiceHandler {
             return;
         }
 
+        List<String> toBeRemoved = new ArrayList<>();
+
         for (GenerateRequest generateRequest : generatedFlights.values()) {
+            int count;
+            String flightLabel = String.format("%s %s", generateRequest.getAirlineName().trim(), generateRequest.getFlightIcao().trim());
+            mockFlightUpdateRecord.putIfAbsent(flightLabel, 0);
+            count = mockFlightUpdateRecord.get(flightLabel) + 1;
+
+            LOGGER.debug("Mock Flight Label: {} | Update Count: {}", flightLabel, count);
+
+            if (count > 30) {
+                LOGGER.info("Count Threshold has been reached. Terminating flight tracking for mock: {}", flightLabel);
+                toBeRemoved.add(flightLabel);
+                mockFlightUpdateRecord.remove(flightLabel);
+                continue;
+            }
+
             float longChange = generateRequest.getLatitudeChange();
             float latChange = generateRequest.getLatitudeChange();
             float altChange = generateRequest.getAltitudeChange();
@@ -159,7 +195,11 @@ public class ServiceHandler {
             LOGGER.info("Sending: {}", toBeSent);
 
             RecordMetadata metadata = KafkaProducerExample.runProducer(toBeSent);
-            LOGGER.info("Kafka metadata: {}", metadata);
+            LOGGER.debug("Kafka metadata: {}", metadata);
+
+            mockFlightUpdateRecord.put(flightLabel, count);
         }
+
+        toBeRemoved.forEach(generatedFlights::remove);
     }
 }
