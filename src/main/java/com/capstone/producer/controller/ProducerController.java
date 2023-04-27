@@ -24,7 +24,7 @@ public class ProducerController {
     )
     @ResponseBody
     @CrossOrigin("*")
-    public String getICAO(@PathVariable("icao") String message) throws JsonProcessingException {
+    public String getICAO(@PathVariable("icao") String message) throws JsonProcessingException, InterruptedException {
         //RecordMetadata metadata = KafkaProducerExample.runProducer(message);
         //return "Message Sent to Kafka Broker was: " + message + "\n" + "MetaData from send topic: " + metadata.topic() + " Partition: " + metadata.partition() + " Timestamp: " + metadata.timestamp() + " Offset: "+ metadata.offset();
 
@@ -56,7 +56,7 @@ public class ProducerController {
     )
     @ResponseBody
     @CrossOrigin("*")
-    public String generateController(@RequestBody GenerateRequest generateRequest) {
+    public String generateController(@RequestBody GenerateRequest generateRequest) throws InterruptedException {
         return serviceHandler.handleGenerateRequest(generateRequest);
     }
 }

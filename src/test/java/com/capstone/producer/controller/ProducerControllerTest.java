@@ -22,7 +22,7 @@ public class ProducerControllerTest {
     private ProducerController controller;
 
     @Test
-    public void shouldCallGetICAO() throws JsonProcessingException {
+    public void shouldCallGetICAO() throws JsonProcessingException, InterruptedException {
         when(serviceHandler.handleFlightIcao(anyString())).thenReturn("RESULT");
 
         String result = controller.getICAO("ICAO");

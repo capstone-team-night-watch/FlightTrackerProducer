@@ -26,7 +26,7 @@ public class KafkaProducerExample {
         return new KafkaProducer<>(props);
     }
 
-    public static RecordMetadata runProducer(String message) {
+    public static RecordMetadata runProducer(String message) throws InterruptedException {
         final Producer<Long, String> producer = createProducer();
 
         try {
@@ -37,7 +37,7 @@ public class KafkaProducerExample {
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            throw e;
         } finally {
             logger.info("Flushing and closing Producer");
             producer.close();

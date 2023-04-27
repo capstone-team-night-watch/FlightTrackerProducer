@@ -39,7 +39,7 @@ public class ServiceHandlerTest {
     }
 
     @Test
-    public void handleFlightIcao() throws JsonProcessingException {
+    public void handleFlightIcao() throws JsonProcessingException, InterruptedException {
         FlightInfo flightInfo = new FlightInfo();
         flightInfo.setAirline(new Airline().setName("NAME"));
         flightInfo.setLive(new Live());
@@ -65,7 +65,7 @@ public class ServiceHandlerTest {
     }
 
     @Test
-    public void handleGenerateRequest(){
+    public void handleGenerateRequest() throws InterruptedException {
         GenerateRequest generateRequest = new GenerateRequest().setAirlineName("AIRLINE").setFlightIcao("ICAO");
 
         String toBeSent = serviceHandler.handleGenerateRequest(generateRequest);

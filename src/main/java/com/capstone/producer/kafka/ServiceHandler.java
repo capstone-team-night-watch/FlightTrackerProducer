@@ -43,7 +43,7 @@ public class ServiceHandler {
     }
 
 
-    public String handleFlightIcao(String flight_icao) {
+    public String handleFlightIcao(String flight_icao) throws InterruptedException {
         LOGGER.debug("Received request: {}", flight_icao);
         this.prev_flight_icao = flight_icao;
         this.flightIcaos.add(flight_icao);
@@ -78,7 +78,7 @@ public class ServiceHandler {
         return jsonObject.toString();
     }
 
-    public String handleGenerateRequest(GenerateRequest generateRequest) {
+    public String handleGenerateRequest(GenerateRequest generateRequest) throws InterruptedException {
         generationHappening = true;
         LOGGER.info(generateRequest.toString());
         String flightLabel = String.format("%s %s", generateRequest.getAirlineName().trim(), generateRequest.getFlightIcao().trim());
@@ -119,7 +119,7 @@ public class ServiceHandler {
     }
 
     @Scheduled(fixedRate = 60000, initialDelay = 60000)
-    public void updateFlightInfo() {
+    public void updateFlightInfo() throws InterruptedException {
         if (this.prev_flight_icao == null || this.prev_flight_icao.isEmpty() || this.flightIcaos.isEmpty()) {
             return;
         }
@@ -156,7 +156,7 @@ public class ServiceHandler {
     }
 
     @Scheduled(fixedRate = 30000, initialDelay = 60000)
-    public void updateGeneratedFlightInfo() {
+    public void updateGeneratedFlightInfo() throws InterruptedException {
         if (!generationHappening || generatedFlights.isEmpty()) {
             return;
         }
