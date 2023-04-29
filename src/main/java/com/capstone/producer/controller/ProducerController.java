@@ -1,8 +1,8 @@
 package com.capstone.producer.controller;
 
+import com.capstone.producer.common.bindings.AirportGenerateRequest;
 import com.capstone.producer.common.bindings.GenerateRequest;
 import com.capstone.producer.kafka.ServiceHandler;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -24,10 +24,7 @@ public class ProducerController {
     )
     @ResponseBody
     @CrossOrigin("*")
-    public String getICAO(@PathVariable("icao") String message) throws JsonProcessingException, InterruptedException {
-        //RecordMetadata metadata = KafkaProducerExample.runProducer(message);
-        //return "Message Sent to Kafka Broker was: " + message + "\n" + "MetaData from send topic: " + metadata.topic() + " Partition: " + metadata.partition() + " Timestamp: " + metadata.timestamp() + " Offset: "+ metadata.offset();
-
+    public String getICAO(@PathVariable("icao") String message) throws InterruptedException {
         LOGGER.info("Received request with icao: {}", message);
 
         return serviceHandler.handleFlightIcao(message);
@@ -40,23 +37,43 @@ public class ProducerController {
     )
     @ResponseBody
     @CrossOrigin("*")
-    public String getLive() throws JsonProcessingException {
-        //RecordMetadata metadata = KafkaProducerExample.runProducer(message);
-        //return "Message Sent to Kafka Broker was: " + message + "\n" + "MetaData from send topic: " + metadata.topic() + " Partition: " + metadata.partition() + " Timestamp: " + metadata.timestamp() + " Offset: "+ metadata.offset();
-
+    public String getLive() {
         return serviceHandler.handleLiveRequest();
+    }
+
+    @RequestMapping(
+            path = "/airportInfo/{name}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseBody
+    @CrossOrigin("*")
+    public String getAirport(@PathVariable("name") String airportName) {
+        return serviceHandler.handleAirportRequest(airportName);
     }
 
 
     @RequestMapping(
-            path= "/flighticao/generate",
+            path= "/custom/generate",
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseBody
     @CrossOrigin("*")
-    public String generateController(@RequestBody GenerateRequest generateRequest) throws InterruptedException {
+    public String generateCustomMockFlight(@RequestBody GenerateRequest generateRequest) throws InterruptedException {
+        return serviceHandler.handleGenerateRequest(generateRequest);
+    }
+
+    @RequestMapping(
+            path= "/airport/generate",
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseBody
+    @CrossOrigin("*")
+    public String generateMockFlight(@RequestBody AirportGenerateRequest generateRequest) throws InterruptedException {
         return serviceHandler.handleGenerateRequest(generateRequest);
     }
 }

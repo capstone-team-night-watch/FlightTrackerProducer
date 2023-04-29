@@ -1,5 +1,6 @@
 package com.capstone.producer.clients;
 
+import com.capstone.producer.common.bindings.Airport;
 import com.capstone.producer.common.bindings.FlightInfo;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -34,8 +35,9 @@ import java.util.List;
 public class AviationStackClientCaller {
     private static final Logger LOGGER = LoggerFactory.getLogger(AviationStackClientCaller.class);
 
-    private static final String SERVICE_NAME = "/flights";
+    private static final String FLIGHTS_SERVICE_NAME = "/flights";
 
+    private static final String AIRPORTS_SERVICE_NAME = "/airports";
 
     private final RestTemplate client;
 
@@ -74,7 +76,7 @@ public class AviationStackClientCaller {
      * @return JsonNode containing flight information
      */
     public JsonNode getFlightByIcao_json(String flightIcao) {
-        UriComponents urlComponents = UriComponentsBuilder.fromHttpUrl(baseUrl + SERVICE_NAME)
+        UriComponents urlComponents = UriComponentsBuilder.fromHttpUrl(baseUrl + FLIGHTS_SERVICE_NAME)
                 .queryParam("access_key", key)
                 .queryParam("flight_icao", flightIcao)
                 .build();
@@ -96,7 +98,7 @@ public class AviationStackClientCaller {
     }
 
     public FlightInfo getFlightByIcao_flightInfo(String flightIcao) {
-        UriComponents urlComponents = UriComponentsBuilder.fromHttpUrl(baseUrl + SERVICE_NAME)
+        UriComponents urlComponents = UriComponentsBuilder.fromHttpUrl(baseUrl + FLIGHTS_SERVICE_NAME)
                 .queryParam("access_key", key)
                 .queryParam("flight_icao", flightIcao)
                 .build();
@@ -151,7 +153,7 @@ public class AviationStackClientCaller {
 
 
         do {
-            UriComponents urlComponents = UriComponentsBuilder.fromHttpUrl(baseUrl + SERVICE_NAME)
+            UriComponents urlComponents = UriComponentsBuilder.fromHttpUrl(baseUrl + FLIGHTS_SERVICE_NAME)
                     .queryParam("access_key", key)
                     .queryParam("flight_status", "active")
                     .queryParam("offset", offsetVal)
@@ -193,4 +195,53 @@ public class AviationStackClientCaller {
 
         return flightInfos;
     }
+
+    public Airport getAirportInfoFromName(String airportName) {
+        UriComponents urlComponents = UriComponentsBuilder.fromHttpUrl(baseUrl + AIRPORTS_SERVICE_NAME)
+                .queryParam("access_key", key)
+                .queryParam("search", airportName)
+                .build();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+        try {
+            HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+            JsonNode rootNode = client.exchange(urlComponents.toString(), HttpMethod.GET, requestEntity, JsonNode.class).getBody();
+
+            if (rootNode == null) {
+                LOGGER.error("Nothing obtained from AviationStack");
+                return null;
+            }
+
+            String dataNodeStr = rootNode.path("data").toString();
+
+            try (JsonParser jsonParser = objectMapper.createParser(dataNodeStr)) {
+                // Skipping the pagination block
+                jsonParser.nextToken();
+
+                while (jsonParser.nextToken() != JsonToken.START_OBJECT) {
+                    if (jsonParser.nextToken() == null) {
+                        break;
+                    }
+                }
+
+                Airport airportInfo = jsonParser.readValueAs(Airport.class);
+
+                if (airportInfo == null || airportInfo.getLatitude() == 0 || airportInfo.getLongitude() == 0) {
+                    LOGGER.error("No airport found! This shouldn't happen!");
+                }
+
+                return airportInfo;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        } catch (Exception e) {
+            LOGGER.error("Exception caught: {}", e.toString());
+            throw e;
+        }
+    }
+
 }

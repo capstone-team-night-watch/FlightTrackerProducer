@@ -1,10 +1,7 @@
 package com.capstone.producer.kafka;
 
 import com.capstone.producer.clients.AviationStackClientCaller;
-import com.capstone.producer.common.bindings.Flight;
-import com.capstone.producer.common.bindings.FlightInfo;
-import com.capstone.producer.common.bindings.GenerateRequest;
-import com.capstone.producer.common.bindings.Live;
+import com.capstone.producer.common.bindings.*;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -12,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +79,56 @@ public class ServiceHandler {
     public String handleGenerateRequest(GenerateRequest generateRequest) throws InterruptedException {
         generationHappening = true;
         LOGGER.info(generateRequest.toString());
+
+        if (generateRequest instanceof AirportGenerateRequest) {
+            AirportGenerateRequest airportGenerate = (AirportGenerateRequest) generateRequest;
+            if (StringUtils.hasText(airportGenerate.getArriveAirport())) {
+                Airport airport = aviationStackClientCaller.getAirportInfoFromName(airportGenerate.getArriveAirport());
+                airportGenerate.setLongitude(airport.getLongitude());
+                airportGenerate.setLatitude(airport.getLatitude());
+            }
+
+            if (StringUtils.hasText(airportGenerate.getArriveAirport())) {
+                Airport airport = aviationStackClientCaller.getAirportInfoFromName(airportGenerate.getArriveAirport());
+                airportGenerate.setFinalLongitude(airport.getLongitude());
+                airportGenerate.setFinalLatitude(airport.getLatitude());
+            }
+
+            if (airportGenerate.getLongitudeChange() == 0) {
+                boolean longIsNeg = airportGenerate.getLongitude() < 0;
+                boolean finalLongIsNeg = airportGenerate.getFinalLongitude() < 0;
+
+                float longDifference = 0;
+
+                if (longIsNeg && finalLongIsNeg) {
+                    longDifference = airportGenerate.getFinalLongitude() + airportGenerate.getLongitude();
+                } else if (longIsNeg) {
+                    longDifference = Math.abs(airportGenerate.getLongitude() - airportGenerate.getFinalLongitude());
+                } else if (finalLongIsNeg) {
+                    longDifference = airportGenerate.getFinalLongitude() - airportGenerate.getLongitude();
+                }
+
+                airportGenerate.setLongitudeChange(longDifference / 30.0f);
+            }
+
+            if (airportGenerate.getLatitudeChange() == 0) {
+                boolean latIsNeg = airportGenerate.getLatitude() < 0;
+                boolean finalLatIsNeg = airportGenerate.getFinalLatitude() < 0;
+
+                float latDifference = 0;
+
+                if (latIsNeg && finalLatIsNeg) {
+                    latDifference = airportGenerate.getFinalLongitude() + airportGenerate.getLongitude();
+                } else if (latIsNeg) {
+                    latDifference = Math.abs(airportGenerate.getLongitude() - airportGenerate.getFinalLongitude());
+                } else if (finalLatIsNeg) {
+                    latDifference = airportGenerate.getFinalLongitude() - airportGenerate.getLongitude();
+                }
+
+                airportGenerate.setLatitudeChange(latDifference / 30.0f);
+            }
+        }
+
         String flightLabel = String.format("%s %s", generateRequest.getAirlineName().trim(), generateRequest.getFlightIcao().trim());
         generatedFlights.put(flightLabel, generateRequest);
 
@@ -92,6 +140,15 @@ public class ServiceHandler {
 
         //Return response to user on page
         return toBeSent;
+    }
+
+    public String handleAirportRequest(String airportName) {
+        Airport airport = aviationStackClientCaller.getAirportInfoFromName(airportName);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("longitude", airport.getLongitude());
+        jsonObject.put("latitude", airport.getLatitude());
+
+        return jsonObject.toString();
     }
 
     private String buildKafkaMessageFromGenerate(GenerateRequest generateRequest) {
