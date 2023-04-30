@@ -393,7 +393,7 @@ public class ServiceHandler {
                 continue;
             }
 
-            float longChange = generateRequest.getLatitudeChange();
+            float longChange = generateRequest.getLongitudeChange();
             float latChange = generateRequest.getLatitudeChange();
             float altChange = generateRequest.getAltitudeChange();
 
