@@ -1,8 +1,8 @@
 package com.capstone.producer.common.bindings;
 
+import com.capstone.producer.common.bindings.aviationstack.Live;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 

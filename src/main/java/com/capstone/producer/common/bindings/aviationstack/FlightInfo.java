@@ -1,5 +1,10 @@
-package com.capstone.producer.common.bindings;
+package com.capstone.producer.common.bindings.aviationstack;
 
+/**
+ * Class used as bindings for the Aviation Stack API responses.
+ * This class corresponds to the response provided at the /flights endpoint.
+ * Includes Objects from the other /flights bindings classes
+ */
 public class FlightInfo {
     private String flight_date;
     private String flight_status;

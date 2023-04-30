@@ -1,58 +1,36 @@
 package com.capstone.producer.controller;
 
+import com.capstone.producer.ServiceHandler;
 import com.capstone.producer.common.bindings.AirportGenerateRequest;
 import com.capstone.producer.common.bindings.GenerateRequest;
-import com.capstone.producer.kafka.ServiceHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controller class that handles all endpoints related to generating mock flights
+ */
 @RestController
-public class ProducerController {
+public class GenerateController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GenerateController.class);
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProducerController.class);
-
+    /**
+     * Service Handler Object that facilitates the logic that needs to happen when a request is received
+     */
     private final ServiceHandler serviceHandler;
-    public ProducerController(ServiceHandler serviceHandler) {
+    public GenerateController(ServiceHandler serviceHandler) {
         this.serviceHandler = serviceHandler;
     }
-    @RequestMapping(
-            path = "/flighticao/{icao}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @ResponseBody
+
+    /**
+     * Sets up the request mapping for generating a custom (non-airport) mock flight
+     * Cross Origin scripting setup allows requests from any cross-origin script
+     *
+     * @param generateRequest The GenerateRequest Object containing information about the mock flight
+     * @return A string representing the message that was sent to the Kafka broker
+     */
     @CrossOrigin("*")
-    public String getICAO(@PathVariable("icao") String message) throws InterruptedException {
-        LOGGER.info("Received request with icao: {}", message);
-
-        return serviceHandler.handleFlightIcao(message);
-    }
-
-    @RequestMapping(
-            path = "/flighticao/getLive",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @ResponseBody
-    @CrossOrigin("*")
-    public String getLive() {
-        return serviceHandler.handleLiveRequest();
-    }
-
-    @RequestMapping(
-            path = "/airportInfo/{name}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @ResponseBody
-    @CrossOrigin("*")
-    public String getAirport(@PathVariable("name") String airportName) {
-        return serviceHandler.handleAirportRequest(airportName);
-    }
-
-
     @RequestMapping(
             path= "/custom/generate",
             method = RequestMethod.POST,
@@ -60,11 +38,18 @@ public class ProducerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseBody
-    @CrossOrigin("*")
     public String generateCustomMockFlight(@RequestBody GenerateRequest generateRequest) throws InterruptedException {
         return serviceHandler.handleGenerateRequest(generateRequest);
     }
 
+    /**
+     * Sets up the request mapping for generating a mock flight with airport information
+     * Cross Origin scripting setup allows requests from any cross-origin script
+     *
+     * @param generateRequest The AirportGenerateRequest Object containing information about the mock flight, including airport names
+     * @return A string representing the message that was sent to the Kafka broker
+     */
+    @CrossOrigin("*")
     @RequestMapping(
             path= "/airport/generate",
             method = RequestMethod.POST,
@@ -72,7 +57,6 @@ public class ProducerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseBody
-    @CrossOrigin("*")
     public String generateMockFlight(@RequestBody AirportGenerateRequest generateRequest) throws InterruptedException {
         return serviceHandler.handleGenerateRequest(generateRequest);
     }

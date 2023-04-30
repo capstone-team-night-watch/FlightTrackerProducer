@@ -1,5 +1,9 @@
-package com.capstone.producer.common.bindings;
+package com.capstone.producer.common.bindings.aviationstack;
 
+/**
+ * Class used as bindings for the Aviation Stack API responses.
+ * This class corresponds to the 'departure' JSON Object included in the response provided at the /flights endpoint
+ */
 public class Departure {
     private String airport;
     private String timezone;

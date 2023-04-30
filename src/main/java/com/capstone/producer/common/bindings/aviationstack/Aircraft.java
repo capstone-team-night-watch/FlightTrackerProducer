@@ -1,5 +1,9 @@
-package com.capstone.producer.common.bindings;
+package com.capstone.producer.common.bindings.aviationstack;
 
+/**
+ * Class used as bindings for the Aviation Stack API Responses.
+ * This class corresponds to the 'aircraft' JSON Object included in the response provided at the /flights endpoint
+ */
 public class Aircraft {
     private String registration;
     private String iata;
@@ -16,35 +20,31 @@ public class Aircraft {
         return registration;
     }
 
-    public Aircraft setRegistration(String registration) {
+    public void setRegistration(String registration) {
         this.registration = registration;
-        return this;
     }
 
     public String getIata() {
         return iata;
     }
 
-    public Aircraft setIata(String iata) {
+    public void setIata(String iata) {
         this.iata = iata;
-        return this;
     }
 
     public String getIcao() {
         return icao;
     }
 
-    public Aircraft setIcao(String icao) {
+    public void setIcao(String icao) {
         this.icao = icao;
-        return this;
     }
 
     public String getIcao24() {
         return icao24;
     }
 
-    public Aircraft setIcao24(String icao24) {
+    public void setIcao24(String icao24) {
         this.icao24 = icao24;
-        return this;
     }
 }

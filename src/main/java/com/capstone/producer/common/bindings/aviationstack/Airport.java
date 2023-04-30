@@ -1,9 +1,13 @@
-package com.capstone.producer.common.bindings;
+package com.capstone.producer.common.bindings.aviationstack;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+/**
+ * Class used as bindings for the Aviation Stack API responses.
+ * This class corresponds to the response provided at the /airports endpoint
+ */
 public class Airport {
     private String id;
     private String gmt;

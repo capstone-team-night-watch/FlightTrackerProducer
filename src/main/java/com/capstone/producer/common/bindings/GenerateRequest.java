@@ -2,6 +2,10 @@ package com.capstone.producer.common.bindings;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+/**
+ * Request Object that is received by the /airport/generate endpoint in this application.
+ * Helps facilitate the generation of a Mock flight when given all the non-airport information
+ */
 public class GenerateRequest {
     protected String airlineName;
     protected String flightIcao;

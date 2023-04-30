@@ -1,7 +1,12 @@
 package com.capstone.producer.kafka;
 
+import com.capstone.producer.ServiceHandler;
 import com.capstone.producer.clients.AviationStackClientCaller;
 import com.capstone.producer.common.bindings.*;
+import com.capstone.producer.common.bindings.aviationstack.Airline;
+import com.capstone.producer.common.bindings.aviationstack.Flight;
+import com.capstone.producer.common.bindings.aviationstack.FlightInfo;
+import com.capstone.producer.common.bindings.aviationstack.Live;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,7 +48,7 @@ public class ServiceHandlerTest {
         FlightInfo flightInfo = new FlightInfo();
         flightInfo.setAirline(new Airline().setName("NAME"));
         flightInfo.setLive(new Live());
-        when(caller.getFlightByIcao_flightInfo(anyString())).thenReturn(flightInfo);
+        when(caller.getFlightFromIcao(anyString())).thenReturn(flightInfo);
 
         String result = serviceHandler.handleFlightIcao("JD123");
 

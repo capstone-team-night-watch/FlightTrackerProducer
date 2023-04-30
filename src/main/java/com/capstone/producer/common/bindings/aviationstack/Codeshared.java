@@ -1,5 +1,10 @@
-package com.capstone.producer.common.bindings;
+package com.capstone.producer.common.bindings.aviationstack;
 
+/**
+ * Class used as bindings for the Aviation Stack API responses.
+ * This class corresponds to the 'arrival' JSON Object included in the response provided at the /flights endpoint
+ * Information in here isn't really used but is necessary to build FlightInfo Objects
+ */
 public class Codeshared {
     private String airline_name;
     private String airline_iata;
