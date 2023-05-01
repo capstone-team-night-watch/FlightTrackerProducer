@@ -185,8 +185,8 @@ public class ServiceHandler {
             AirportGenerateRequest airportGenerate = (AirportGenerateRequest) generateRequest;
 
             // Making sure there are airport names in the request before making the calls to aviation stack
-            if (StringUtils.hasText(airportGenerate.getArriveAirport()) && StringUtils.hasText(airportGenerate.getArriveAirport())) {
-                Airport originAirport = aviationStackClientCaller.getAirportInfoFromName(airportGenerate.getArriveAirport());
+            if (StringUtils.hasText(airportGenerate.getArriveAirport()) && StringUtils.hasText(airportGenerate.getDepartAirport())) {
+                Airport originAirport = aviationStackClientCaller.getAirportInfoFromName(airportGenerate.getDepartAirport());
                 Airport destinationAirport = aviationStackClientCaller.getAirportInfoFromName(airportGenerate.getArriveAirport());
 
                 // Return an error response if information for either the origin or destination airports could not be retrieved from AviationStack
