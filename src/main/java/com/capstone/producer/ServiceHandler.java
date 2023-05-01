@@ -117,7 +117,7 @@ public class ServiceHandler {
         // Return an error response if there was an issue getting the response or the requested flight doesn't have live data
         if (response == null) {
             String errorResponse = String.format("No relevant flight information could be found with the provided ICAO: %s. " +
-                    "Either the flight does not exist or AviationStack does not have the live information populated.");
+                    "Either the flight does not exist or AviationStack does not have the live information populated.", flightIcao);
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("error", errorResponse);
             return jsonObject.toString();
