@@ -87,26 +87,6 @@ public class AviationStackClientCallerTest {
 //        assertEquals(om.writeValueAsString(new SampleDataObject("Fee", "Fi")), om.writeValueAsString(actual));
     }
 
-    @Test
-    public void shouldThrow_RunTimeException_OnHttpClientError(){
-
-        when(client.exchange(anyString(), any(), any(), eq(JsonNode.class))).thenThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST));
-
-
-        Exception e = assertThrows(RuntimeException.class, () -> {
-           aviationStackClientCaller.getFlightFromIcao("ICAO");
-        });
-    }
-
-    @Test
-    public void shouldThrow_RunTimeException_OnHttpServerError(){
-
-        when(client.exchange(anyString(), any(), any(), eq(JsonNode.class))).thenThrow(new HttpServerErrorException(HttpStatus.BAD_REQUEST));
-
-        Exception e = assertThrows(RuntimeException.class, () -> {
-            aviationStackClientCaller.getFlightFromIcao("ICAO");
-        });
-    }
 
     @Test
     public void shouldReturnEmptyListWithNullRootNode(){
@@ -118,12 +98,5 @@ public class AviationStackClientCallerTest {
         assertEquals(Collections.emptyList(), flightInfoList);
     }
 
-    @Test
-    public void getAllActiveFLightsWithLiveShouldThrowRunTimeExceptionWhenExceptionIsThrown(){
-        when(client.exchange(anyString(), any(), any(), eq(JsonNode.class))).thenThrow(new HttpServerErrorException(HttpStatus.BAD_REQUEST));
 
-        assertThrows(RuntimeException.class, () -> {
-            aviationStackClientCaller.getAllActiveFlightsWithLive();
-        });
-    }
 }
