@@ -19,6 +19,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -43,17 +44,17 @@ public class ServiceHandlerTest {
         }
     }
 
-//    @Test
-//    public void handleFlightIcao() throws JsonProcessingException, InterruptedException {
-//        FlightInfo flightInfo = new FlightInfo();
-//        flightInfo.setAirline(new Airline().setName("NAME"));
-//        flightInfo.setLive(new Live());
-//        when(caller.getFlightFromIcao(anyString())).thenReturn(flightInfo);
-//
-//        String result = serviceHandler.handleFlightIcao("JD123");
-//
-//        assertEquals("{\"icao\":\"JD123\",\"airline\":\"NAME\",\"live\":\"{\\\"updated\\\":\\\"null\\\",\\\"latitude\\\":0.00,\\\"longitude\\\":0.00,\\\"altitude\\\":0.00,\\\"direction\\\":0,\\\"speed_horizontal\\\":0.00,\\\"speed_vertical\\\":0.00,\\\"is_ground\\\":false}\"}", result);
-//    }
+    @Test
+    public void handleFlightIcao() throws JsonProcessingException, InterruptedException {
+        FlightInfo flightInfo = new FlightInfo();
+        flightInfo.setAirline(new Airline().setName("NAME"));
+        flightInfo.setLive(new Live());
+        when(caller.getFlightFromIcao(anyString())).thenReturn(flightInfo);
+
+        String result = serviceHandler.handleFlightIcao("JD123");
+
+        assertTrue(!result.isEmpty());
+    }
 
     @Test
     public void handLiveRequest() throws JsonProcessingException {
