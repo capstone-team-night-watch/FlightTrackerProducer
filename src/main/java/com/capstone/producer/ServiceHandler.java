@@ -216,7 +216,7 @@ public class ServiceHandler {
         // Get just the flight icaos from the list of FlightInfo Object
         String liveFlightIdents = liveFlights.stream().map(FlightInfoFa_Id::getFa_flight_id).collect(Collectors.joining(","));
 
-        jsonObject.put("idents", liveFlightIdents);
+        jsonObject.put("faids", liveFlightIdents);
 
         LOGGER.info("live icaos: {}", jsonObject);
 
