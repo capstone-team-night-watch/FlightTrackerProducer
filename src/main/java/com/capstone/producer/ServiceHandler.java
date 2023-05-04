@@ -1,10 +1,11 @@
 package com.capstone.producer;
 
+import com.capstone.producer.clients.AeroApiClientCaller;
 import com.capstone.producer.clients.AviationStackClientCaller;
 import com.capstone.producer.common.bindings.AirportGenerateRequest;
 import com.capstone.producer.common.bindings.GenerateRequest;
-import com.capstone.producer.common.bindings.aviationstack.Airport;
-import com.capstone.producer.common.bindings.aviationstack.Flight;
+import com.capstone.producer.common.bindings.aero.*;
+import com.capstone.producer.common.bindings.aviationstack.Airport_Aviation;
 import com.capstone.producer.common.bindings.aviationstack.FlightInfo;
 import com.capstone.producer.common.bindings.aviationstack.Live;
 import com.capstone.producer.kafka.KafkaProducer;
@@ -34,15 +35,18 @@ public class ServiceHandler {
     @Autowired
     private AviationStackClientCaller aviationStackClientCaller;
 
+    @Autowired
+    AeroApiClientCaller aeroApiClientCaller;
+
     /**
      * Keeps track of the previous flight icao encountered
      */
-    private String prev_flight_icao;
+    private String prev_flight_faId;
 
     /**
      * Keeps track of all flight icaos that have been encountered
      */
-    private final List<String> flightIcaos;
+    private final List<String> flightFaIds;
 
     /**
      * Keeps track if mock at least one mock flight has been generated and is being updated
@@ -85,48 +89,72 @@ public class ServiceHandler {
         // Objects are initialized using concurrent implementations of the List and Map interfaces
         // This is due to methods being Scheduled. There is the potential where a Map or List being accessed
         // will also be getting updated at the same time OR different methods will be attempting to access/update at the same time
-        flightIcaos = new CopyOnWriteArrayList<>();
+        flightFaIds = new CopyOnWriteArrayList<>();
         generatedFlights = new ConcurrentHashMap<>();
         liveFlightUpdateRecord = new ConcurrentHashMap<>();
         mockFlightUpdateRecord = new ConcurrentHashMap<>();
 
         // Initialize String to prevent null pointers
-        this.prev_flight_icao = "";
+        this.prev_flight_faId = "";
     }
 
     /**
      * Acquires flight information for the specific flight that corresponds to the provided ICAO number.
      * The information is then parsed and a message is built and sent through Kafka
      *
-     * @param flightIcao The provided flight ICAO number
+     * @param flightIdent The provided flight ICAO number
      * @return The message that was sent to Kafka, which consists of live coordinates and other flight information
      * or an error response.
-     * @throws InterruptedException Sending a message using Kafka can trigger an InterruptedException
      */
-    public String handleFlightIcao(String flightIcao) throws InterruptedException {
-        LOGGER.debug("Received request: {}", flightIcao);
-        LOGGER.debug("Previous Flight ICAO: {} | Newly Received ICAO: {}", prev_flight_icao, flightIcao);
+    public String handleFlightIdent(String flightIdent) {
+        LOGGER.debug("Received request: {}", flightIdent);
+        LOGGER.debug("Previous Flight Ident: {} | Newly Received Ident: {}", prev_flight_faId, flightIdent);
 
-        // Sets the variables keeping track of icaos
-        this.prev_flight_icao = flightIcao;
-        this.flightIcaos.add(flightIcao);
-
-        // Get the flight information from AviationStack
-        FlightInfo response = aviationStackClientCaller.getFlightFromIcao(flightIcao);
-
+        JSONObject jsonObject = new JSONObject();
+        // Get the flight information from AeroApi
+        String flightResponse = aeroApiClientCaller.getFlightFromIdent(flightIdent);
         // Return an error response if there was an issue getting the response or the requested flight doesn't have live data
-        if (response == null) {
-            String errorResponse = String.format("No relevant flight information could be found with the provided ICAO: %s. " +
-                    "Either the flight does not exist or AviationStack does not have the live information populated.", flightIcao);
-            JSONObject jsonObject = new JSONObject();
+        if (flightResponse == null) {
+            String errorResponse = String.format("No relevant flight information could be found with the provided FA id: %s. " +
+                    "Either the flight does not exist or AviationStack does not have the live information populated.", flightIdent);
             jsonObject.put("error", errorResponse);
             return jsonObject.toString();
         }
 
-        LOGGER.info(response.toString());
+        return flightResponse;
+    }
 
-        // Build message for kafka
-        String toBeSent = buildKafkaMessageFromFlightInfo(response, flightIcao);
+    /**
+     * Acquires flight information for the specific flight that corresponds to the provided ICAO number.
+     * The information is then parsed and a message is built and sent through Kafka
+     *
+     * @param flightFaId The provided flight ICAO number
+     * @return The message that was sent to Kafka, which consists of live coordinates and other flight information
+     * or an error response.
+     * @throws InterruptedException Sending a message using Kafka can trigger an InterruptedException
+     */
+    public String handleFlightFaId(String flightFaId) throws InterruptedException {
+        LOGGER.debug("Received request: {}", flightFaId);
+        LOGGER.debug("Previous Flight ICAO: {} | Newly Received ICAO: {}", prev_flight_faId, flightFaId);
+
+        // Sets the variables keeping track of icaos
+        this.prev_flight_faId = flightFaId;
+        this.flightFaIds.add(flightFaId);
+
+        JSONObject jsonObject = new JSONObject();
+        // Get the flight information from AeroApi
+        FlightInfoFa_Id flightResponse = aeroApiClientCaller.getFlightFromFaId(flightFaId);
+        // Return an error response if there was an issue getting the response or the requested flight doesn't have live data
+        if (flightResponse == null) {
+            String errorResponse = String.format("No relevant flight information could be found with the provided FA id: %s. " +
+                    "Either the flight does not exist or AviationStack does not have the live information populated.", flightFaId);
+            jsonObject.put("error", errorResponse);
+            return jsonObject.toString();
+        }
+
+        jsonObject.put("flight", flightResponse.getFullJson());
+
+        String toBeSent = jsonObject.toString();
         LOGGER.info("Sending: {}", toBeSent);
 
         // Send message through kafka broker
@@ -137,6 +165,32 @@ public class ServiceHandler {
     }
 
     /**
+     * Acquires flight information for the specific flight that corresponds to the provided ICAO number.
+     * The information is then parsed and a message is built and sent through Kafka
+     *
+     * @param operatorId The provided flight ICAO number
+     * @return The message that was sent to Kafka, which consists of live coordinates and other flight information
+     * or an error response.
+     * @throws InterruptedException Sending a message using Kafka can trigger an InterruptedException
+     */
+    public String handleOperator(String operatorId) throws InterruptedException {
+        LOGGER.debug("Received request: {}", operatorId);
+
+        JSONObject jsonObject = new JSONObject();
+        // Get the flight information from AeroApi
+        Operator operatorResponse = aeroApiClientCaller.getOperatorFromId(operatorId);
+        // Return an error response if there was an issue getting the response or the requested flight doesn't have live data
+        if (operatorResponse == null) {
+            String errorResponse = String.format("No relevant operator information could be found with the provided operator id: %s. " +
+                    "Either the operator does not exist or API isn't working.", operatorId);
+            jsonObject.put("error", errorResponse);
+            return jsonObject.toString();
+        }
+
+        return operatorResponse.getFullJson();
+    }
+
+    /**
      * Gets the ICAO numbers of 3-5 flights containing live information.
      * The icaos are then put in a message and sent through Kafka
      *
@@ -144,7 +198,9 @@ public class ServiceHandler {
      * or an error response.
      */
     public String handleLiveRequest() {
-        List<FlightInfo> liveFlights = aviationStackClientCaller.getAllActiveFlightsWithLive();
+        LOGGER.info("Handling Live Request");
+        //List<FlightInfo> liveFlights = aviationStackClientCaller.getAllActiveFlightsWithLive();
+        List<FlightInfoFa_Id> liveFlights = aeroApiClientCaller.getAllActiveFlightsWithLive();
 
         // Create a JsonObject containing the comma-separated list of icaos that will be easily parsable in the front-end
         // Will contain an error string if no live flights are found
@@ -157,10 +213,12 @@ public class ServiceHandler {
             return jsonObject.toString();
         }
 
-        // Get just the flight icaos from the list of FlightInfo Objects
-        String liveFlightsStr = liveFlights.stream().map(FlightInfo::getFlight).map(Flight::getIcao).collect(Collectors.joining(","));
+        // Get just the flight icaos from the list of FlightInfo Object
+        String liveFlightIdents = liveFlights.stream().map(FlightInfoFa_Id::getFa_flight_id).collect(Collectors.joining(","));
 
-        jsonObject.put("icaos", liveFlightsStr);
+        jsonObject.put("idents", liveFlightIdents);
+
+        LOGGER.info("live icaos: {}", jsonObject);
 
         return jsonObject.toString();
     }
@@ -179,15 +237,16 @@ public class ServiceHandler {
         LOGGER.info(generateRequest.toString());
 
         // This block handles all the specific logic relating to generating a mock flight from airport to airport
-        if (generateRequest instanceof AirportGenerateRequest) {
+        if (generateRequest instanceof AirportGenerateRequest && ((AirportGenerateRequest) generateRequest).getArriveAirport() != null) {
             // Creating a new object so that I don't have to cast every time.
             // Should still be referencing the same Object though
             AirportGenerateRequest airportGenerate = (AirportGenerateRequest) generateRequest;
+            //LOGGER.info("AirportGenerateRequest: {}", airportGenerate);
 
             // Making sure there are airport names in the request before making the calls to aviation stack
             if (StringUtils.hasText(airportGenerate.getArriveAirport()) && StringUtils.hasText(airportGenerate.getDepartAirport())) {
-                Airport originAirport = aviationStackClientCaller.getAirportInfoFromName(airportGenerate.getDepartAirport());
-                Airport destinationAirport = aviationStackClientCaller.getAirportInfoFromName(airportGenerate.getArriveAirport());
+                Airport_Aviation originAirport = aviationStackClientCaller.getAirportInfoFromName(airportGenerate.getDepartAirport());
+                Airport_Aviation destinationAirport = aviationStackClientCaller.getAirportInfoFromName(airportGenerate.getArriveAirport());
 
                 // Return an error response if information for either the origin or destination airports could not be retrieved from AviationStack
                 if (originAirport == null || destinationAirport == null) {
@@ -263,10 +322,10 @@ public class ServiceHandler {
      * or an error response.
      */
     public String handleAirportRequest(String airportName) {
-        Airport airport = aviationStackClientCaller.getAirportInfoFromName(airportName);
+        Airport_Aviation airportAviation = aviationStackClientCaller.getAirportInfoFromName(airportName);
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("longitude", airport.getLongitude());
-        jsonObject.put("latitude", airport.getLatitude());
+        jsonObject.put("longitude", airportAviation.getLongitude());
+        jsonObject.put("latitude", airportAviation.getLatitude());
 
         return jsonObject.toString();
     }
@@ -283,6 +342,7 @@ public class ServiceHandler {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("airline", generateRequest.getAirlineName());
         jsonObject.put("icao", generateRequest.getFlightIcao());
+        jsonObject.put("generate", true);
 
         // Didn't feel the need to populate all the Live properties for a mock flight
         Live liveObj = new Live();
@@ -324,40 +384,43 @@ public class ServiceHandler {
     @Scheduled(fixedRate = 60000, initialDelay = 60000)
     public void updateFlightInfo() throws InterruptedException {
         // Don't attempt any updating if there is nothing to update
-        if (!StringUtils.hasText(this.prev_flight_icao) || this.flightIcaos.isEmpty()) {
+        if (!StringUtils.hasText(this.prev_flight_faId) || this.flightFaIds.isEmpty()) {
             return;
         }
 
         // A list to keep track of the Flights that need to be removed from tracking consideration
         List<String> toBeRemoved = new ArrayList<>();
 
-        for (String flightIcao : flightIcaos) {
+        for (String flightFaId : flightFaIds) {
             int count;
-            liveFlightUpdateRecord.putIfAbsent(flightIcao, 0);
-            count = liveFlightUpdateRecord.get(flightIcao) + 1;
+            liveFlightUpdateRecord.putIfAbsent(flightFaId, 0);
+            count = liveFlightUpdateRecord.get(flightFaId) + 1;
 
-            LOGGER.debug("Live Flight ICAO: {} | Update Count: {}", flightIcao, count);
+            LOGGER.debug("Live Flight ICAO: {} | Update Count: {}", flightFaId, count);
 
             if (count > MAX_LIVE_FLIGHT_UPDATES) {
-                LOGGER.info("Count Threshold has been reached. Terminating flight tracking for: {}", flightIcao);
-                toBeRemoved.add(flightIcao);
-                liveFlightUpdateRecord.remove(flightIcao);
+                LOGGER.info("Count Threshold has been reached. Terminating flight tracking for: {}", flightFaId);
+                toBeRemoved.add(flightFaId);
+                liveFlightUpdateRecord.remove(flightFaId);
                 continue;
             }
 
-            LOGGER.info("Getting updated Live Flight information for {}", flightIcao);
-            FlightInfo response = aviationStackClientCaller.getFlightFromIcao(flightIcao);
+            LOGGER.info("Getting updated Live Flight information for {}", flightFaId);
+            FlightInfoFa_Id response = aeroApiClientCaller.getFlightFromFaId(flightFaId);
 
-            String toBeSent = buildKafkaMessageFromFlightInfo(response, flightIcao);
+            //String toBeSent = buildKafkaMessageFromFlightInfo(response, flightFaId);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("flight", response.getFullJson());
+            String toBeSent = jsonObject.toString();
             LOGGER.info("Sending: {}", toBeSent);
 
             RecordMetadata metadata = KafkaProducer.runProducer(toBeSent);
             LOGGER.debug("Kafka metadata: {}", metadata);
 
-            liveFlightUpdateRecord.put(flightIcao, count);
+            liveFlightUpdateRecord.put(flightFaId, count);
         }
 
-        flightIcaos.removeAll(toBeRemoved);
+        flightFaIds.removeAll(toBeRemoved);
     }
 
     /**

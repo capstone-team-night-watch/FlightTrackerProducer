@@ -12,7 +12,7 @@ public class Flight {
 
     @Override
     public String toString() {
-        return String.format("number: %d | icao: %s | iata: %s | codeshared { %s }", number, icao, iata, codeshared);
+        return String.format("{\"number\":%d,\"icao\":\"%s\",\"iata\":\"%s\",\"codeshared\":\"%s\"}", number, icao, iata, codeshared.toString());
     }
 
     public int getNumber() {

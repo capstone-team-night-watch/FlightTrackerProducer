@@ -12,7 +12,7 @@ public class Aircraft {
 
     @Override
     public String toString() {
-        return String.format("registration: %s | iata: %s | icao: %s | icao24: %s",
+        return String.format("{\"registration\":\"%s\",\"iata\":\"%s\",\"icao\":\"%s\",\"icao24\":\"%s\"}",
                 registration, iata, icao, icao24);
     }
 

@@ -2,13 +2,14 @@ package com.capstone.producer.common.bindings.aviationstack;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
+
+import java.util.StringJoiner;
 
 /**
  * Class used as bindings for the Aviation Stack API responses.
  * This class corresponds to the response provided at the /airports endpoint
  */
-public class Airport {
+public class Airport_Aviation {
     private String id;
     private String gmt;
     private String airport_id;
@@ -26,21 +27,21 @@ public class Airport {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
-                .append("id", id)
-                .append("gmt", gmt)
-                .append("airport_id", airport_id)
-                .append("iata_code", iata_code)
-                .append("city_iata_code", city_iata_code)
-                .append("icao_code", icao_code)
-                .append("country_iso2", country_iso2)
-                .append("geoname_id", geoname_id)
-                .append("latitude", latitude)
-                .append("longitude", longitude)
-                .append("airport_name", airport_name)
-                .append("country_name", country_name)
-                .append("phone_number", phone_number)
-                .append("timezone", timezone)
+        return new StringJoiner(", ", Airport_Aviation.class.getSimpleName() + "[", "]")
+                .add("id='" + id + "'")
+                .add("gmt='" + gmt + "'")
+                .add("airport_id='" + airport_id + "'")
+                .add("iata_code='" + iata_code + "'")
+                .add("city_iata_code='" + city_iata_code + "'")
+                .add("icao_code='" + icao_code + "'")
+                .add("country_iso2='" + country_iso2 + "'")
+                .add("geoname_id='" + geoname_id + "'")
+                .add("latitude=" + latitude)
+                .add("longitude=" + longitude)
+                .add("airport_name='" + airport_name + "'")
+                .add("country_name='" + country_name + "'")
+                .add("phone_number='" + phone_number + "'")
+                .add("timezone='" + timezone + "'")
                 .toString();
     }
 
@@ -50,9 +51,9 @@ public class Airport {
 
         if (o == null || getClass() != o.getClass()) return false;
 
-        Airport airport = (Airport) o;
+        Airport_Aviation airportAviation = (Airport_Aviation) o;
 
-        return new EqualsBuilder().append(getLatitude(), airport.getLatitude()).append(getLongitude(), airport.getLongitude()).append(getId(), airport.getId()).append(getGmt(), airport.getGmt()).append(getAirport_id(), airport.getAirport_id()).append(getIata_code(), airport.getIata_code()).append(getCity_iata_code(), airport.getCity_iata_code()).append(getIcao_code(), airport.getIcao_code()).append(getCountry_iso2(), airport.getCountry_iso2()).append(getGeoname_id(), airport.getGeoname_id()).append(getAirport_name(), airport.getAirport_name()).append(getCountry_name(), airport.getCountry_name()).append(getPhone_number(), airport.getPhone_number()).append(getTimezone(), airport.getTimezone()).isEquals();
+        return new EqualsBuilder().append(getLatitude(), airportAviation.getLatitude()).append(getLongitude(), airportAviation.getLongitude()).append(getId(), airportAviation.getId()).append(getGmt(), airportAviation.getGmt()).append(getAirport_id(), airportAviation.getAirport_id()).append(getIata_code(), airportAviation.getIata_code()).append(getCity_iata_code(), airportAviation.getCity_iata_code()).append(getIcao_code(), airportAviation.getIcao_code()).append(getCountry_iso2(), airportAviation.getCountry_iso2()).append(getGeoname_id(), airportAviation.getGeoname_id()).append(getAirport_name(), airportAviation.getAirport_name()).append(getCountry_name(), airportAviation.getCountry_name()).append(getPhone_number(), airportAviation.getPhone_number()).append(getTimezone(), airportAviation.getTimezone()).isEquals();
     }
 
     @Override
@@ -64,7 +65,7 @@ public class Airport {
         return id;
     }
 
-    public Airport setId(String id) {
+    public Airport_Aviation setId(String id) {
         this.id = id;
         return this;
     }
@@ -73,7 +74,7 @@ public class Airport {
         return gmt;
     }
 
-    public Airport setGmt(String gmt) {
+    public Airport_Aviation setGmt(String gmt) {
         this.gmt = gmt;
         return this;
     }
@@ -82,7 +83,7 @@ public class Airport {
         return airport_id;
     }
 
-    public Airport setAirport_id(String airport_id) {
+    public Airport_Aviation setAirport_id(String airport_id) {
         this.airport_id = airport_id;
         return this;
     }
@@ -91,7 +92,7 @@ public class Airport {
         return iata_code;
     }
 
-    public Airport setIata_code(String iata_code) {
+    public Airport_Aviation setIata_code(String iata_code) {
         this.iata_code = iata_code;
         return this;
     }
@@ -100,7 +101,7 @@ public class Airport {
         return city_iata_code;
     }
 
-    public Airport setCity_iata_code(String city_iata_code) {
+    public Airport_Aviation setCity_iata_code(String city_iata_code) {
         this.city_iata_code = city_iata_code;
         return this;
     }
@@ -109,7 +110,7 @@ public class Airport {
         return icao_code;
     }
 
-    public Airport setIcao_code(String icao_code) {
+    public Airport_Aviation setIcao_code(String icao_code) {
         this.icao_code = icao_code;
         return this;
     }
@@ -118,7 +119,7 @@ public class Airport {
         return country_iso2;
     }
 
-    public Airport setCountry_iso2(String country_iso2) {
+    public Airport_Aviation setCountry_iso2(String country_iso2) {
         this.country_iso2 = country_iso2;
         return this;
     }
@@ -127,7 +128,7 @@ public class Airport {
         return geoname_id;
     }
 
-    public Airport setGeoname_id(String geoname_id) {
+    public Airport_Aviation setGeoname_id(String geoname_id) {
         this.geoname_id = geoname_id;
         return this;
     }
@@ -136,7 +137,7 @@ public class Airport {
         return latitude;
     }
 
-    public Airport setLatitude(float latitude) {
+    public Airport_Aviation setLatitude(float latitude) {
         this.latitude = latitude;
         return this;
     }
@@ -145,7 +146,7 @@ public class Airport {
         return longitude;
     }
 
-    public Airport setLongitude(float longitude) {
+    public Airport_Aviation setLongitude(float longitude) {
         this.longitude = longitude;
         return this;
     }
@@ -154,7 +155,7 @@ public class Airport {
         return airport_name;
     }
 
-    public Airport setAirport_name(String airport_name) {
+    public Airport_Aviation setAirport_name(String airport_name) {
         this.airport_name = airport_name;
         return this;
     }
@@ -163,7 +164,7 @@ public class Airport {
         return country_name;
     }
 
-    public Airport setCountry_name(String country_name) {
+    public Airport_Aviation setCountry_name(String country_name) {
         this.country_name = country_name;
         return this;
     }
@@ -172,7 +173,7 @@ public class Airport {
         return phone_number;
     }
 
-    public Airport setPhone_number(String phone_number) {
+    public Airport_Aviation setPhone_number(String phone_number) {
         this.phone_number = phone_number;
         return this;
     }
@@ -181,7 +182,7 @@ public class Airport {
         return timezone;
     }
 
-    public Airport setTimezone(String timezone) {
+    public Airport_Aviation setTimezone(String timezone) {
         this.timezone = timezone;
         return this;
     }

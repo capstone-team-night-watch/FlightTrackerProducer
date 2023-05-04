@@ -15,8 +15,8 @@ public class Codeshared {
 
     @Override
     public String toString() {
-        return String.format("airline_name: %s | airline_iata: %s | airline_icao: %s | flight_number: %s |" +
-                        " flight_iata: %s | flight_icao: %s", airline_name, airline_iata, airline_icao, flight_number,
+        return String.format("{\"airline_name\":\"%s\",\"airline_iata\":\"%s\",\"airline_icao\":\"%s\",\"flight_number\":\"%s\"," +
+                        "\"flight_iata\":\"%s\",\"flight_icao\":\"%s\"}", airline_name, airline_iata, airline_icao, flight_number,
                 flight_iata, flight_icao);
     }
 

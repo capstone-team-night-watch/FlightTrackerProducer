@@ -1,6 +1,6 @@
 package com.capstone.producer.common.bindings;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
+import java.util.StringJoiner;
 
 /**
  * Request Object that is received by the /airport/generate endpoint in this application.
@@ -20,9 +20,15 @@ public class GenerateRequest {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
-                .append("airlineName", airlineName)
-                .append("flightIcao", flightIcao)
+        return new StringJoiner(", ", GenerateRequest.class.getSimpleName() + "[", "]")
+                .add("airlineName='" + airlineName + "'")
+                .add("flightIcao='" + flightIcao + "'")
+                .add("longitude=" + longitude)
+                .add("latitude=" + latitude)
+                .add("altitude=" + altitude)
+                .add("longitudeChange=" + longitudeChange)
+                .add("latitudeChange=" + latitudeChange)
+                .add("altitudeChange=" + altitudeChange)
                 .toString();
     }
 

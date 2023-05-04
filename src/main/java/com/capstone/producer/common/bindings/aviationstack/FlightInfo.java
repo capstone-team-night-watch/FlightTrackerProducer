@@ -17,9 +17,9 @@ public class FlightInfo {
 
     @Override
     public String toString() {
-        return String.format("flight_date: %s | flight_status: %s | Departure: { %s } | Arrival: { %s } |" +
-                        " Airline: { %s } | Flight: { %s } | Aircraft: { %s } | Live: { %s }", flight_date, flight_status,
-                departure, arrival, airline, flight, aircraft, live);
+        return String.format("{\"flight_date\":\"%s\",\"flight_status\":\"%s\",\"departure\":\"%s\",\"arrival\":\"%s\"," +
+                        "\"flight\":\"%s\",\"aircraft\":\"%s\",\"live\":\"%s\"}",
+                flight_date, flight_status, departure.toString(), arrival.toString(), flight.toString(), aircraft.toString(), live.toString());
     }
 
     public String getFlight_date() {

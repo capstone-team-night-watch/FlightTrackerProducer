@@ -2,7 +2,6 @@ package com.capstone.producer.common.bindings.aviationstack;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * Class used as bindings for the Aviation Stack API responses.
@@ -21,16 +20,7 @@ public class Live {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
-                .append("updated", updated)
-                .append("latitude", latitude)
-                .append("longitude", longitude)
-                .append("altitude", altitude)
-                .append("direction", direction)
-                .append("speed_horizontal", speed_horizontal)
-                .append("speed_vertical", speed_vertical)
-                .append("is_ground", is_ground)
-                .toString();
+        return getJSON();
     }
 
     public String getJSON() {

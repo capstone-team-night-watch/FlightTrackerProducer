@@ -26,21 +26,63 @@ public class GetInfoController {
      * Sets up the request mapping for getting information about a specific flight
      * Cross Origin scripting setup allows requests from any cross-origin script
      *
-     * @param flightIcao The flight ICAO number that will be used to acquire information about a flight
+     * @param operatorId The flight ICAO number that will be used to acquire information about a flight
      * @return A String representing the message that was sent to the Kafka broker which is made up of
      * JSON that contains coordinate and other flight information
      */
     @CrossOrigin("*")
     @RequestMapping(
-            path = "/flighticao/{icao}",
+            path = "/operator/{opId}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseBody
-    public String getICAO(@PathVariable("icao") String flightIcao) throws InterruptedException {
-        LOGGER.info("Received request with icao: {}", flightIcao);
+    public String getOperator(@PathVariable("opId") String operatorId) throws InterruptedException {
+        LOGGER.info("Received request with operator ID: {}", operatorId);
 
-        return serviceHandler.handleFlightIcao(flightIcao);
+        return serviceHandler.handleOperator(operatorId);
+    }
+
+    /**
+     * Sets up the request mapping for getting information about a specific flight
+     * Cross Origin scripting setup allows requests from any cross-origin script
+     *
+     * @param flightIdent The flight ICAO number that will be used to acquire information about a flight
+     * @return A String representing the message that was sent to the Kafka broker which is made up of
+     * JSON that contains coordinate and other flight information
+     */
+    @CrossOrigin("*")
+    @RequestMapping(
+            path = "/flightident/{ident}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseBody
+    public String getIdent(@PathVariable("ident") String flightIdent) throws InterruptedException {
+        LOGGER.info("Received request with ident: {}", flightIdent);
+
+        return serviceHandler.handleFlightIdent(flightIdent);
+    }
+
+    /**
+     * Sets up the request mapping for getting information about a specific flight
+     * Cross Origin scripting setup allows requests from any cross-origin script
+     *
+     * @param flightFaId The flight ICAO number that will be used to acquire information about a flight
+     * @return A String representing the message that was sent to the Kafka broker which is made up of
+     * JSON that contains coordinate and other flight information
+     */
+    @CrossOrigin("*")
+    @RequestMapping(
+            path = "/flightfaid/{faid}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseBody
+    public String getFaId(@PathVariable("faid") String flightFaId) throws InterruptedException {
+        LOGGER.info("Received request with ident: {}", flightFaId);
+
+        return serviceHandler.handleFlightFaId(flightFaId);
     }
 
     /**
