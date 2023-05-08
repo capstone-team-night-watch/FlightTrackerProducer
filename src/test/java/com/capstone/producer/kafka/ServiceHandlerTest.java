@@ -21,7 +21,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -53,7 +52,7 @@ public class ServiceHandlerTest {
         FlightInfo flightInfo = new FlightInfo();
         flightInfo.setAirline(new Airline().setName("NAME"));
         flightInfo.setLive(new Live());
-        when(aviationCaller.getFlightFromIcao(anyString())).thenReturn(flightInfo);
+        //when(aviationCaller.getFlightFromIcao(anyString())).thenReturn(flightInfo);
 
         //String result = serviceHandler.handleFlightIcao("JD123");
 
