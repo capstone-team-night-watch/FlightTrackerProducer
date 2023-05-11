@@ -1,0 +1,116 @@
+\hypertarget{classcom_1_1capstone_1_1producer_1_1clients_1_1AeroApiClientCaller}{}\doxysection{com.\+capstone.\+producer.\+clients.\+Aero\+Api\+Client\+Caller Class Reference}
+\label{classcom_1_1capstone_1_1producer_1_1clients_1_1AeroApiClientCaller}\index{com.capstone.producer.clients.AeroApiClientCaller@{com.capstone.producer.clients.AeroApiClientCaller}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1clients_1_1AeroApiClientCaller_a4724c37ac0a6b1cce8941a1e1b49b041}{Aero\+Api\+Client\+Caller}} (Rest\+Template client, String base\+Url, String key)
+\item 
+\mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1aero_1_1FlightInfoFa__Id}{Flight\+Info\+Fa\+\_\+\+Id}} \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1clients_1_1AeroApiClientCaller_adf38db6fb2e0b49b2456f2a05ab7eb8a}{get\+Flight\+From\+Fa\+Id}} (String flight\+Fa\+Id)
+\item 
+String \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1clients_1_1AeroApiClientCaller_ae251607638cf5186dce59fdde3a03757}{get\+Flight\+From\+Ident}} (String flight\+Ident)
+\item 
+\mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1aero_1_1Operator}{Operator}} \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1clients_1_1AeroApiClientCaller_a983f2166d46da14a9a664ab98a8b1dac}{get\+Operator\+From\+Id}} (String operator\+Id)
+\item 
+List$<$ \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1aero_1_1FlightInfoFa__Id}{Flight\+Info\+Fa\+\_\+\+Id}} $>$ \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1clients_1_1AeroApiClientCaller_aa204490c9a042952235936a97608c70a}{get\+All\+Active\+Flights\+With\+Live}} ()
+\item 
+\mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1aero_1_1Airport}{Airport}} \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1clients_1_1AeroApiClientCaller_a81d996093b82e549aa9e22e48e24dd2b}{get\+Airport\+Info\+From\+Url}} (String airport\+Info\+Url)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1clients_1_1AeroApiClientCaller_a4724c37ac0a6b1cce8941a1e1b49b041}\label{classcom_1_1capstone_1_1producer_1_1clients_1_1AeroApiClientCaller_a4724c37ac0a6b1cce8941a1e1b49b041}} 
+\index{com.capstone.producer.clients.AeroApiClientCaller@{com.capstone.producer.clients.AeroApiClientCaller}!AeroApiClientCaller@{AeroApiClientCaller}}
+\index{AeroApiClientCaller@{AeroApiClientCaller}!com.capstone.producer.clients.AeroApiClientCaller@{com.capstone.producer.clients.AeroApiClientCaller}}
+\doxysubsubsection{\texorpdfstring{AeroApiClientCaller()}{AeroApiClientCaller()}}
+{\footnotesize\ttfamily com.\+capstone.\+producer.\+clients.\+Aero\+Api\+Client\+Caller.\+Aero\+Api\+Client\+Caller (\begin{DoxyParamCaption}\item[{Rest\+Template}]{client,  }\item[{String}]{base\+Url,  }\item[{String}]{key }\end{DoxyParamCaption})}
+
+This is the constructor for this client caller class
+
+
+\begin{DoxyParams}{Parameters}
+{\em client} & Rest\+Template Object \\
+\hline
+{\em base\+Url} & The base aviation stack url used for making the connection \\
+\hline
+{\em key} & Aviation Stack API key \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1clients_1_1AeroApiClientCaller_a81d996093b82e549aa9e22e48e24dd2b}\label{classcom_1_1capstone_1_1producer_1_1clients_1_1AeroApiClientCaller_a81d996093b82e549aa9e22e48e24dd2b}} 
+\index{com.capstone.producer.clients.AeroApiClientCaller@{com.capstone.producer.clients.AeroApiClientCaller}!getAirportInfoFromUrl@{getAirportInfoFromUrl}}
+\index{getAirportInfoFromUrl@{getAirportInfoFromUrl}!com.capstone.producer.clients.AeroApiClientCaller@{com.capstone.producer.clients.AeroApiClientCaller}}
+\doxysubsubsection{\texorpdfstring{getAirportInfoFromUrl()}{getAirportInfoFromUrl()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1aero_1_1Airport}{Airport}} com.\+capstone.\+producer.\+clients.\+Aero\+Api\+Client\+Caller.\+get\+Airport\+Info\+From\+Url (\begin{DoxyParamCaption}\item[{String}]{airport\+Info\+Url }\end{DoxyParamCaption})}
+
+Get airport information from the API that matches the provided airport name
+
+
+\begin{DoxyParams}{Parameters}
+{\em airport\+Info\+Url} & The provided airport name \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+An Airport Object that has latitude and longitude information 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1clients_1_1AeroApiClientCaller_aa204490c9a042952235936a97608c70a}\label{classcom_1_1capstone_1_1producer_1_1clients_1_1AeroApiClientCaller_aa204490c9a042952235936a97608c70a}} 
+\index{com.capstone.producer.clients.AeroApiClientCaller@{com.capstone.producer.clients.AeroApiClientCaller}!getAllActiveFlightsWithLive@{getAllActiveFlightsWithLive}}
+\index{getAllActiveFlightsWithLive@{getAllActiveFlightsWithLive}!com.capstone.producer.clients.AeroApiClientCaller@{com.capstone.producer.clients.AeroApiClientCaller}}
+\doxysubsubsection{\texorpdfstring{getAllActiveFlightsWithLive()}{getAllActiveFlightsWithLive()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1aero_1_1FlightInfoFa__Id}{Flight\+Info\+Fa\+\_\+\+Id}} $>$ com.\+capstone.\+producer.\+clients.\+Aero\+Api\+Client\+Caller.\+get\+All\+Active\+Flights\+With\+Live (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Gets flight information that correspond to flights that contain live information from the API
+
+\begin{DoxyReturn}{Returns}
+A list of Flight\+Info Objects that contain non-\/null Live Objects 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1clients_1_1AeroApiClientCaller_adf38db6fb2e0b49b2456f2a05ab7eb8a}\label{classcom_1_1capstone_1_1producer_1_1clients_1_1AeroApiClientCaller_adf38db6fb2e0b49b2456f2a05ab7eb8a}} 
+\index{com.capstone.producer.clients.AeroApiClientCaller@{com.capstone.producer.clients.AeroApiClientCaller}!getFlightFromFaId@{getFlightFromFaId}}
+\index{getFlightFromFaId@{getFlightFromFaId}!com.capstone.producer.clients.AeroApiClientCaller@{com.capstone.producer.clients.AeroApiClientCaller}}
+\doxysubsubsection{\texorpdfstring{getFlightFromFaId()}{getFlightFromFaId()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1aero_1_1FlightInfoFa__Id}{Flight\+Info\+Fa\+\_\+\+Id}} com.\+capstone.\+producer.\+clients.\+Aero\+Api\+Client\+Caller.\+get\+Flight\+From\+Fa\+Id (\begin{DoxyParamCaption}\item[{String}]{flight\+Fa\+Id }\end{DoxyParamCaption})}
+
+Gets flight information from the API given a flight Fa\+Id
+
+
+\begin{DoxyParams}{Parameters}
+{\em flight\+Fa\+Id} & The provided flight aware id number \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A Flight\+Info\+\_\+\+Id Object that corresponds to the flight with a matching Fa\+Id 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1clients_1_1AeroApiClientCaller_ae251607638cf5186dce59fdde3a03757}\label{classcom_1_1capstone_1_1producer_1_1clients_1_1AeroApiClientCaller_ae251607638cf5186dce59fdde3a03757}} 
+\index{com.capstone.producer.clients.AeroApiClientCaller@{com.capstone.producer.clients.AeroApiClientCaller}!getFlightFromIdent@{getFlightFromIdent}}
+\index{getFlightFromIdent@{getFlightFromIdent}!com.capstone.producer.clients.AeroApiClientCaller@{com.capstone.producer.clients.AeroApiClientCaller}}
+\doxysubsubsection{\texorpdfstring{getFlightFromIdent()}{getFlightFromIdent()}}
+{\footnotesize\ttfamily String com.\+capstone.\+producer.\+clients.\+Aero\+Api\+Client\+Caller.\+get\+Flight\+From\+Ident (\begin{DoxyParamCaption}\item[{String}]{flight\+Ident }\end{DoxyParamCaption})}
+
+Gets flight information from the API given a flight ident (icao) number 
+\begin{DoxyParams}{Parameters}
+{\em flight\+Ident} & The ident code (icao) being requested \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A String value corresponding the JSON response from the API 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1clients_1_1AeroApiClientCaller_a983f2166d46da14a9a664ab98a8b1dac}\label{classcom_1_1capstone_1_1producer_1_1clients_1_1AeroApiClientCaller_a983f2166d46da14a9a664ab98a8b1dac}} 
+\index{com.capstone.producer.clients.AeroApiClientCaller@{com.capstone.producer.clients.AeroApiClientCaller}!getOperatorFromId@{getOperatorFromId}}
+\index{getOperatorFromId@{getOperatorFromId}!com.capstone.producer.clients.AeroApiClientCaller@{com.capstone.producer.clients.AeroApiClientCaller}}
+\doxysubsubsection{\texorpdfstring{getOperatorFromId()}{getOperatorFromId()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1aero_1_1Operator}{Operator}} com.\+capstone.\+producer.\+clients.\+Aero\+Api\+Client\+Caller.\+get\+Operator\+From\+Id (\begin{DoxyParamCaption}\item[{String}]{operator\+Id }\end{DoxyParamCaption})}
+
+Gets operator (Airline) information from a given operator id 
+\begin{DoxyParams}{Parameters}
+{\em operator\+Id} & The provided operator id \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+An Operator object corresponding to the given id 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/main/java/com/capstone/producer/clients/\mbox{\hyperlink{AeroApiClientCaller_8java}{Aero\+Api\+Client\+Caller.\+java}}\end{DoxyCompactItemize}

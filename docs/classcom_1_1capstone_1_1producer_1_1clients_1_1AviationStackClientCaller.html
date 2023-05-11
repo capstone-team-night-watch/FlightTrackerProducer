@@ -84,8 +84,12 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a6bdcb58d675375f8e7d02c4355cf6af3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1capstone_1_1producer_1_1clients_1_1AviationStackClientCaller.html#a6bdcb58d675375f8e7d02c4355cf6af3">AviationStackClientCaller</a> (RestTemplate client, String baseUrl, String key)</td></tr>
 <tr class="separator:a6bdcb58d675375f8e7d02c4355cf6af3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac6a9562ec7f1577a5ff571fbd24f4060"><td class="memItemLeft" align="right" valign="top">JsonNode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1capstone_1_1producer_1_1clients_1_1AviationStackClientCaller.html#ac6a9562ec7f1577a5ff571fbd24f4060">getFlight</a> (String flightIcao)</td></tr>
-<tr class="separator:ac6a9562ec7f1577a5ff571fbd24f4060"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a95e30fac87307ae7853eb540a391ac00"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1aviationstack_1_1FlightInfo.html">FlightInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1capstone_1_1producer_1_1clients_1_1AviationStackClientCaller.html#a95e30fac87307ae7853eb540a391ac00">getFlightFromIcao</a> (String flightIcao)</td></tr>
+<tr class="separator:a95e30fac87307ae7853eb540a391ac00"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a335d93ac0500dcd63570da3642a59ba0"><td class="memItemLeft" align="right" valign="top">List&lt; <a class="el" href="classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1aviationstack_1_1FlightInfo.html">FlightInfo</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1capstone_1_1producer_1_1clients_1_1AviationStackClientCaller.html#a335d93ac0500dcd63570da3642a59ba0">getAllActiveFlightsWithLive</a> ()</td></tr>
+<tr class="separator:a335d93ac0500dcd63570da3642a59ba0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7727472eaecfeb0f3aa2ee786b17ef9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1aviationstack_1_1Airport__Aviation.html">Airport_Aviation</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1capstone_1_1producer_1_1clients_1_1AviationStackClientCaller.html#af7727472eaecfeb0f3aa2ee786b17ef9">getAirportInfoFromName</a> (String airportName)</td></tr>
+<tr class="separator:af7727472eaecfeb0f3aa2ee786b17ef9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a6bdcb58d675375f8e7d02c4355cf6af3" name="a6bdcb58d675375f8e7d02c4355cf6af3"></a>
@@ -119,11 +123,12 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>This is the contructor for a class that will call the Aviation Stack API </p><dl class="params"><dt>Parameters</dt><dd>
+<p>This is the constructor for this client caller class</p>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">client</td><td>RestTemplate </td></tr>
-    <tr><td class="paramname">baseUrl</td><td>baseUrl of aviation stack </td></tr>
-    <tr><td class="paramname">key</td><td>API key </td></tr>
+    <tr><td class="paramname">client</td><td>RestTemplate Object </td></tr>
+    <tr><td class="paramname">baseUrl</td><td>The base aviation stack url used for making the connection </td></tr>
+    <tr><td class="paramname">key</td><td>Aviation Stack API key </td></tr>
   </table>
   </dd>
 </dl>
@@ -131,14 +136,59 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ac6a9562ec7f1577a5ff571fbd24f4060" name="ac6a9562ec7f1577a5ff571fbd24f4060"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac6a9562ec7f1577a5ff571fbd24f4060">&#9670;&#160;</a></span>getFlight()</h2>
+<a id="af7727472eaecfeb0f3aa2ee786b17ef9" name="af7727472eaecfeb0f3aa2ee786b17ef9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af7727472eaecfeb0f3aa2ee786b17ef9">&#9670;&#160;</a></span>getAirportInfoFromName()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">JsonNode com.capstone.producer.clients.AviationStackClientCaller.getFlight </td>
+          <td class="memname"><a class="el" href="classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1aviationstack_1_1Airport__Aviation.html">Airport_Aviation</a> com.capstone.producer.clients.AviationStackClientCaller.getAirportInfoFromName </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>airportName</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Get airport information from the API that matches the provided airport name</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">airportName</td><td>The provided airport name </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>An Airport Object that has latitude and longitude information </dd></dl>
+
+</div>
+</div>
+<a id="a335d93ac0500dcd63570da3642a59ba0" name="a335d93ac0500dcd63570da3642a59ba0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a335d93ac0500dcd63570da3642a59ba0">&#9670;&#160;</a></span>getAllActiveFlightsWithLive()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">List&lt; <a class="el" href="classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1aviationstack_1_1FlightInfo.html">FlightInfo</a> &gt; com.capstone.producer.clients.AviationStackClientCaller.getAllActiveFlightsWithLive </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets flight information that correspond to flights that contain live information from the API</p>
+<dl class="section return"><dt>Returns</dt><dd>A list of FlightInfo Objects that contain non-null Live Objects </dd></dl>
+
+</div>
+</div>
+<a id="a95e30fac87307ae7853eb540a391ac00" name="a95e30fac87307ae7853eb540a391ac00"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a95e30fac87307ae7853eb540a391ac00">&#9670;&#160;</a></span>getFlightFromIcao()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1aviationstack_1_1FlightInfo.html">FlightInfo</a> com.capstone.producer.clients.AviationStackClientCaller.getFlightFromIcao </td>
           <td>(</td>
           <td class="paramtype">String&#160;</td>
           <td class="paramname"><em>flightIcao</em></td><td>)</td>
@@ -146,13 +196,14 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>This function is used to return a JSON NODE when given a flightICAO number </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Gets flight information from the API given a flight ICAO number</p>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">flightIcao</td><td>flight Icao number </td></tr>
+    <tr><td class="paramname">flightIcao</td><td>The provided flight ICAO number </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>JsonNode containing flight information </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A FlightInfo Object that corresponds to the flight with a matching ICAO number </dd></dl>
 
 </div>
 </div>

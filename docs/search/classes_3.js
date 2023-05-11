@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['justintestcontroller_0',['JustinTestController',['../classcom_1_1capstone_1_1producer_1_1controller_1_1JustinTestController.html',1,'com::capstone::producer::controller']]]
+  ['exceptionadvice_0',['ExceptionAdvice',['../classcom_1_1capstone_1_1producer_1_1common_1_1config_1_1ExceptionAdvice.html',1,'com::capstone::producer::common::config']]]
 ];

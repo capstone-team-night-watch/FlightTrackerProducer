@@ -1,0 +1,39 @@
+\hypertarget{classcom_1_1capstone_1_1producer_1_1kafka_1_1KafkaProducer}{}\doxysection{com.\+capstone.\+producer.\+kafka.\+Kafka\+Producer Class Reference}
+\label{classcom_1_1capstone_1_1producer_1_1kafka_1_1KafkaProducer}\index{com.capstone.producer.kafka.KafkaProducer@{com.capstone.producer.kafka.KafkaProducer}}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static Record\+Metadata \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1kafka_1_1KafkaProducer_aa55221bcb1d1a50bd3d6fcd1e39499b3}{run\+Producer}} (String message)  throws Interrupted\+Exception 
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Class that handles setting up the Kafka production functionality 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1kafka_1_1KafkaProducer_aa55221bcb1d1a50bd3d6fcd1e39499b3}\label{classcom_1_1capstone_1_1producer_1_1kafka_1_1KafkaProducer_aa55221bcb1d1a50bd3d6fcd1e39499b3}} 
+\index{com.capstone.producer.kafka.KafkaProducer@{com.capstone.producer.kafka.KafkaProducer}!runProducer@{runProducer}}
+\index{runProducer@{runProducer}!com.capstone.producer.kafka.KafkaProducer@{com.capstone.producer.kafka.KafkaProducer}}
+\doxysubsubsection{\texorpdfstring{runProducer()}{runProducer()}}
+{\footnotesize\ttfamily static Record\+Metadata com.\+capstone.\+producer.\+kafka.\+Kafka\+Producer.\+run\+Producer (\begin{DoxyParamCaption}\item[{String}]{message }\end{DoxyParamCaption}) throws Interrupted\+Exception\hspace{0.3cm}{\ttfamily [static]}}
+
+Creates a new Producer Object that is then used to send a Producer\+Record, created from the set Topic name (Flight\+Data) and provided message, through the Kafka broker.
+
+
+\begin{DoxyParams}{Parameters}
+{\em message} & The provided message \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A Record\+Metadata Object that relates to the Producer\+Record sent through Kafka in some way 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Interrupted\+Exception} & Calling get() on the result of Producer.\+send(\+Producer\+Record) can trigger a Interrupted\+Exception \\
+\hline
+\end{DoxyExceptions}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/main/java/com/capstone/producer/kafka/Kafka\+Producer.\+java\end{DoxyCompactItemize}
