@@ -1,11 +1,36 @@
 \hypertarget{classcom_1_1capstone_1_1producer_1_1Application}{}\doxysection{com.\+capstone.\+producer.\+Application Class Reference}
 \label{classcom_1_1capstone_1_1producer_1_1Application}\index{com.capstone.producer.Application@{com.capstone.producer.Application}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+Web\+Mvc\+Configurer \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1Application_af208914e9ef2e6ec9ccccb8ed9ceb901}{cors\+Configurer}} ()
+\end{DoxyCompactItemize}
 \doxysubsection*{Static Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
 \mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1Application_a9526eb618cfc277d21d3338f7b600e06}\label{classcom_1_1capstone_1_1producer_1_1Application_a9526eb618cfc277d21d3338f7b600e06}} 
 static void {\bfseries main} (String\mbox{[}$\,$\mbox{]} args)
 \end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Application class that handles the kicking off the execution of the project 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1Application_af208914e9ef2e6ec9ccccb8ed9ceb901}\label{classcom_1_1capstone_1_1producer_1_1Application_af208914e9ef2e6ec9ccccb8ed9ceb901}} 
+\index{com.capstone.producer.Application@{com.capstone.producer.Application}!corsConfigurer@{corsConfigurer}}
+\index{corsConfigurer@{corsConfigurer}!com.capstone.producer.Application@{com.capstone.producer.Application}}
+\doxysubsubsection{\texorpdfstring{corsConfigurer()}{corsConfigurer()}}
+{\footnotesize\ttfamily Web\+Mvc\+Configurer com.\+capstone.\+producer.\+Application.\+cors\+Configurer (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Configurer to set up the Cors environment \begin{DoxyReturn}{Returns}
+a Web\+Mvc\+Configurer Object that is used by Spring when configuring the project 
+\end{DoxyReturn}
+Adds the Cors mapping to the registry to allow all cross-\/origin requests This is needed due to not having time to set up the necessary component to truly handle all the cross-\/origin requests being made 
+\begin{DoxyParams}{Parameters}
+{\em registry} & The Spring-\/provided Cors\+Registry\\
+\hline
+\end{DoxyParams}
 
 
 The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}

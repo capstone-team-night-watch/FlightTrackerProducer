@@ -1,0 +1,55 @@
+\hypertarget{classcom_1_1capstone_1_1producer_1_1controller_1_1GenerateController}{}\doxysection{com.\+capstone.\+producer.\+controller.\+Generate\+Controller Class Reference}
+\label{classcom_1_1capstone_1_1producer_1_1controller_1_1GenerateController}\index{com.capstone.producer.controller.GenerateController@{com.capstone.producer.controller.GenerateController}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1controller_1_1GenerateController_a2bedf4ad38108c32e0ecff24b68f814a}\label{classcom_1_1capstone_1_1producer_1_1controller_1_1GenerateController_a2bedf4ad38108c32e0ecff24b68f814a}} 
+{\bfseries Generate\+Controller} (\mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1ServiceHandler}{Service\+Handler}} service\+Handler)
+\item 
+String \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1controller_1_1GenerateController_a0c09ead9df761ef65b31f4e5f28ab14a}{generate\+Custom\+Mock\+Flight}} (@Request\+Body \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1GenerateRequest}{Generate\+Request}} generate\+Request)  throws Interrupted\+Exception 
+\item 
+String \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1controller_1_1GenerateController_a0e8dea4346f0e29dce671140a633f15f}{generate\+Mock\+Flight}} (@Request\+Body \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1AirportGenerateRequest}{Airport\+Generate\+Request}} generate\+Request)  throws Interrupted\+Exception 
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Controller class that handles all endpoints related to generating mock flights 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1controller_1_1GenerateController_a0c09ead9df761ef65b31f4e5f28ab14a}\label{classcom_1_1capstone_1_1producer_1_1controller_1_1GenerateController_a0c09ead9df761ef65b31f4e5f28ab14a}} 
+\index{com.capstone.producer.controller.GenerateController@{com.capstone.producer.controller.GenerateController}!generateCustomMockFlight@{generateCustomMockFlight}}
+\index{generateCustomMockFlight@{generateCustomMockFlight}!com.capstone.producer.controller.GenerateController@{com.capstone.producer.controller.GenerateController}}
+\doxysubsubsection{\texorpdfstring{generateCustomMockFlight()}{generateCustomMockFlight()}}
+{\footnotesize\ttfamily String com.\+capstone.\+producer.\+controller.\+Generate\+Controller.\+generate\+Custom\+Mock\+Flight (\begin{DoxyParamCaption}\item[{@Request\+Body \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1GenerateRequest}{Generate\+Request}}}]{generate\+Request }\end{DoxyParamCaption}) throws Interrupted\+Exception}
+
+Sets up the request mapping for generating a custom (non-\/airport) mock flight Cross Origin scripting setup allows requests from any cross-\/origin script
+
+
+\begin{DoxyParams}{Parameters}
+{\em generate\+Request} & The Generate\+Request Object containing information about the mock flight \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A string representing the message that was sent to the Kafka broker 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1controller_1_1GenerateController_a0e8dea4346f0e29dce671140a633f15f}\label{classcom_1_1capstone_1_1producer_1_1controller_1_1GenerateController_a0e8dea4346f0e29dce671140a633f15f}} 
+\index{com.capstone.producer.controller.GenerateController@{com.capstone.producer.controller.GenerateController}!generateMockFlight@{generateMockFlight}}
+\index{generateMockFlight@{generateMockFlight}!com.capstone.producer.controller.GenerateController@{com.capstone.producer.controller.GenerateController}}
+\doxysubsubsection{\texorpdfstring{generateMockFlight()}{generateMockFlight()}}
+{\footnotesize\ttfamily String com.\+capstone.\+producer.\+controller.\+Generate\+Controller.\+generate\+Mock\+Flight (\begin{DoxyParamCaption}\item[{@Request\+Body \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1AirportGenerateRequest}{Airport\+Generate\+Request}}}]{generate\+Request }\end{DoxyParamCaption}) throws Interrupted\+Exception}
+
+Sets up the request mapping for generating a mock flight with airport information Cross Origin scripting setup allows requests from any cross-\/origin script
+
+
+\begin{DoxyParams}{Parameters}
+{\em generate\+Request} & The Airport\+Generate\+Request Object containing information about the mock flight, including airport names \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A string representing the message that was sent to the Kafka broker 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/main/java/com/capstone/producer/controller/Generate\+Controller.\+java\end{DoxyCompactItemize}

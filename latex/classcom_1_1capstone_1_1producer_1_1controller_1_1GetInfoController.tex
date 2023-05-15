@@ -1,0 +1,104 @@
+\hypertarget{classcom_1_1capstone_1_1producer_1_1controller_1_1GetInfoController}{}\doxysection{com.\+capstone.\+producer.\+controller.\+Get\+Info\+Controller Class Reference}
+\label{classcom_1_1capstone_1_1producer_1_1controller_1_1GetInfoController}\index{com.capstone.producer.controller.GetInfoController@{com.capstone.producer.controller.GetInfoController}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1controller_1_1GetInfoController_a79b86eb0762f4f721e7f09dad96cfa88}\label{classcom_1_1capstone_1_1producer_1_1controller_1_1GetInfoController_a79b86eb0762f4f721e7f09dad96cfa88}} 
+{\bfseries Get\+Info\+Controller} (\mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1ServiceHandler}{Service\+Handler}} service\+Handler)
+\item 
+String \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1controller_1_1GetInfoController_a4c139b79abd5d9ade39dbfdc3bdecb9e}{get\+Operator}} (@Path\+Variable(\char`\"{}op\+Id\char`\"{}) String operator\+Id)  throws Interrupted\+Exception 
+\item 
+String \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1controller_1_1GetInfoController_a0595fc9ce33bc5e2a13528ccb16fac00}{get\+Ident}} (@Path\+Variable(\char`\"{}ident\char`\"{}) String flight\+Ident)  throws Interrupted\+Exception 
+\item 
+String \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1controller_1_1GetInfoController_ab1a12c61ce5ec0d4917453511673e419}{get\+Fa\+Id}} (@Path\+Variable(\char`\"{}faid\char`\"{}) String flight\+Fa\+Id)  throws Interrupted\+Exception 
+\item 
+String \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1controller_1_1GetInfoController_a58b1260ac7a66fb70b940bce66716e05}{get\+Live}} ()
+\item 
+String \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1controller_1_1GetInfoController_a09db6c222e498a243f95a9e3f99f478e}{get\+Airport}} (@Path\+Variable(\char`\"{}name\char`\"{}) String airport\+Name)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Controller class that handles all endpoints related to getting information from Aviation Stack 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1controller_1_1GetInfoController_a09db6c222e498a243f95a9e3f99f478e}\label{classcom_1_1capstone_1_1producer_1_1controller_1_1GetInfoController_a09db6c222e498a243f95a9e3f99f478e}} 
+\index{com.capstone.producer.controller.GetInfoController@{com.capstone.producer.controller.GetInfoController}!getAirport@{getAirport}}
+\index{getAirport@{getAirport}!com.capstone.producer.controller.GetInfoController@{com.capstone.producer.controller.GetInfoController}}
+\doxysubsubsection{\texorpdfstring{getAirport()}{getAirport()}}
+{\footnotesize\ttfamily String com.\+capstone.\+producer.\+controller.\+Get\+Info\+Controller.\+get\+Airport (\begin{DoxyParamCaption}\item[{@Path\+Variable(\char`\"{}name\char`\"{}) String}]{airport\+Name }\end{DoxyParamCaption})}
+
+Sets up the request mapping for getting information about a specific airport Cross Origin scripting setup allows requests from any cross-\/origin script
+
+
+\begin{DoxyParams}{Parameters}
+{\em airport\+Name} & The name of the airport that information is being requested for \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A String representing the message that was sent to the Kafka broker which is made up of JSON that contains the coordinates for the request airport 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1controller_1_1GetInfoController_ab1a12c61ce5ec0d4917453511673e419}\label{classcom_1_1capstone_1_1producer_1_1controller_1_1GetInfoController_ab1a12c61ce5ec0d4917453511673e419}} 
+\index{com.capstone.producer.controller.GetInfoController@{com.capstone.producer.controller.GetInfoController}!getFaId@{getFaId}}
+\index{getFaId@{getFaId}!com.capstone.producer.controller.GetInfoController@{com.capstone.producer.controller.GetInfoController}}
+\doxysubsubsection{\texorpdfstring{getFaId()}{getFaId()}}
+{\footnotesize\ttfamily String com.\+capstone.\+producer.\+controller.\+Get\+Info\+Controller.\+get\+Fa\+Id (\begin{DoxyParamCaption}\item[{@Path\+Variable(\char`\"{}faid\char`\"{}) String}]{flight\+Fa\+Id }\end{DoxyParamCaption}) throws Interrupted\+Exception}
+
+Sets up the request mapping for getting information about a specific flight Cross Origin scripting setup allows requests from any cross-\/origin script
+
+
+\begin{DoxyParams}{Parameters}
+{\em flight\+Fa\+Id} & The flight ICAO number that will be used to acquire information about a flight \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A String representing the message that was sent to the Kafka broker which is made up of JSON that contains coordinate and other flight information 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1controller_1_1GetInfoController_a0595fc9ce33bc5e2a13528ccb16fac00}\label{classcom_1_1capstone_1_1producer_1_1controller_1_1GetInfoController_a0595fc9ce33bc5e2a13528ccb16fac00}} 
+\index{com.capstone.producer.controller.GetInfoController@{com.capstone.producer.controller.GetInfoController}!getIdent@{getIdent}}
+\index{getIdent@{getIdent}!com.capstone.producer.controller.GetInfoController@{com.capstone.producer.controller.GetInfoController}}
+\doxysubsubsection{\texorpdfstring{getIdent()}{getIdent()}}
+{\footnotesize\ttfamily String com.\+capstone.\+producer.\+controller.\+Get\+Info\+Controller.\+get\+Ident (\begin{DoxyParamCaption}\item[{@Path\+Variable(\char`\"{}ident\char`\"{}) String}]{flight\+Ident }\end{DoxyParamCaption}) throws Interrupted\+Exception}
+
+Sets up the request mapping for getting information about a specific flight Cross Origin scripting setup allows requests from any cross-\/origin script
+
+
+\begin{DoxyParams}{Parameters}
+{\em flight\+Ident} & The flight ICAO number that will be used to acquire information about a flight \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A String representing the message that was sent to the Kafka broker which is made up of JSON that contains coordinate and other flight information 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1controller_1_1GetInfoController_a58b1260ac7a66fb70b940bce66716e05}\label{classcom_1_1capstone_1_1producer_1_1controller_1_1GetInfoController_a58b1260ac7a66fb70b940bce66716e05}} 
+\index{com.capstone.producer.controller.GetInfoController@{com.capstone.producer.controller.GetInfoController}!getLive@{getLive}}
+\index{getLive@{getLive}!com.capstone.producer.controller.GetInfoController@{com.capstone.producer.controller.GetInfoController}}
+\doxysubsubsection{\texorpdfstring{getLive()}{getLive()}}
+{\footnotesize\ttfamily String com.\+capstone.\+producer.\+controller.\+Get\+Info\+Controller.\+get\+Live (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Sets up the request mapping for getting flights that contain live coordinate information Cross Origin scripting setup allows requests from any cross-\/origin script
+
+\begin{DoxyReturn}{Returns}
+A String representing the message that was sent to the Kafka broker which is made up of JSON that contains a list of flight icao numbers 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1controller_1_1GetInfoController_a4c139b79abd5d9ade39dbfdc3bdecb9e}\label{classcom_1_1capstone_1_1producer_1_1controller_1_1GetInfoController_a4c139b79abd5d9ade39dbfdc3bdecb9e}} 
+\index{com.capstone.producer.controller.GetInfoController@{com.capstone.producer.controller.GetInfoController}!getOperator@{getOperator}}
+\index{getOperator@{getOperator}!com.capstone.producer.controller.GetInfoController@{com.capstone.producer.controller.GetInfoController}}
+\doxysubsubsection{\texorpdfstring{getOperator()}{getOperator()}}
+{\footnotesize\ttfamily String com.\+capstone.\+producer.\+controller.\+Get\+Info\+Controller.\+get\+Operator (\begin{DoxyParamCaption}\item[{@Path\+Variable(\char`\"{}op\+Id\char`\"{}) String}]{operator\+Id }\end{DoxyParamCaption}) throws Interrupted\+Exception}
+
+Sets up the request mapping for getting information about a specific flight Cross Origin scripting setup allows requests from any cross-\/origin script
+
+
+\begin{DoxyParams}{Parameters}
+{\em operator\+Id} & The flight ICAO number that will be used to acquire information about a flight \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A String representing the message that was sent to the Kafka broker which is made up of JSON that contains coordinate and other flight information 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/main/java/com/capstone/producer/controller/Get\+Info\+Controller.\+java\end{DoxyCompactItemize}

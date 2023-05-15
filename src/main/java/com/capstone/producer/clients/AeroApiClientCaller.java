@@ -30,7 +30,7 @@ import java.util.List;
  * @file
  * @section DESCRIPTION
  * <p>
- * Client Caller class that facilitates interaction with the Aviation Stack API
+ * Client Caller class that facilitates interaction with the FlightAware's Aero API
  */
 public class AeroApiClientCaller {
     private static final Logger LOGGER = LoggerFactory.getLogger(AeroApiClientCaller.class);
@@ -86,10 +86,10 @@ public class AeroApiClientCaller {
     }
 
     /**
-     * Gets flight information from the API given a flight ICAO number
+     * Gets flight information from the API given a flight FaId
      *
      * @param flightFaId The provided flight aware id number
-     * @return A FlightInfo Object that corresponds to the flight with a matching ICAO number
+     * @return A FlightInfo_Id Object that corresponds to the flight with a matching FaId
      */
     public FlightInfoFa_Id getFlightFromFaId(String flightFaId) {
 
@@ -141,6 +141,11 @@ public class AeroApiClientCaller {
 
     }
 
+    /**
+     * Gets flight information from the API given a flight ident (icao) number
+     * @param flightIdent The ident code (icao) being requested
+     * @return A String value corresponding the JSON response from the API
+     */
     public String getFlightFromIdent(String flightIdent) {
         try {
             String url = String.format("%s/flights/%s", baseUrl, flightIdent);
@@ -170,6 +175,11 @@ public class AeroApiClientCaller {
 
     }
 
+    /**
+     * Gets operator (Airline) information from a given operator id
+     * @param operatorId The provided operator id
+     * @return An Operator object corresponding to the given id
+     */
     public Operator getOperatorFromId(String operatorId) {
         try {
             String url = String.format("%s/operators/%s", baseUrl, operatorId);
@@ -283,7 +293,7 @@ public class AeroApiClientCaller {
     /**
      * Get airport information from the API that matches the provided airport name
      *
-     * @param airportId The provided airport name
+     * @param airportInfoUrl The provided airport name
      * @return An Airport Object that has latitude and longitude information
      */
     public Airport getAirportInfoFromUrl(String airportInfoUrl) {

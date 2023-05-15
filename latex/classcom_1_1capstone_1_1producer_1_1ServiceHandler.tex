@@ -1,0 +1,181 @@
+\hypertarget{classcom_1_1capstone_1_1producer_1_1ServiceHandler}{}\doxysection{com.\+capstone.\+producer.\+Service\+Handler Class Reference}
+\label{classcom_1_1capstone_1_1producer_1_1ServiceHandler}\index{com.capstone.producer.ServiceHandler@{com.capstone.producer.ServiceHandler}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1ServiceHandler_a4e7046fdc2db7757a3f1a581e116a66d}{Service\+Handler}} ()
+\item 
+String \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1ServiceHandler_a71602d9f3c2dafcac5dd0d4b53415d0b}{handle\+Flight\+Ident}} (String flight\+Ident)
+\item 
+String \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1ServiceHandler_a98d84986625a4589c397a8f44b8c0dcb}{handle\+Flight\+Fa\+Id}} (String flight\+Fa\+Id)  throws Interrupted\+Exception 
+\item 
+String \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1ServiceHandler_a080de09790dfd8f15f078c64e14b6fba}{handle\+Operator}} (String operator\+Id)  throws Interrupted\+Exception 
+\item 
+String \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1ServiceHandler_a522a64e5781098d5ca61aee00bc790dc}{handle\+Live\+Request}} ()
+\item 
+String \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1ServiceHandler_a47c35ec8ac215c6c6d9bf021c834c28b}{handle\+Generate\+Request}} (\mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1GenerateRequest}{Generate\+Request}} generate\+Request)  throws Interrupted\+Exception 
+\item 
+String \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1ServiceHandler_a1f21fd9ecdb5cb5843f9d53d90160ff6}{handle\+Airport\+Request}} (String airport\+Name)
+\item 
+void \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1ServiceHandler_af91430263d92c770b2d0744fc767cadf}{update\+Flight\+Info}} ()  throws Interrupted\+Exception 
+\item 
+void \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1ServiceHandler_a9eb565b327b983ed61758cda4723420b}{update\+Generated\+Flight\+Info}} ()  throws Interrupted\+Exception 
+\end{DoxyCompactItemize}
+\doxysubsection*{Package Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1ServiceHandler_a8f7cb15ec3965fbcfafbcb65bbf1aa0f}\label{classcom_1_1capstone_1_1producer_1_1ServiceHandler_a8f7cb15ec3965fbcfafbcb65bbf1aa0f}} 
+\mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1clients_1_1AeroApiClientCaller}{Aero\+Api\+Client\+Caller}} {\bfseries aero\+Api\+Client\+Caller}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Class that facilitates acquiring information from Aviation\+Stack, generating mock flights, and \textquotesingle{}tracking\textquotesingle{} live and mock flights 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1ServiceHandler_a4e7046fdc2db7757a3f1a581e116a66d}\label{classcom_1_1capstone_1_1producer_1_1ServiceHandler_a4e7046fdc2db7757a3f1a581e116a66d}} 
+\index{com.capstone.producer.ServiceHandler@{com.capstone.producer.ServiceHandler}!ServiceHandler@{ServiceHandler}}
+\index{ServiceHandler@{ServiceHandler}!com.capstone.producer.ServiceHandler@{com.capstone.producer.ServiceHandler}}
+\doxysubsubsection{\texorpdfstring{ServiceHandler()}{ServiceHandler()}}
+{\footnotesize\ttfamily com.\+capstone.\+producer.\+Service\+Handler.\+Service\+Handler (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Constructor for the class. Sets up the Objects used for keeping track of flights 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1ServiceHandler_a1f21fd9ecdb5cb5843f9d53d90160ff6}\label{classcom_1_1capstone_1_1producer_1_1ServiceHandler_a1f21fd9ecdb5cb5843f9d53d90160ff6}} 
+\index{com.capstone.producer.ServiceHandler@{com.capstone.producer.ServiceHandler}!handleAirportRequest@{handleAirportRequest}}
+\index{handleAirportRequest@{handleAirportRequest}!com.capstone.producer.ServiceHandler@{com.capstone.producer.ServiceHandler}}
+\doxysubsubsection{\texorpdfstring{handleAirportRequest()}{handleAirportRequest()}}
+{\footnotesize\ttfamily String com.\+capstone.\+producer.\+Service\+Handler.\+handle\+Airport\+Request (\begin{DoxyParamCaption}\item[{String}]{airport\+Name }\end{DoxyParamCaption})}
+
+Acquires information about the specific airport that corresponds to the provided airport name
+
+
+\begin{DoxyParams}{Parameters}
+{\em airport\+Name} & The provided airport name \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+String value that consists of a JSON Object containing the longitude and latitude of the requested airport or an error response. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1ServiceHandler_a98d84986625a4589c397a8f44b8c0dcb}\label{classcom_1_1capstone_1_1producer_1_1ServiceHandler_a98d84986625a4589c397a8f44b8c0dcb}} 
+\index{com.capstone.producer.ServiceHandler@{com.capstone.producer.ServiceHandler}!handleFlightFaId@{handleFlightFaId}}
+\index{handleFlightFaId@{handleFlightFaId}!com.capstone.producer.ServiceHandler@{com.capstone.producer.ServiceHandler}}
+\doxysubsubsection{\texorpdfstring{handleFlightFaId()}{handleFlightFaId()}}
+{\footnotesize\ttfamily String com.\+capstone.\+producer.\+Service\+Handler.\+handle\+Flight\+Fa\+Id (\begin{DoxyParamCaption}\item[{String}]{flight\+Fa\+Id }\end{DoxyParamCaption}) throws Interrupted\+Exception}
+
+Acquires flight information for the specific flight that corresponds to the provided ICAO number. The information is then parsed and a message is built and sent through Kafka
+
+
+\begin{DoxyParams}{Parameters}
+{\em flight\+Fa\+Id} & The provided flight ICAO number \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The message that was sent to Kafka, which consists of live coordinates and other flight information or an error response. 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Interrupted\+Exception} & Sending a message using Kafka can trigger an Interrupted\+Exception \\
+\hline
+\end{DoxyExceptions}
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1ServiceHandler_a71602d9f3c2dafcac5dd0d4b53415d0b}\label{classcom_1_1capstone_1_1producer_1_1ServiceHandler_a71602d9f3c2dafcac5dd0d4b53415d0b}} 
+\index{com.capstone.producer.ServiceHandler@{com.capstone.producer.ServiceHandler}!handleFlightIdent@{handleFlightIdent}}
+\index{handleFlightIdent@{handleFlightIdent}!com.capstone.producer.ServiceHandler@{com.capstone.producer.ServiceHandler}}
+\doxysubsubsection{\texorpdfstring{handleFlightIdent()}{handleFlightIdent()}}
+{\footnotesize\ttfamily String com.\+capstone.\+producer.\+Service\+Handler.\+handle\+Flight\+Ident (\begin{DoxyParamCaption}\item[{String}]{flight\+Ident }\end{DoxyParamCaption})}
+
+Acquires flight information for the specific flight that corresponds to the provided ICAO number. The information is then parsed and a message is built and sent through Kafka
+
+
+\begin{DoxyParams}{Parameters}
+{\em flight\+Ident} & The provided flight ICAO number \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The message that was sent to Kafka, which consists of live coordinates and other flight information or an error response. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1ServiceHandler_a47c35ec8ac215c6c6d9bf021c834c28b}\label{classcom_1_1capstone_1_1producer_1_1ServiceHandler_a47c35ec8ac215c6c6d9bf021c834c28b}} 
+\index{com.capstone.producer.ServiceHandler@{com.capstone.producer.ServiceHandler}!handleGenerateRequest@{handleGenerateRequest}}
+\index{handleGenerateRequest@{handleGenerateRequest}!com.capstone.producer.ServiceHandler@{com.capstone.producer.ServiceHandler}}
+\doxysubsubsection{\texorpdfstring{handleGenerateRequest()}{handleGenerateRequest()}}
+{\footnotesize\ttfamily String com.\+capstone.\+producer.\+Service\+Handler.\+handle\+Generate\+Request (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1GenerateRequest}{Generate\+Request}}}]{generate\+Request }\end{DoxyParamCaption}) throws Interrupted\+Exception}
+
+Facilitates the creation and tracking of a mock flight with information in the provided request
+
+
+\begin{DoxyParams}{Parameters}
+{\em generate\+Request} & Either a Generate\+Request or Airport\+Generate\+Request Object that contains the necessary information to create a mock flight \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The message that was sent through Kafka, which consists mock live coordinates and other mock flight information or an error response. 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Interrupted\+Exception} & Sending a message using Kafka can trigger an Interrupted\+Exception \\
+\hline
+\end{DoxyExceptions}
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1ServiceHandler_a522a64e5781098d5ca61aee00bc790dc}\label{classcom_1_1capstone_1_1producer_1_1ServiceHandler_a522a64e5781098d5ca61aee00bc790dc}} 
+\index{com.capstone.producer.ServiceHandler@{com.capstone.producer.ServiceHandler}!handleLiveRequest@{handleLiveRequest}}
+\index{handleLiveRequest@{handleLiveRequest}!com.capstone.producer.ServiceHandler@{com.capstone.producer.ServiceHandler}}
+\doxysubsubsection{\texorpdfstring{handleLiveRequest()}{handleLiveRequest()}}
+{\footnotesize\ttfamily String com.\+capstone.\+producer.\+Service\+Handler.\+handle\+Live\+Request (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Gets the ICAO numbers of 3-\/5 flights containing live information. The icaos are then put in a message and sent through Kafka
+
+\begin{DoxyReturn}{Returns}
+String value that consists of a JSON Object containing a comma-\/separated list of flight icao numbers or an error response. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1ServiceHandler_a080de09790dfd8f15f078c64e14b6fba}\label{classcom_1_1capstone_1_1producer_1_1ServiceHandler_a080de09790dfd8f15f078c64e14b6fba}} 
+\index{com.capstone.producer.ServiceHandler@{com.capstone.producer.ServiceHandler}!handleOperator@{handleOperator}}
+\index{handleOperator@{handleOperator}!com.capstone.producer.ServiceHandler@{com.capstone.producer.ServiceHandler}}
+\doxysubsubsection{\texorpdfstring{handleOperator()}{handleOperator()}}
+{\footnotesize\ttfamily String com.\+capstone.\+producer.\+Service\+Handler.\+handle\+Operator (\begin{DoxyParamCaption}\item[{String}]{operator\+Id }\end{DoxyParamCaption}) throws Interrupted\+Exception}
+
+Acquires flight information for the specific flight that corresponds to the provided ICAO number. The information is then parsed and a message is built and sent through Kafka
+
+
+\begin{DoxyParams}{Parameters}
+{\em operator\+Id} & The provided flight ICAO number \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The message that was sent to Kafka, which consists of live coordinates and other flight information or an error response. 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Interrupted\+Exception} & Sending a message using Kafka can trigger an Interrupted\+Exception \\
+\hline
+\end{DoxyExceptions}
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1ServiceHandler_af91430263d92c770b2d0744fc767cadf}\label{classcom_1_1capstone_1_1producer_1_1ServiceHandler_af91430263d92c770b2d0744fc767cadf}} 
+\index{com.capstone.producer.ServiceHandler@{com.capstone.producer.ServiceHandler}!updateFlightInfo@{updateFlightInfo}}
+\index{updateFlightInfo@{updateFlightInfo}!com.capstone.producer.ServiceHandler@{com.capstone.producer.ServiceHandler}}
+\doxysubsubsection{\texorpdfstring{updateFlightInfo()}{updateFlightInfo()}}
+{\footnotesize\ttfamily void com.\+capstone.\+producer.\+Service\+Handler.\+update\+Flight\+Info (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) throws Interrupted\+Exception}
+
+Scheduled Method\+: Runs every 1 minute (60000ms) after an initial delay of 1 minute (60000ms) to account for Aviation\+Stack slowness Facilitates the front-\/end updating of any number of tracked live flights and determines when they should no longer be tracked Iteratively loops through all flight icaos that have been encountered and are still eligible for updating Acquires new flight information from Aviation\+Stack and from that builds and sends a new message through Kafka
+
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Interrupted\+Exception} & Sending a message using Kafka can trigger an Interrupted\+Exception \\
+\hline
+\end{DoxyExceptions}
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1ServiceHandler_a9eb565b327b983ed61758cda4723420b}\label{classcom_1_1capstone_1_1producer_1_1ServiceHandler_a9eb565b327b983ed61758cda4723420b}} 
+\index{com.capstone.producer.ServiceHandler@{com.capstone.producer.ServiceHandler}!updateGeneratedFlightInfo@{updateGeneratedFlightInfo}}
+\index{updateGeneratedFlightInfo@{updateGeneratedFlightInfo}!com.capstone.producer.ServiceHandler@{com.capstone.producer.ServiceHandler}}
+\doxysubsubsection{\texorpdfstring{updateGeneratedFlightInfo()}{updateGeneratedFlightInfo()}}
+{\footnotesize\ttfamily void com.\+capstone.\+producer.\+Service\+Handler.\+update\+Generated\+Flight\+Info (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) throws Interrupted\+Exception}
+
+Scheduled Method\+: Runs every 30 seconds (30000ms) after an initial delay 1 minute (60000ms) to account for the time it takes to put data in the mock flight creation form Facilitates the front-\/end updating of any number of \textquotesingle{}tracked\textquotesingle{} mock flights and determining when they should no longer be \textquotesingle{}tracked\textquotesingle{} Iteratively loops through all Generate\+Requests that have been received and are still eligible for updating Changes flight coordinates based on the provided/calculated rate of change and from that builds and sends a new message through Kafka
+
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Interrupted\+Exception} & Sending a message using Kafka can trigger an Interrupted\+Exception \\
+\hline
+\end{DoxyExceptions}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/main/java/com/capstone/producer/Service\+Handler.\+java\end{DoxyCompactItemize}

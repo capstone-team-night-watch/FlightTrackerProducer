@@ -5,7 +5,11 @@
 \item 
 \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1clients_1_1AviationStackClientCaller_a6bdcb58d675375f8e7d02c4355cf6af3}{Aviation\+Stack\+Client\+Caller}} (Rest\+Template client, String base\+Url, String key)
 \item 
-Json\+Node \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1clients_1_1AviationStackClientCaller_ac6a9562ec7f1577a5ff571fbd24f4060}{get\+Flight}} (String flight\+Icao)
+\mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1aviationstack_1_1FlightInfo}{Flight\+Info}} \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1clients_1_1AviationStackClientCaller_a95e30fac87307ae7853eb540a391ac00}{get\+Flight\+From\+Icao}} (String flight\+Icao)
+\item 
+List$<$ \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1aviationstack_1_1FlightInfo}{Flight\+Info}} $>$ \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1clients_1_1AviationStackClientCaller_a335d93ac0500dcd63570da3642a59ba0}{get\+All\+Active\+Flights\+With\+Live}} ()
+\item 
+\mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1aviationstack_1_1Airport__Aviation}{Airport\+\_\+\+Aviation}} \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1clients_1_1AviationStackClientCaller_af7727472eaecfeb0f3aa2ee786b17ef9}{get\+Airport\+Info\+From\+Name}} (String airport\+Name)
 \end{DoxyCompactItemize}
 
 
@@ -16,31 +20,62 @@ Json\+Node \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1clients_1_1Aviat
 \doxysubsubsection{\texorpdfstring{AviationStackClientCaller()}{AviationStackClientCaller()}}
 {\footnotesize\ttfamily com.\+capstone.\+producer.\+clients.\+Aviation\+Stack\+Client\+Caller.\+Aviation\+Stack\+Client\+Caller (\begin{DoxyParamCaption}\item[{Rest\+Template}]{client,  }\item[{String}]{base\+Url,  }\item[{String}]{key }\end{DoxyParamCaption})}
 
-This is the contructor for a class that will call the Aviation Stack API 
+This is the constructor for this client caller class
+
+
 \begin{DoxyParams}{Parameters}
-{\em client} & Rest\+Template \\
+{\em client} & Rest\+Template Object \\
 \hline
-{\em base\+Url} & base\+Url of aviation stack \\
+{\em base\+Url} & The base aviation stack url used for making the connection \\
 \hline
-{\em key} & API key \\
+{\em key} & Aviation Stack API key \\
 \hline
 \end{DoxyParams}
 
 
 \doxysubsection{Member Function Documentation}
-\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1clients_1_1AviationStackClientCaller_ac6a9562ec7f1577a5ff571fbd24f4060}\label{classcom_1_1capstone_1_1producer_1_1clients_1_1AviationStackClientCaller_ac6a9562ec7f1577a5ff571fbd24f4060}} 
-\index{com.capstone.producer.clients.AviationStackClientCaller@{com.capstone.producer.clients.AviationStackClientCaller}!getFlight@{getFlight}}
-\index{getFlight@{getFlight}!com.capstone.producer.clients.AviationStackClientCaller@{com.capstone.producer.clients.AviationStackClientCaller}}
-\doxysubsubsection{\texorpdfstring{getFlight()}{getFlight()}}
-{\footnotesize\ttfamily Json\+Node com.\+capstone.\+producer.\+clients.\+Aviation\+Stack\+Client\+Caller.\+get\+Flight (\begin{DoxyParamCaption}\item[{String}]{flight\+Icao }\end{DoxyParamCaption})}
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1clients_1_1AviationStackClientCaller_af7727472eaecfeb0f3aa2ee786b17ef9}\label{classcom_1_1capstone_1_1producer_1_1clients_1_1AviationStackClientCaller_af7727472eaecfeb0f3aa2ee786b17ef9}} 
+\index{com.capstone.producer.clients.AviationStackClientCaller@{com.capstone.producer.clients.AviationStackClientCaller}!getAirportInfoFromName@{getAirportInfoFromName}}
+\index{getAirportInfoFromName@{getAirportInfoFromName}!com.capstone.producer.clients.AviationStackClientCaller@{com.capstone.producer.clients.AviationStackClientCaller}}
+\doxysubsubsection{\texorpdfstring{getAirportInfoFromName()}{getAirportInfoFromName()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1aviationstack_1_1Airport__Aviation}{Airport\+\_\+\+Aviation}} com.\+capstone.\+producer.\+clients.\+Aviation\+Stack\+Client\+Caller.\+get\+Airport\+Info\+From\+Name (\begin{DoxyParamCaption}\item[{String}]{airport\+Name }\end{DoxyParamCaption})}
 
-This function is used to return a JSON NODE when given a flight\+ICAO number 
+Get airport information from the API that matches the provided airport name
+
+
 \begin{DoxyParams}{Parameters}
-{\em flight\+Icao} & flight Icao number \\
+{\em airport\+Name} & The provided airport name \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-Json\+Node containing flight information 
+An Airport Object that has latitude and longitude information 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1clients_1_1AviationStackClientCaller_a335d93ac0500dcd63570da3642a59ba0}\label{classcom_1_1capstone_1_1producer_1_1clients_1_1AviationStackClientCaller_a335d93ac0500dcd63570da3642a59ba0}} 
+\index{com.capstone.producer.clients.AviationStackClientCaller@{com.capstone.producer.clients.AviationStackClientCaller}!getAllActiveFlightsWithLive@{getAllActiveFlightsWithLive}}
+\index{getAllActiveFlightsWithLive@{getAllActiveFlightsWithLive}!com.capstone.producer.clients.AviationStackClientCaller@{com.capstone.producer.clients.AviationStackClientCaller}}
+\doxysubsubsection{\texorpdfstring{getAllActiveFlightsWithLive()}{getAllActiveFlightsWithLive()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1aviationstack_1_1FlightInfo}{Flight\+Info}} $>$ com.\+capstone.\+producer.\+clients.\+Aviation\+Stack\+Client\+Caller.\+get\+All\+Active\+Flights\+With\+Live (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Gets flight information that correspond to flights that contain live information from the API
+
+\begin{DoxyReturn}{Returns}
+A list of Flight\+Info Objects that contain non-\/null Live Objects 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classcom_1_1capstone_1_1producer_1_1clients_1_1AviationStackClientCaller_a95e30fac87307ae7853eb540a391ac00}\label{classcom_1_1capstone_1_1producer_1_1clients_1_1AviationStackClientCaller_a95e30fac87307ae7853eb540a391ac00}} 
+\index{com.capstone.producer.clients.AviationStackClientCaller@{com.capstone.producer.clients.AviationStackClientCaller}!getFlightFromIcao@{getFlightFromIcao}}
+\index{getFlightFromIcao@{getFlightFromIcao}!com.capstone.producer.clients.AviationStackClientCaller@{com.capstone.producer.clients.AviationStackClientCaller}}
+\doxysubsubsection{\texorpdfstring{getFlightFromIcao()}{getFlightFromIcao()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1aviationstack_1_1FlightInfo}{Flight\+Info}} com.\+capstone.\+producer.\+clients.\+Aviation\+Stack\+Client\+Caller.\+get\+Flight\+From\+Icao (\begin{DoxyParamCaption}\item[{String}]{flight\+Icao }\end{DoxyParamCaption})}
+
+Gets flight information from the API given a flight ICAO number
+
+
+\begin{DoxyParams}{Parameters}
+{\em flight\+Icao} & The provided flight ICAO number \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A Flight\+Info Object that corresponds to the flight with a matching ICAO number 
 \end{DoxyReturn}
 
 
