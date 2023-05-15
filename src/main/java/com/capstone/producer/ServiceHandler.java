@@ -75,7 +75,7 @@ public class ServiceHandler {
     /**
      * Number of updates a live flight will receive before becoming ineligible for tracking
      */
-    private static final int MAX_LIVE_FLIGHT_UPDATES = 30;
+    private static final int MAX_LIVE_FLIGHT_UPDATES = 60;
     /**
      * Number of updates a mock flight will receive before becoming ineligible for 'tracking'
      * Also used to calculate the incremental change of latitude and longitude in airport to airport mocked flights
