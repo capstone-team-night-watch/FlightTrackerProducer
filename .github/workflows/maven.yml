@@ -40,6 +40,7 @@ jobs:
           VERSION=$(mvn --non-recursive help:evaluate -Dexpression=project.version | grep -v '\[.*')
           echo $VERSION
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          cat $GITHUB_ENV
 
       - name: Cache SonarQube packages
         uses: actions/cache@v1
