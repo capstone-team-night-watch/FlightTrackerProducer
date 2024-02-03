@@ -37,9 +37,8 @@ jobs:
       - name: Build with Maven
         run: |
           mvn -B package --file pom.xml
-          VERSION=$(mvn --non-recursive help:evaluate -Dexpression=project.version | grep -v '\[.*')
+          VERSION=$(mvn --non-recursive help:evaluate -Dexpression=project.version | grep -v '\[.*' | tr -d '\n' )
           echo $VERSION
-          cat $GITHUB_ENV
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
 
       - name: Cache SonarQube packages
