@@ -1,10 +1,7 @@
-name: Build Docker to ECR
-
-env:
-  VERSION: 10.8.9
+name: Build and Test Project on Pull Request
 
 on:
-  push:
+  pull_request:
     branches: [ "main" ]
 
 jobs:
