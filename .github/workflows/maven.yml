@@ -2,9 +2,9 @@ name: Java CI with Maven
 
 env:
   AWS_DEFAULT_REGION: us-east-1
-  AWS_ECR_ARN: ${{AWS_ECR_ARN}}
-  AWS_ACCESS_KEY_ID: ${{AWS_ECR_ACCESS_KEY}}
-  AWS_SECRET_ACCESS_KEY: ${{AWS_ECR_ACCESS_KEY_SECRET}}
+  AWS_ECR_ARN: ${{secrets.AWS_ECR_ARN}}
+  AWS_ACCESS_KEY_ID: ${{secrets.AWS_ECR_ACCESS_KEY}}
+  AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_ECR_ACCESS_KEY_SECRET}}
 
 on:
   push:
