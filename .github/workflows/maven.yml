@@ -39,7 +39,7 @@ jobs:
           mvn -B package --file pom.xml
           VERSION=$(mvn --non-recursive help:evaluate -Dexpression=project.version | grep -v '\[.*' | tr -d '\n' )
           echo $VERSION
-          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+#          echo "VERSION=${VERSION}" >> $GITHUB_ENV
 
 # Removed caching for now since it does not work
 #      - name: Cache SonarQube packages
