@@ -32,13 +32,13 @@ jobs:
       - name: Start Test Apache Kafka Instance
         run: |
           docker compose -f docker-compose.yml up -d
-          sleep 5s
+          sleep 10s
 
       - name: Build with Maven
         run: |
           mvn -B package --file pom.xml
-          export VERSION=$(mvn --non-recursive help:evaluate -Dexpression=project.version | grep -v '\[.*')
-          echo VERSION
+          VERSION=$(mvn --non-recursive help:evaluate -Dexpression=project.version | grep -v '\[.*')
+          echo $VERSION
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
 
       - name: Cache SonarQube packages
