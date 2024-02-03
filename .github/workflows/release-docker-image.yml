@@ -12,9 +12,6 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_ECR_ACCESS_KEY_SECRET}}
 
 on:
-  push:
-    branches: [ "main" ]
-
   pull_request:
     branches: [ "main" ]
 

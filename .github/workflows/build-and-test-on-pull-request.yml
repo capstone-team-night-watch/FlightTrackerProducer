@@ -4,7 +4,7 @@ env:
   VERSION: 10.8.9
 
 on:
-  pull_request:
+  push:
     branches: [ "main" ]
 
 jobs:
