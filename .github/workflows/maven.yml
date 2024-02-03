@@ -2,6 +2,10 @@ name: Java CI with Maven
 
 env:
   VERSION: 10.8.9
+
+  SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
+  SONAR_HOST_URL: ${{secrets.SONAR_HOST_URL}}
+
   AWS_DEFAULT_REGION: us-east-1
   AWS_ECR_ARN: ${{secrets.AWS_ECR_ARN}}
   AWS_ACCESS_KEY_ID: ${{secrets.AWS_ECR_ACCESS_KEY}}
@@ -38,8 +42,9 @@ jobs:
       - name: Build with Maven
         run: |
           mvn -B package --file pom.xml
-          VERSION=$(mvn --non-recursive help:evaluate -Dexpression=project.version | grep -v '\[.*' | tr -d '\n' )
-          echo $VERSION
+          BUILD_NUMBER=$(mvn --non-recursive help:evaluate -Dexpression=project.version | grep -v '\[.*' | tr -d '\n' )
+          echo $BUILD_NUMBER
+          echo "BUILD_NUMBER=${BUILD_NUMBER}" >> $GITHUB_ENV 
 
       - name: Cache SonarQube packages
         uses: actions/cache@v1
@@ -55,13 +60,11 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-# Skip sonar for now because not yet configured
-#      - name: Build and analyze
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-#          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-#        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=producer
+      - name: Build and analyze
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=producer
 
       - name: Authenticate to docker
         run : |
@@ -70,6 +73,6 @@ jobs:
       - name: Build and Publish Docker Image
         run : |
           docker build -t night-watch-repository .
-          docker tag night-watch-repository:latest 058264501037.dkr.ecr.us-east-1.amazonaws.com/night-watch-repository:${VERSION}
-          docker push 058264501037.dkr.ecr.us-east-1.amazonaws.com/night-watch-repository:${VERSION}
+          docker tag night-watch-repository:latest 058264501037.dkr.ecr.us-east-1.amazonaws.com/night-watch-repository:${BUILD_NUMBER}
+          docker push 058264501037.dkr.ecr.us-east-1.amazonaws.com/night-watch-repository:${BUILD_NUMBER}
 

@@ -1,1 +1,10 @@
 VERSION=1.0.3-SNAPSHOT
+
+Command to spin up sonarqube instance
+docker com
+
+
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh ./get-docker.sh --dry-run
+
+# Create swap file
