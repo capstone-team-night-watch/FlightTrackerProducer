@@ -11,7 +11,7 @@ env:
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "**" ]
 
 jobs:
   build:
@@ -37,7 +37,7 @@ jobs:
           mvn -B package --file pom.xml
           BUILD_NUMBER=$(mvn --non-recursive help:evaluate -Dexpression=project.version | grep -v '\[.*' | tr -d '\n' )
           echo $BUILD_NUMBER
-          echo "BUILD_NUMBER=${BUILD_NUMBER}" >> $GITHUB_ENV 
+          echo "BUILD_NUMBER=1.1.1" >> $GITHUB_ENV 
 
       - name: Cache SonarQube packages
         uses: actions/cache@v4
