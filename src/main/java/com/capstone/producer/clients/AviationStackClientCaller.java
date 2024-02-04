@@ -26,8 +26,6 @@ import java.util.List;
 /**
  * @author Nick Horihan
  * @version 1.0.0
- * @file
- * @section DESCRIPTION
  * <p>
  * Client Caller class that facilitates interaction with the Aviation Stack API
  */
@@ -79,60 +77,6 @@ public class AviationStackClientCaller {
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-
-    }
-
-    /**
-     * Gets flight information from the API given a flight ICAO number
-     *
-     * @param flightIcao The provided flight ICAO number
-     * @return A FlightInfo Object that corresponds to the flight with a matching ICAO number
-     */
-    public FlightInfo getFlightFromIcao(String flightIcao) {
-        UriComponents urlComponents = UriComponentsBuilder.fromHttpUrl(baseUrl + FLIGHTS_SERVICE_NAME)
-                .queryParam("access_key", key)
-                .queryParam("flight_icao", flightIcao)
-                .build();
-
-        try {
-            String dataNodeStr = acquireDataNodeStringFromAPIResponse(urlComponents);
-
-            // The response did not contain any usable JSON Objects
-            if (!StringUtils.hasText(dataNodeStr)) {
-                return null;
-            }
-
-            // Creates a JSON parser from the JSON 'data' array Object
-            try (JsonParser jsonParser = objectMapper.createParser(dataNodeStr)) {
-                // Traversing through the JSON array by finding the beginning of JSON Objects
-                while (jsonParser.nextToken() != JsonToken.START_OBJECT) {
-                    // nextToken() will return null if there isn't a next token.
-                    // The loop needs to be broken in that case otherwise, it would be infinite
-                    if (jsonParser.nextToken() == null) {
-                        break;
-                    }
-                }
-
-                // Once a JSON Object is found, it can be mapped to a FlightInfo Object
-                FlightInfo flightInfo = jsonParser.readValueAs(FlightInfo.class);
-
-                // Makes sure a valid FlightInfo is obtained
-                if (flightInfo == null || flightInfo.getFlight() == null || flightInfo.getLive() == null) {
-                    LOGGER.error("No flight with live information found given this ICAO: {}", flightIcao);
-                    return null;
-                }
-
-                return flightInfo;
-            } catch (IOException e) {
-                LOGGER.error("An IOException was caught while trying to process the API response in getFlightFromIcao(). " +
-                        "Details: {}", e.toString());
-                return null;
-            }
-
-        } catch (Exception e) {
-            LOGGER.error("An Exception was caught while trying to acquire live flight information. Details: {}", e.toString());
-            return null;
-        }
 
     }
 
@@ -222,7 +166,7 @@ public class AviationStackClientCaller {
                 return null;
             }
 
-            LOGGER.info("aiport: {}", dataNodeStr);
+            LOGGER.info("airport: {}", dataNodeStr);
 
             // Creates a JSON parser from the JSON 'data' array Object
             try (JsonParser jsonParser = objectMapper.createParser(dataNodeStr)) {

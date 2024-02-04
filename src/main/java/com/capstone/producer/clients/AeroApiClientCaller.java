@@ -1,6 +1,5 @@
 package com.capstone.producer.clients;
 
-import com.capstone.producer.common.bindings.aero.Airport;
 import com.capstone.producer.common.bindings.aero.FlightInfoFa_Id;
 import com.capstone.producer.common.bindings.aero.Operator;
 import com.fasterxml.jackson.core.JsonParser;
@@ -37,8 +36,6 @@ public class AeroApiClientCaller {
 
     private static final String FLIGHTS_SERVICE_NAME = "/flights/search";
 
-    private static final String AIRPORTS_SERVICE_NAME = "/airports";
-
     /**
      * Spring provided RestTemplate Object which is responsible for making the connection the API
      */
@@ -48,11 +45,6 @@ public class AeroApiClientCaller {
      * The base aviation stack url used for making the connection
      */
     private final String baseUrl;
-
-    /**
-     * The key needed to make requests to the Aviation Stack API
-     */
-    private final String key;
 
     /**
      * An ObjectMapper used for mapping JSON to Objects and vice-versa
@@ -74,7 +66,6 @@ public class AeroApiClientCaller {
     public AeroApiClientCaller(RestTemplate client, String baseUrl, String key) {
         this.client = client;
         this.baseUrl = baseUrl;
-        this.key = key;
         objectMapper = new ObjectMapper();
         //objectMapper.enable();
 
@@ -288,59 +279,6 @@ public class AeroApiClientCaller {
         // return only at max the first 5 live flights acquired.
         // Doing this to prevent clutter on the page. 5 flights is more than sufficient for testing
         return flightInfos.subList(0, Math.min(5, flightInfos.size()));
-    }
-
-    /**
-     * Get airport information from the API that matches the provided airport name
-     *
-     * @param airportInfoUrl The provided airport name
-     * @return An Airport Object that has latitude and longitude information
-     */
-    public Airport getAirportInfoFromUrl(String airportInfoUrl) {
-
-        try {
-            //String dataNodeStr = acquireDataNodeStringFromAPIResponse(urlComponents);
-
-            String url = String.format("%s%s", baseUrl, airportInfoUrl);
-
-
-            HttpEntity<String> requestEntity = new HttpEntity<>(headers);
-            JsonNode rootNode = client.exchange(url, HttpMethod.GET, requestEntity, JsonNode.class).getBody();
-
-            if (rootNode == null) {
-                LOGGER.error("Nothing parsable obtained from Aero");
-                return null;
-            }
-
-            // Creates a JSON parser from the JSON 'data' array Object
-            try (JsonParser jsonParser = objectMapper.createParser(rootNode.toString())) {
-                // Traversing through the JSON array by finding the beginning of JSON Objects
-                while (jsonParser.nextToken() != JsonToken.START_OBJECT) {
-                    // nextToken() will return null if there isn't a next token.
-                    // The loop needs to be broken in that case otherwise, it would be infinite
-                    if (jsonParser.nextToken() == null) {
-                        break;
-                    }
-                }
-
-                // Once a JSON Object is found, it can be mapped to a FlightInfo Object
-                Airport airportInfo = jsonParser.readValueAs(Airport.class);
-
-                // Makes sure a valid Airport is obtained
-                if (airportInfo == null || airportInfo.getLatitude() == 0 || airportInfo.getLongitude() == 0) {
-                    LOGGER.error("No relevant airport information found.");
-                    return null;
-                }
-
-                return airportInfo;
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-        } catch (Exception e) {
-            LOGGER.error("Exception caught: {}", e.toString());
-            throw e;
-        }
     }
 
     /**
