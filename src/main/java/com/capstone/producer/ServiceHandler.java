@@ -82,7 +82,10 @@ public class ServiceHandler {
      */
     private static final float MAX_MOCK_FLIGHT_UPDATES = 30.0f;
 
-    private final String RECEIVED_REQUEST = "Received request: {}";
+    /**
+     * Used when logging out received requests
+     */
+    private final String RECEIVED_REQUEST_MSG = "Received request: {}";
 
     /**
      * Used when an error occurs
@@ -124,7 +127,7 @@ public class ServiceHandler {
      * or an error response.
      */
     public String handleFlightIdent(String flightIdent) {
-        LOGGER.debug(RECEIVED_REQUEST, flightIdent);
+        LOGGER.debug(RECEIVED_REQUEST_MSG, flightIdent);
         LOGGER.debug("Previous Flight Ident: {} | Newly Received Ident: {}", prev_flight_faId, flightIdent);
 
         JSONObject jsonObject = new JSONObject();
@@ -151,7 +154,7 @@ public class ServiceHandler {
      * @throws InterruptedException Sending a message using Kafka can trigger an InterruptedException
      */
     public String handleFlightFaId(String flightFaId) throws InterruptedException {
-        LOGGER.debug(RECEIVED_REQUEST, flightFaId);
+        LOGGER.debug(RECEIVED_REQUEST_MSG, flightFaId);
         LOGGER.debug("Previous Flight ICAO: {} | Newly Received ICAO: {}", prev_flight_faId, flightFaId);
 
         // Sets the variables keeping track of icaos
@@ -191,7 +194,7 @@ public class ServiceHandler {
      * @throws InterruptedException Sending a message using Kafka can trigger an InterruptedException
      */
     public String handleOperator(String operatorId) throws InterruptedException {
-        LOGGER.debug(RECEIVED_REQUEST, operatorId);
+        LOGGER.debug(RECEIVED_REQUEST_MSG, operatorId);
 
         JSONObject jsonObject = new JSONObject();
         // Get the flight information from AeroApi
