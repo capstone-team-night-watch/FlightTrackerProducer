@@ -85,6 +85,11 @@ public class ServiceHandler {
     private final String RECEIVED_REQUEST = "Received request: {}";
 
     /**
+     * Used when an error occurs
+     */
+    private final String ERROR_MSG = "error";
+
+    /**
      * Constructor for the class. Sets up the Objects used for keeping track of flights
      */
     public ServiceHandler() {
@@ -119,7 +124,7 @@ public class ServiceHandler {
         if (flightResponse == null) {
             String errorResponse = String.format("No relevant flight information could be found with the provided FA id: %s. " +
                     "Either the flight does not exist or AviationStack does not have the live information populated.", flightIdent);
-            jsonObject.put("error", errorResponse);
+            jsonObject.put(ERROR_MSG, errorResponse);
             return jsonObject.toString();
         }
 
@@ -150,7 +155,7 @@ public class ServiceHandler {
         if (flightResponse == null) {
             String errorResponse = String.format("No relevant flight information could be found with the provided FA id: %s. " +
                     "Either the flight does not exist or AviationStack does not have the live information populated.", flightFaId);
-            jsonObject.put("error", errorResponse);
+            jsonObject.put(ERROR_MSG, errorResponse);
             return jsonObject.toString();
         }
 
@@ -185,7 +190,7 @@ public class ServiceHandler {
         if (operatorResponse == null) {
             String errorResponse = String.format("No relevant operator information could be found with the provided operator id: %s. " +
                     "Either the operator does not exist or API isn't working.", operatorId);
-            jsonObject.put("error", errorResponse);
+            jsonObject.put(ERROR_MSG, errorResponse);
             return jsonObject.toString();
         }
 
@@ -210,7 +215,7 @@ public class ServiceHandler {
 
         // Return an error response if no flights with live information were acquired
         if (liveFlights.isEmpty()) {
-            jsonObject.put("error", "No flights with live data found. Most likely reason this is occurring is an" +
+            jsonObject.put(ERROR_MSG, "No flights with live data found. Most likely reason this is occurring is an" +
                     " environment setup issue or we are out of requests on our api key.");
             return jsonObject.toString();
         }
@@ -256,7 +261,7 @@ public class ServiceHandler {
                                     "Provided name for origin: %s. Provided name for destination: %s",
                             airportGenerate.getDepartAirport(), airportGenerate.getArriveAirport());
                     JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("error", errorResponse);
+                    jsonObject.put(ERROR_MSG, errorResponse);
 
                     return jsonObject.toString();
                 }
