@@ -57,6 +57,11 @@ public class AeroApiClientCaller {
     private final HttpHeaders headers;
 
     /**
+     * Used when logging out flight information exception
+     */
+    private final String LIVE_FLIGHT_INFORMATION_EXCEPTION_MSG = "An Exception was caught while trying to acquire live flight information. Details: {}";
+
+    /**
      * This is the constructor for this client caller class
      *
      * @param client  RestTemplate Object
@@ -126,7 +131,7 @@ public class AeroApiClientCaller {
             }
 
         } catch (Exception e) {
-            LOGGER.error("An Exception was caught while trying to acquire live flight information. Details: {}", e.toString());
+            LOGGER.error(LIVE_FLIGHT_INFORMATION_EXCEPTION_MSG, e.toString());
             return null;
         }
 
@@ -160,7 +165,7 @@ public class AeroApiClientCaller {
             return flightsNode;
 
         } catch (Exception e) {
-            LOGGER.error("An Exception was caught while trying to acquire live flight information. Details: {}", e.toString());
+            LOGGER.error(LIVE_FLIGHT_INFORMATION_EXCEPTION_MSG, e.toString());
             return null;
         }
 
@@ -214,7 +219,7 @@ public class AeroApiClientCaller {
             }
 
         } catch (Exception e) {
-            LOGGER.error("An Exception was caught while trying to acquire live flight information. Details: {}", e.toString());
+            LOGGER.error(LIVE_FLIGHT_INFORMATION_EXCEPTION_MSG, e.toString());
             return null;
         }
 
@@ -270,7 +275,7 @@ public class AeroApiClientCaller {
                 }
 
             } catch (Exception e) {
-                LOGGER.error("An Exception was caught while trying to acquire live flight information. Details: {}", e.toString());
+                LOGGER.error(LIVE_FLIGHT_INFORMATION_EXCEPTION_MSG, e.toString());
                 return Collections.emptyList();
             }
 
