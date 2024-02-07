@@ -90,6 +90,11 @@ public class ServiceHandler {
     private final String ERROR_MSG = "error";
 
     /**
+     * Used when logging out sending messages
+     */
+    private final String SENDING_MSG = "Sending: {}";
+
+    /**
      * Constructor for the class. Sets up the Objects used for keeping track of flights
      */
     public ServiceHandler() {
@@ -162,7 +167,7 @@ public class ServiceHandler {
         jsonObject.put("flight", flightResponse.getFullJson());
 
         String toBeSent = jsonObject.toString();
-        LOGGER.info("Sending: {}", toBeSent);
+        LOGGER.info(SENDING_MSG, toBeSent);
 
         // Send message through kafka broker
         RecordMetadata metadata = KafkaProducer.runProducer(toBeSent);
@@ -312,7 +317,7 @@ public class ServiceHandler {
 
         // Build message for Kafka
         String toBeSent = buildKafkaMessageFromGenerate(generateRequest);
-        LOGGER.info("Sending: {}", toBeSent);
+        LOGGER.info(SENDING_MSG, toBeSent);
 
         // Send message through Kafka broker
         RecordMetadata metadata = KafkaProducer.runProducer(toBeSent);
@@ -419,7 +424,7 @@ public class ServiceHandler {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("flight", response.getFullJson());
             String toBeSent = jsonObject.toString();
-            LOGGER.info("Sending: {}", toBeSent);
+            LOGGER.info(SENDING_MSG, toBeSent);
 
             RecordMetadata metadata = KafkaProducer.runProducer(toBeSent);
             LOGGER.debug("Kafka metadata: {}", metadata);
@@ -493,7 +498,7 @@ public class ServiceHandler {
                     .setAltitude(currentAlt + altChange);
 
             String toBeSent = buildKafkaMessageFromGenerate(generateRequest);
-            LOGGER.info("Sending: {}", toBeSent);
+            LOGGER.info(SENDING_MSG, toBeSent);
 
             RecordMetadata metadata = KafkaProducer.runProducer(toBeSent);
             LOGGER.debug("Kafka metadata: {}", metadata);
