@@ -95,6 +95,11 @@ public class ServiceHandler {
     private final String SENDING_MSG = "Sending: {}";
 
     /**
+     * Used when logging out kafka metadata messages
+     */
+    private final String KAFKA_METADATA_MSG = "Kafka metadata: {}";
+
+    /**
      * Constructor for the class. Sets up the Objects used for keeping track of flights
      */
     public ServiceHandler() {
@@ -171,7 +176,7 @@ public class ServiceHandler {
 
         // Send message through kafka broker
         RecordMetadata metadata = KafkaProducer.runProducer(toBeSent);
-        LOGGER.debug("Kafka metadata: {}", metadata.toString());
+        LOGGER.debug(KAFKA_METADATA_MSG, metadata.toString());
 
         return toBeSent;
     }
@@ -321,7 +326,7 @@ public class ServiceHandler {
 
         // Send message through Kafka broker
         RecordMetadata metadata = KafkaProducer.runProducer(toBeSent);
-        LOGGER.debug("Kafka metadata: {}", metadata);
+        LOGGER.debug(KAFKA_METADATA_MSG, metadata);
 
         return toBeSent;
     }
@@ -427,7 +432,7 @@ public class ServiceHandler {
             LOGGER.info(SENDING_MSG, toBeSent);
 
             RecordMetadata metadata = KafkaProducer.runProducer(toBeSent);
-            LOGGER.debug("Kafka metadata: {}", metadata);
+            LOGGER.debug(KAFKA_METADATA_MSG, metadata);
 
             liveFlightUpdateRecord.put(flightFaId, count);
         }
@@ -501,7 +506,7 @@ public class ServiceHandler {
             LOGGER.info(SENDING_MSG, toBeSent);
 
             RecordMetadata metadata = KafkaProducer.runProducer(toBeSent);
-            LOGGER.debug("Kafka metadata: {}", metadata);
+            LOGGER.debug(KAFKA_METADATA_MSG, metadata);
 
             mockFlightUpdateRecord.put(flightLabel, count);
         }
