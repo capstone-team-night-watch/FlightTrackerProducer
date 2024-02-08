@@ -83,6 +83,26 @@ public class ServiceHandler {
     private static final float MAX_MOCK_FLIGHT_UPDATES = 30.0f;
 
     /**
+     * Used when logging out received requests
+     */
+    private final String RECEIVED_REQUEST_MSG = "Received request: {}";
+
+    /**
+     * Used when an error occurs
+     */
+    private final String ERROR_MSG = "error";
+
+    /**
+     * Used when logging out sending messages
+     */
+    private final String SENDING_MSG = "Sending: {}";
+
+    /**
+     * Used when logging out kafka metadata messages
+     */
+    private final String KAFKA_METADATA_MSG = "Kafka metadata: {}";
+
+    /**
      * Constructor for the class. Sets up the Objects used for keeping track of flights
      */
     public ServiceHandler() {
@@ -107,7 +127,7 @@ public class ServiceHandler {
      * or an error response.
      */
     public String handleFlightIdent(String flightIdent) {
-        LOGGER.debug("Received request: {}", flightIdent);
+        LOGGER.debug(RECEIVED_REQUEST_MSG, flightIdent);
         LOGGER.debug("Previous Flight Ident: {} | Newly Received Ident: {}", prev_flight_faId, flightIdent);
 
         JSONObject jsonObject = new JSONObject();
@@ -117,7 +137,7 @@ public class ServiceHandler {
         if (flightResponse == null) {
             String errorResponse = String.format("No relevant flight information could be found with the provided FA id: %s. " +
                     "Either the flight does not exist or AviationStack does not have the live information populated.", flightIdent);
-            jsonObject.put("error", errorResponse);
+            jsonObject.put(ERROR_MSG, errorResponse);
             return jsonObject.toString();
         }
 
@@ -134,7 +154,7 @@ public class ServiceHandler {
      * @throws InterruptedException Sending a message using Kafka can trigger an InterruptedException
      */
     public String handleFlightFaId(String flightFaId) throws InterruptedException {
-        LOGGER.debug("Received request: {}", flightFaId);
+        LOGGER.debug(RECEIVED_REQUEST_MSG, flightFaId);
         LOGGER.debug("Previous Flight ICAO: {} | Newly Received ICAO: {}", prev_flight_faId, flightFaId);
 
         // Sets the variables keeping track of icaos
@@ -148,18 +168,18 @@ public class ServiceHandler {
         if (flightResponse == null) {
             String errorResponse = String.format("No relevant flight information could be found with the provided FA id: %s. " +
                     "Either the flight does not exist or AviationStack does not have the live information populated.", flightFaId);
-            jsonObject.put("error", errorResponse);
+            jsonObject.put(ERROR_MSG, errorResponse);
             return jsonObject.toString();
         }
 
         jsonObject.put("flight", flightResponse.getFullJson());
 
         String toBeSent = jsonObject.toString();
-        LOGGER.info("Sending: {}", toBeSent);
+        LOGGER.info(SENDING_MSG, toBeSent);
 
         // Send message through kafka broker
         RecordMetadata metadata = KafkaProducer.runProducer(toBeSent);
-        LOGGER.debug("Kafka metadata: {}", metadata.toString());
+        LOGGER.debug(KAFKA_METADATA_MSG, metadata.toString());
 
         return toBeSent;
     }
@@ -174,7 +194,7 @@ public class ServiceHandler {
      * @throws InterruptedException Sending a message using Kafka can trigger an InterruptedException
      */
     public String handleOperator(String operatorId) throws InterruptedException {
-        LOGGER.debug("Received request: {}", operatorId);
+        LOGGER.debug(RECEIVED_REQUEST_MSG, operatorId);
 
         JSONObject jsonObject = new JSONObject();
         // Get the flight information from AeroApi
@@ -183,7 +203,7 @@ public class ServiceHandler {
         if (operatorResponse == null) {
             String errorResponse = String.format("No relevant operator information could be found with the provided operator id: %s. " +
                     "Either the operator does not exist or API isn't working.", operatorId);
-            jsonObject.put("error", errorResponse);
+            jsonObject.put(ERROR_MSG, errorResponse);
             return jsonObject.toString();
         }
 
@@ -208,7 +228,7 @@ public class ServiceHandler {
 
         // Return an error response if no flights with live information were acquired
         if (liveFlights.isEmpty()) {
-            jsonObject.put("error", "No flights with live data found. Most likely reason this is occurring is an" +
+            jsonObject.put(ERROR_MSG, "No flights with live data found. Most likely reason this is occurring is an" +
                     " environment setup issue or we are out of requests on our api key.");
             return jsonObject.toString();
         }
@@ -254,7 +274,7 @@ public class ServiceHandler {
                                     "Provided name for origin: %s. Provided name for destination: %s",
                             airportGenerate.getDepartAirport(), airportGenerate.getArriveAirport());
                     JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("error", errorResponse);
+                    jsonObject.put(ERROR_MSG, errorResponse);
 
                     return jsonObject.toString();
                 }
@@ -305,11 +325,11 @@ public class ServiceHandler {
 
         // Build message for Kafka
         String toBeSent = buildKafkaMessageFromGenerate(generateRequest);
-        LOGGER.info("Sending: {}", toBeSent);
+        LOGGER.info(SENDING_MSG, toBeSent);
 
         // Send message through Kafka broker
         RecordMetadata metadata = KafkaProducer.runProducer(toBeSent);
-        LOGGER.debug("Kafka metadata: {}", metadata);
+        LOGGER.debug(KAFKA_METADATA_MSG, metadata);
 
         return toBeSent;
     }
@@ -412,10 +432,10 @@ public class ServiceHandler {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("flight", response.getFullJson());
             String toBeSent = jsonObject.toString();
-            LOGGER.info("Sending: {}", toBeSent);
+            LOGGER.info(SENDING_MSG, toBeSent);
 
             RecordMetadata metadata = KafkaProducer.runProducer(toBeSent);
-            LOGGER.debug("Kafka metadata: {}", metadata);
+            LOGGER.debug(KAFKA_METADATA_MSG, metadata);
 
             liveFlightUpdateRecord.put(flightFaId, count);
         }
@@ -486,10 +506,10 @@ public class ServiceHandler {
                     .setAltitude(currentAlt + altChange);
 
             String toBeSent = buildKafkaMessageFromGenerate(generateRequest);
-            LOGGER.info("Sending: {}", toBeSent);
+            LOGGER.info(SENDING_MSG, toBeSent);
 
             RecordMetadata metadata = KafkaProducer.runProducer(toBeSent);
-            LOGGER.debug("Kafka metadata: {}", metadata);
+            LOGGER.debug(KAFKA_METADATA_MSG, metadata);
 
             mockFlightUpdateRecord.put(flightLabel, count);
         }
