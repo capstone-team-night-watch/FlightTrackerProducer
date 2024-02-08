@@ -1,6 +1,7 @@
 package com.capstone.producer.clients;
 
 import com.capstone.producer.common.bindings.aero.FlightInfoFa_Id;
+import com.capstone.producer.common.bindings.aero.Operator;
 import com.capstone.producer.common.bindings.aviationstack.FlightInfo;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.Before;
@@ -44,6 +45,26 @@ public class AeroApiClientCallerTest {
         FlightInfoFa_Id flightInfoFaId = aeroApiClientCaller.getFlightFromFaId(null);
 
         assertNull(flightInfoFaId);
+    }
+
+    @Test
+    public void getFlightFromIndentShouldReturnNull() {
+        when(client.exchange(anyString(), any(), any(), eq(JsonNode.class))).thenReturn(responseEntity);
+        when(responseEntity.getBody()).thenReturn(null);
+
+        String flightFromIndent = aeroApiClientCaller.getFlightFromIdent(null);
+
+        assertNull(flightFromIndent);
+    }
+
+    @Test
+    public void getOperatorFromIdShouldReturnNull() {
+        when(client.exchange(anyString(), any(), any(), eq(JsonNode.class))).thenReturn(responseEntity);
+        when(responseEntity.getBody()).thenReturn(null);
+
+        Operator operator = aeroApiClientCaller.getOperatorFromId(null);
+
+        assertNull(operator);
     }
 
 }
