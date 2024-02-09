@@ -32,13 +32,6 @@ jobs:
           docker compose -f docker-compose.yml up -d
           sleep 10s
 
-      - name: Build with Maven
-        run: |
-          mvn -B package --file pom.xml
-          BUILD_NUMBER=$(mvn --non-recursive help:evaluate -Dexpression=project.version | grep -v '\[.*' | tr -d '\n' )
-          echo $BUILD_NUMBER
-          echo "BUILD_NUMBER=${BUILD_NUMBER}" >> $GITHUB_ENV 
-
       - name: Cache SonarQube packages
         uses: actions/cache@v4
         with:
@@ -52,6 +45,13 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+
+      - name: Build with Maven
+        run: |
+          mvn -B package --file pom.xml
+          BUILD_NUMBER=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "BUILD_NUMBER=${BUILD_NUMBER}" >> $GITHUB_ENV 
+          cat $GITHUB_ENV
 
       - name: Build and analyze
         env:
