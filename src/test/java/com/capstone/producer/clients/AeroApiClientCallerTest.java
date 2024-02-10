@@ -2,7 +2,6 @@ package com.capstone.producer.clients;
 
 import com.capstone.producer.common.bindings.aero.FlightInfoFa_Id;
 import com.capstone.producer.common.bindings.aero.Operator;
-import com.capstone.producer.common.bindings.aviationstack.FlightInfo;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.Before;
 import org.junit.Test;
@@ -65,6 +64,16 @@ public class AeroApiClientCallerTest {
         Operator operator = aeroApiClientCaller.getOperatorFromId(null);
 
         assertNull(operator);
+    }
+
+    @Test
+    public void getAllActiveFlightsWithLiveShouldReturnEmpty() {
+        when(client.exchange(anyString(), any(), any(), eq(JsonNode.class))).thenReturn(responseEntity);
+        when(responseEntity.getBody()).thenReturn(null);
+
+        List<FlightInfoFa_Id> flightInfoFaIds = aeroApiClientCaller.getAllActiveFlightsWithLive();
+
+        assertTrue(flightInfoFaIds.isEmpty());
     }
 
 }
