@@ -68,4 +68,14 @@ jobs:
           docker build -t night-watch-repository .
           docker tag night-watch-repository:latest 058264501037.dkr.ecr.us-east-1.amazonaws.com/night-watch-repository:${BUILD_NUMBER}
           docker push 058264501037.dkr.ecr.us-east-1.amazonaws.com/night-watch-repository:${BUILD_NUMBER}
+          docker logout AWS
+
+      - name: Authenticate to dockerhub
+        run : |
+          docker login -u ewagner2802 --password $DOCKERHUB_ACCESS_TOKEN
+
+      - name: Build and Publish Docker Image to dockerhub
+        run : |
+          docker tag flight-tracker-consumer:latest ewagner2802/flighttrackerconsumer:${BUILD_NUMBER}
+          docker push ewagner2802/flighttrackerconsumer:${BUILD_NUMBER}
 
