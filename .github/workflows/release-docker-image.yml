@@ -76,6 +76,6 @@ jobs:
 
       - name: Build and Publish Docker Image to dockerhub
         run : |
-          docker tag flight-tracker-consumer:latest ewagner2802/flighttrackerconsumer:${BUILD_NUMBER}
-          docker push ewagner2802/flighttrackerconsumer:${BUILD_NUMBER}
+          docker tag flight-tracker-consumer:latest ewagner2802/flighttrackerproducer:${BUILD_NUMBER}
+          docker push ewagner2802/flighttrackerproducer:${BUILD_NUMBER}
 
