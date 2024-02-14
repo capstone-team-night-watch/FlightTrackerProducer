@@ -93,7 +93,7 @@ public class ServiceHandlerTest {
 
         String result = serviceHandler.handleOperator("Operator");
 
-        assertTrue(result.contains("No relevant flight information could be found"));
+        assertTrue(result.contains("No relevant operator information could be found"));
     }
 
     @Test
