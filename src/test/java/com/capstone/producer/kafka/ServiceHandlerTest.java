@@ -24,7 +24,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ServiceHandlerTest {
@@ -130,6 +130,17 @@ public class ServiceHandlerTest {
         String toBeSent = serviceHandler.handleGenerateRequest(generateRequest);
 
         assertEquals("{\"icao\":\"ICAO\",\"airline\":\"AIRLINE\",\"generate\":true,\"live\":\"{\\\"updated\\\":\\\"null\\\",\\\"latitude\\\":0.00,\\\"longitude\\\":0.00,\\\"altitude\\\":0.00,\\\"direction\\\":0,\\\"speed_horizontal\\\":0.00,\\\"speed_vertical\\\":0.00,\\\"is_ground\\\":false}\"}", toBeSent);
+    }
+
+    @Test
+    public void updateFlightInfoAeroCallerCalledTwice () throws InterruptedException {
+        serviceHandler.handleFlightFaId("faId");
+
+        when(aeroCaller.getFlightFromFaId(anyString())).thenReturn(new FlightInfoFa_Id());
+
+        serviceHandler.updateFlightInfo();
+
+        verify(aeroCaller, times(2)).getFlightFromFaId(anyString());
     }
 
 }
