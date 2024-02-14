@@ -79,6 +79,15 @@ public class ServiceHandlerTest {
     }
 
     @Test
+    public void handleFlightFaIdShouldReturnErrorString() throws InterruptedException {
+        when(aeroCaller.getFlightFromFaId(anyString())).thenReturn(null);
+
+        String result = serviceHandler.handleFlightFaId("FaId");
+
+        assertTrue(result.contains("No relevant flight information could be found"));
+    }
+
+    @Test
     public void handLiveRequest() throws JsonProcessingException {
 
         FlightInfoFa_Id flightInfo = new FlightInfoFa_Id();
