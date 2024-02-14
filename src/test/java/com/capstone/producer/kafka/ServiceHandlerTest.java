@@ -7,6 +7,7 @@ import com.capstone.producer.common.bindings.GenerateRequest;
 import com.capstone.producer.common.bindings.aero.FlightInfoFa_Id;
 import com.capstone.producer.common.bindings.aero.Position;
 import com.capstone.producer.common.bindings.aviationstack.Airline;
+import com.capstone.producer.common.bindings.aviationstack.Airport_Aviation;
 import com.capstone.producer.common.bindings.aviationstack.FlightInfo;
 import com.capstone.producer.common.bindings.aviationstack.Live;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -21,6 +22,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -94,6 +96,18 @@ public class ServiceHandlerTest {
         String result = serviceHandler.handleOperator("Operator");
 
         assertTrue(result.contains("No relevant operator information could be found"));
+    }
+
+    @Test
+    public void handleAirportRequestValidString() {
+        Airport_Aviation airportAviation = new Airport_Aviation()
+                .setLongitude(1f)
+                .setLatitude(1f);
+        when(aviationCaller.getAirportInfoFromName(anyString())).thenReturn(airportAviation);
+
+        String result = serviceHandler.handleAirportRequest("AIRPORT");
+
+        assertNotNull(result);
     }
 
     @Test
