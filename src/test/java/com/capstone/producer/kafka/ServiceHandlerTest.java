@@ -87,6 +87,14 @@ public class ServiceHandlerTest {
         assertTrue(result.contains("No relevant flight information could be found"));
     }
 
+    @Test void handleOperatorShouldReturnErrorString() throws InterruptedException {
+        when(aeroCaller.getOperatorFromId(anyString())).thenReturn(null);
+
+        String result = serviceHandler.handleOperator("Operator");
+
+        assertTrue(result.contains("No relevant flight information could be found"));
+    }
+
     @Test
     public void handLiveRequest() throws JsonProcessingException {
 
