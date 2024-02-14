@@ -20,7 +20,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -57,6 +58,24 @@ public class ServiceHandlerTest {
         //String result = serviceHandler.handleFlightIcao("JD123");
 
         //assertEquals("{\"icao\":\"JD123\",\"airline\":\"NAME\",\"live\":\"{\\\"updated\\\":\\\"null\\\",\\\"latitude\\\":0.00,\\\"longitude\\\":0.00,\\\"altitude\\\":0.00,\\\"direction\\\":0,\\\"speed_horizontal\\\":0.00,\\\"speed_vertical\\\":0.00,\\\"is_ground\\\":false}\"}", result);
+    }
+
+    @Test
+    public void handleFlightIndentShouldReturnValidString() {
+        when(aeroCaller.getFlightFromIdent(anyString())).thenReturn("Flight");
+
+        String result = serviceHandler.handleFlightIdent("INDENT");
+
+        assertNotNull(result);
+    }
+
+    @Test
+    public void handleFlightIndentShouldReturnErrorString() {
+        when(aeroCaller.getFlightFromIdent(anyString())).thenReturn(null);
+
+        String result = serviceHandler.handleFlightIdent("INDENT");
+
+        assertTrue(result.contains("No relevant flight information could be found"));
     }
 
     @Test
