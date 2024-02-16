@@ -178,7 +178,7 @@ public class ServiceHandler {
         LOGGER.info(SENDING_MSG, toBeSent);
 
         // Send message through kafka broker
-        RecordMetadata metadata = KafkaProducer.runProducer(toBeSent);
+        RecordMetadata metadata = KafkaProducer.runProducer(toBeSent, "FlightData");
         LOGGER.debug(KAFKA_METADATA_MSG, metadata.toString());
 
         return toBeSent;
@@ -328,7 +328,7 @@ public class ServiceHandler {
         LOGGER.info(SENDING_MSG, toBeSent);
 
         // Send message through Kafka broker
-        RecordMetadata metadata = KafkaProducer.runProducer(toBeSent);
+        RecordMetadata metadata = KafkaProducer.runProducer(toBeSent, "FlightData");
         LOGGER.debug(KAFKA_METADATA_MSG, metadata);
 
         return toBeSent;
@@ -434,7 +434,7 @@ public class ServiceHandler {
             String toBeSent = jsonObject.toString();
             LOGGER.info(SENDING_MSG, toBeSent);
 
-            RecordMetadata metadata = KafkaProducer.runProducer(toBeSent);
+            RecordMetadata metadata = KafkaProducer.runProducer(toBeSent, "FlightData");
             LOGGER.debug(KAFKA_METADATA_MSG, metadata);
 
             liveFlightUpdateRecord.put(flightFaId, count);
@@ -508,7 +508,7 @@ public class ServiceHandler {
             String toBeSent = buildKafkaMessageFromGenerate(generateRequest);
             LOGGER.info(SENDING_MSG, toBeSent);
 
-            RecordMetadata metadata = KafkaProducer.runProducer(toBeSent);
+            RecordMetadata metadata = KafkaProducer.runProducer(toBeSent, "FlightData");
             LOGGER.debug(KAFKA_METADATA_MSG, metadata);
 
             mockFlightUpdateRecord.put(flightLabel, count);
