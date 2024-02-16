@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutionException;
 public class KafkaProducer {
 
     private final static String TOPIC_NAME = "FlightData";
-    private final static String BOOTSTRAP_SERVER = "ec2-35-173-74-249.compute-1.amazonaws.com:9092";
+    private final static String BOOTSTRAP_SERVER = "localhost:9092";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducer.class);
 
