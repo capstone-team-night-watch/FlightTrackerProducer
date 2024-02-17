@@ -3,6 +3,7 @@ package com.capstone.producer.kafka;
 import com.capstone.producer.ServiceHandler;
 import com.capstone.producer.clients.AeroApiClientCaller;
 import com.capstone.producer.clients.AviationStackClientCaller;
+import com.capstone.producer.common.bindings.AirportGenerateRequest;
 import com.capstone.producer.common.bindings.GenerateRequest;
 import com.capstone.producer.common.bindings.aero.FlightInfoFa_Id;
 import com.capstone.producer.common.bindings.aero.Position;
@@ -42,6 +43,9 @@ public class ServiceHandlerTest {
 
     @Mock
     private KafkaProducer kafkaProducer;
+
+    @Mock
+    private AirportGenerateRequest airportGenerateRequest;
 
     private final static ObjectMapper om = new ObjectMapper();
 
@@ -135,6 +139,19 @@ public class ServiceHandlerTest {
         String toBeSent = serviceHandler.handleGenerateRequest(generateRequest);
 
         assertEquals("{\"icao\":\"ICAO\",\"airline\":\"AIRLINE\",\"generate\":true,\"live\":\"{\\\"updated\\\":\\\"null\\\",\\\"latitude\\\":0.00,\\\"longitude\\\":0.00,\\\"altitude\\\":0.00,\\\"direction\\\":0,\\\"speed_horizontal\\\":0.00,\\\"speed_vertical\\\":0.00,\\\"is_ground\\\":false}\"}", toBeSent);
+    }
+
+    @Test
+    public void handleGenerateRequestShouldReturnNotNullString() throws InterruptedException {
+        AirportGenerateRequest generateRequest = new AirportGenerateRequest().setArriveAirport("ArriveAirport");
+        generateRequest
+                .setAirlineName("AIRLINE")
+                .setFlightIcao("ICAO")
+                .setLongitude(1f)
+                .setLatitude(1f);
+
+        String result = serviceHandler.handleGenerateRequest(generateRequest);
+        assertNotNull(result);
     }
 
     @Test
