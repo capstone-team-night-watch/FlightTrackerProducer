@@ -293,7 +293,7 @@ public class ServiceHandler {
             throw new HttpException(
                     HttpStatus.NOT_FOUND,
                     String.format(
-                            "Airport information could not found with provided airport names. Provided name for origin: %s. Provided name for destination: %s",
+                            "Airport information could not find with provided airport names. Provided name for origin: %s. Provided name for destination: %s",
                             airportGenerate.getDepartAirport(), airportGenerate.getArriveAirport()
                     )
             );

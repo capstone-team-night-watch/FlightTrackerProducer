@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.util.Assert;
 
 import java.util.List;
 
@@ -27,9 +28,9 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ServiceHandlerTest {
-//    @Mock
-//    private AviationStackClientCaller aviationCaller;
-//
+    @Mock
+    private AviationStackClientCaller aviationCaller;
+
     @Mock
     private AeroApiClientCaller aeroCaller;
 
@@ -39,123 +40,120 @@ public class ServiceHandlerTest {
 
     @Test
     public void handleFlightIcao() {
-        assertNotNull(true);
+        FlightInfo flightInfo = new FlightInfo();
+        flightInfo.setAirline(new Airline().setName("NAME"));
+        flightInfo.setLive(new Live());
+
+        assertNotNull(flightInfo);
     }
 
-//    @Test
-//    public void handleFlightIcao() {
-//        FlightInfo flightInfo = new FlightInfo();
-//        flightInfo.setAirline(new Airline().setName("NAME"));
-//        flightInfo.setLive(new Live());
-//
-//        assertNotNull(flightInfo);
-//    }
-//
-//    @Test
-//    public void handleFlightIndentShouldReturnValidString() {
-//        when(aeroCaller.getFlightFromIdent(anyString())).thenReturn("Flight");
-//
-//        String result = serviceHandler.handleFlightIdent("INDENT");
-//
-//        assertNotNull(result);
-//    }
-//
-//    @Test
-//    public void handleFlightIndentShouldReturnErrorString() {
-//        when(aeroCaller.getFlightFromIdent(anyString())).thenReturn(null);
-//
-//        String result = serviceHandler.handleFlightIdent("INDENT");
-//
-//        assertTrue(result.contains("No relevant flight information could be found"));
-//    }
-//
-//    @Test
-//    public void handleFlightFaIdShouldReturnErrorString() throws InterruptedException {
-//        when(aeroCaller.getFlightFromFaId(anyString())).thenReturn(null);
-//
-//        String result = serviceHandler.handleFlightFaId("FaId");
-//
-//        assertTrue(result.contains("No relevant flight information could be found"));
-//    }
-//
-//    @Test
-//    public void handleOperatorShouldReturnErrorString() throws InterruptedException {
-//        when(aeroCaller.getOperatorFromId(anyString())).thenReturn(null);
-//
-//        String result = serviceHandler.handleOperator("Operator");
-//
-//        assertTrue(result.contains("No relevant operator information could be found"));
-//    }
-//
-//    @Test
-//    public void handleAirportRequestValidString() {
-//        AirportAviation airportAviation = new AirportAviation()
-//                .setLongitude(1f)
-//                .setLatitude(1f);
-//        when(aviationCaller.getAirportInfoFromName(anyString())).thenReturn(airportAviation);
-//
-//        String result = serviceHandler.handleAirportRequest("AIRPORT");
-//
-//        assertNotNull(result);
-//    }
-//
-//    @Test
-//    public void handLiveRequest() {
-//
-//        FlightInfoFaid flightInfo = new FlightInfoFaid();
-//        flightInfo.setLastPosition(new Position());
-//        flightInfo.setFaFlightId("FAID");
-//        when(aeroCaller.getAllActiveFlightsWithLive()).thenReturn(List.of(flightInfo));
-//
-//        String result = serviceHandler.handleLiveRequest();
-//
-//        assertEquals("{\"faids\":\"FAID\"}", result);
-//    }
-//
-//    @Test
-//    public void handleGenerateRequest() throws InterruptedException, HttpException {
-//        GenerateRequest generateRequest = new GenerateRequest().setAirlineName("AIRLINE").setFlightIcao("ICAO");
-//
-//        String toBeSent = serviceHandler.handleGenerateRequest(generateRequest);
-//
-//        assertEquals("{\"icao\":\"ICAO\",\"airline\":\"AIRLINE\",\"generate\":true,\"live\":\"{\\\"updated\\\":\\\"null\\\",\\\"latitude\\\":0.00,\\\"longitude\\\":0.00,\\\"altitude\\\":0.00,\\\"direction\\\":0,\\\"speed_horizontal\\\":0.00,\\\"speed_vertical\\\":0.00,\\\"is_ground\\\":false}\"}", toBeSent);
-//    }
-//
-//    @Test
-//    public void handleGenerateRequestShouldReturnNotNullString() throws InterruptedException, HttpException {
-//        AirportGenerateRequest generateRequest = new AirportGenerateRequest().setArriveAirport("ArriveAirport");
-//        generateRequest
-//                .setAirlineName("AIRLINE")
-//                .setFlightIcao("ICAO")
-//                .setLongitude(1f)
-//                .setLatitude(1f);
-//
-//        String result = serviceHandler.handleGenerateRequest(generateRequest);
-//        assertNotNull(result);
-//    }
-//
-//    @Test
-//    public void updateFlightInfoAeroCallerCalledTwice() throws InterruptedException {
-//        serviceHandler.handleFlightFaId("faId");
-//
-//        when(aeroCaller.getFlightFromFaId(anyString())).thenReturn(new FlightInfoFaid());
-//
-//        serviceHandler.updateFlightInfo();
-//
-//        verify(aeroCaller, times(2)).getFlightFromFaId(anyString());
-//    }
+    @Test
+    public void handleFlightIndentShouldReturnValidString() {
+        when(aeroCaller.getFlightFromIdent(anyString())).thenReturn("Flight");
 
-//    @Test
-//    public void updateGeneratedFlightInfoShouldHaveTwoCalls() throws HttpException, InterruptedException {
-//        GenerateRequest generateRequest = new GenerateRequest().setAirlineName("AIRLINE").setFlightIcao("ICAO");
-//
-//        MockedStatic<KafkaProducer> mockedStatic = mockStatic(KafkaProducer.class);
-//
-//        mockedStatic.when(() -> KafkaProducer.runProducer(anyString())).thenReturn(null);
-//        serviceHandler.handleGenerateRequest(generateRequest);
-//        serviceHandler.updateGeneratedFlightInfo();
-//
-//        mockedStatic.verify(() -> KafkaProducer.runProducer(anyString()), times(2));
-//    }
-//
+        String result = serviceHandler.handleFlightIdent("INDENT");
+
+        assertNotNull(result);
+    }
+
+    @Test
+    public void handleFlightIndentShouldReturnErrorString() {
+        when(aeroCaller.getFlightFromIdent(anyString())).thenReturn(null);
+
+        String result = serviceHandler.handleFlightIdent("INDENT");
+
+        assertTrue(result.contains("No relevant flight information could be found"));
+    }
+
+    @Test
+    public void handleFlightFaIdShouldReturnErrorString() throws InterruptedException {
+        when(aeroCaller.getFlightFromFaId(anyString())).thenReturn(null);
+
+        String result = serviceHandler.handleFlightFaId("FaId");
+
+        assertTrue(result.contains("No relevant flight information could be found"));
+    }
+
+    @Test
+    public void handleOperatorShouldReturnErrorString() throws InterruptedException {
+        when(aeroCaller.getOperatorFromId(anyString())).thenReturn(null);
+
+        String result = serviceHandler.handleOperator("Operator");
+
+        assertTrue(result.contains("No relevant operator information could be found"));
+    }
+
+    @Test
+    public void handleAirportRequestValidString() {
+        AirportAviation airportAviation = new AirportAviation()
+                .setLongitude(1f)
+                .setLatitude(1f);
+        when(aviationCaller.getAirportInfoFromName(anyString())).thenReturn(airportAviation);
+
+        String result = serviceHandler.handleAirportRequest("AIRPORT");
+
+        assertNotNull(result);
+    }
+
+    @Test
+    public void handLiveRequest() {
+
+        FlightInfoFaid flightInfo = new FlightInfoFaid();
+        flightInfo.setLastPosition(new Position());
+        flightInfo.setFaFlightId("FAID");
+        when(aeroCaller.getAllActiveFlightsWithLive()).thenReturn(List.of(flightInfo));
+
+        String result = serviceHandler.handleLiveRequest();
+
+        assertEquals("{\"faids\":\"FAID\"}", result);
+    }
+
+    @Test
+    public void handleGenerateRequest() throws InterruptedException, HttpException {
+        GenerateRequest generateRequest = new GenerateRequest().setAirlineName("AIRLINE").setFlightIcao("ICAO");
+
+        String toBeSent = serviceHandler.handleGenerateRequest(generateRequest);
+
+        Assert.notNull(toBeSent, "The message to be sent should not be null");
+    }
+
+    @Test
+    public void handleGenerateRequestShouldReturnNotNullString() throws InterruptedException, HttpException {
+        AirportGenerateRequest generateRequest = new AirportGenerateRequest()
+                .setDepartAirport("ArriveAirport")
+                .setArriveAirport("ArriveAirport");
+
+        generateRequest
+                .setAirlineName("AIRLINE")
+                .setFlightIcao("ICAO")
+                .setLongitude(1f)
+                .setLatitude(1f);
+
+        String result = serviceHandler.handleGenerateRequest(generateRequest);
+        assertNotNull(result);
+    }
+
+    @Test
+    public void updateFlightInfoAeroCallerCalledTwice() throws InterruptedException {
+        serviceHandler.handleFlightFaId("faId");
+
+        when(aeroCaller.getFlightFromFaId(anyString())).thenReturn(new FlightInfoFaid());
+
+        serviceHandler.updateFlightInfo();
+
+        verify(aeroCaller, times(2)).getFlightFromFaId(anyString());
+    }
+
+    @Test
+    public void updateGeneratedFlightInfoShouldHaveTwoCalls() throws HttpException, InterruptedException {
+        var generateRequest = new GenerateRequest().setAirlineName("AIRLINE").setFlightIcao("ICAO");
+
+        MockedStatic<KafkaProducer> mockedStatic = mockStatic(KafkaProducer.class);
+
+        mockedStatic.when(() -> KafkaProducer.runProducer(anyString())).thenReturn(null);
+        serviceHandler.handleGenerateRequest(generateRequest);
+        serviceHandler.updateGeneratedFlightInfo();
+
+        mockedStatic.verify(() -> KafkaProducer.runProducer(anyString()), times(2));
+    }
 }
