@@ -282,9 +282,17 @@ public class ServiceHandler {
 
     /**
      * This method handles the generation of mock flights from airport to airport
+     *
      * @param airportGenerate The AirportGenerateRequest Object containing information about the mock flight, including airport names
      */
     public void handleAirportGenerateRequest(AirportGenerateRequest airportGenerate) throws HttpException {
+        if (!StringUtils.hasText(airportGenerate.getDepartAirport()) || !StringUtils.hasText(airportGenerate.getArriveAirport())) {
+            throw new HttpException(
+                    HttpStatus.BAD_REQUEST,
+                    "Both the departure and arrival airports must be provided to generate a mock flight"
+            );
+        }
+
         var originAirport = aviationStackClientCaller.getAirportInfoFromName(airportGenerate.getDepartAirport());
         var destinationAirport = aviationStackClientCaller.getAirportInfoFromName(airportGenerate.getArriveAirport());
 
@@ -377,8 +385,8 @@ public class ServiceHandler {
         // Need to provide a string that can be parsed as a JSON object for it to work in the front-end
         try {
 
-        jsonObject.put("live", objectWriter.writeValueAsString(liveObj));
-        }catch (Exception e){
+            jsonObject.put("live", objectWriter.writeValueAsString(liveObj));
+        } catch (Exception e) {
             throw new HttpException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error while trying to parse live message for mock flight"

@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
 import org.springframework.util.Assert;
 
 import java.util.List;
@@ -118,12 +119,40 @@ public class ServiceHandlerTest {
     }
 
     @Test
-    public void handleGenerateRequestShouldReturnNotNullString() throws InterruptedException, HttpException {
+    public void handleGenerateAirportRequest_ShouldReturnException_WhenProvidedAirportAreNotFound() throws InterruptedException, HttpException {
         AirportGenerateRequest generateRequest = new AirportGenerateRequest()
-                .setDepartAirport("ArriveAirport")
+                .setDepartAirport("DepartAirport")
                 .setArriveAirport("ArriveAirport");
 
         generateRequest
+                .setAirlineName("AIRLINE")
+                .setFlightIcao("ICAO")
+                .setLongitude(1f)
+                .setLatitude(1f);
+
+        var exception = assertThrows(HttpException.class, () -> serviceHandler.handleGenerateRequest(generateRequest));
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+    }
+
+
+    @Test
+    public void handleGenerateAirportRequest_ShouldThrowException_WhenDepartAirportIsMissing() throws InterruptedException, HttpException {
+        AirportGenerateRequest generateRequest = new AirportGenerateRequest()
+                .setArriveAirport("ArriveAirport");
+
+        generateRequest
+                .setAirlineName("AIRLINE")
+                .setFlightIcao("ICAO")
+                .setLongitude(1f)
+                .setLatitude(1f);
+
+        var exception = assertThrows(HttpException.class, () -> serviceHandler.handleGenerateRequest(generateRequest));
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+    }
+
+    @Test
+    public void handleGenerateRequest_ReturnNotEmptyString() throws InterruptedException, HttpException {
+        var generateRequest = new GenerateRequest()
                 .setAirlineName("AIRLINE")
                 .setFlightIcao("ICAO")
                 .setLongitude(1f)
