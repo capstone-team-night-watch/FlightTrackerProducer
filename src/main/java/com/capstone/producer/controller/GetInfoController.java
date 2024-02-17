@@ -31,9 +31,8 @@ public class GetInfoController {
      * JSON that contains coordinate and other flight information
      */
     @CrossOrigin("*")
-    @RequestMapping(
+    @GetMapping(
             path = "/operator/{opId}",
-            method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseBody
@@ -101,24 +100,5 @@ public class GetInfoController {
     @ResponseBody
     public String getLive() {
         return serviceHandler.handleLiveRequest();
-    }
-
-    /**
-     * Sets up the request mapping for getting information about a specific airport
-     * Cross Origin scripting setup allows requests from any cross-origin script
-     *
-     * @param airportName The name of the airport that information is being requested for
-     * @return A String representing the message that was sent to the Kafka broker which is made up of
-     * JSON that contains the coordinates for the request airport
-     */
-    @CrossOrigin("*")
-    @RequestMapping(
-            path = "/airportInfo/{name}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @ResponseBody
-    public String getAirport(@PathVariable("name") String airportName) {
-        return serviceHandler.handleAirportRequest(airportName);
     }
 }

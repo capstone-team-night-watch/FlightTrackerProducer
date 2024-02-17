@@ -24,11 +24,6 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * @author Nick Horihan
- * @version 1.0.0
- * @file
- * @section DESCRIPTION
- * <p>
  * Client Caller class that facilitates interaction with the FlightAware's Aero API
  */
 public class AeroApiClientCaller {
@@ -59,12 +54,12 @@ public class AeroApiClientCaller {
     /**
      * Used when logging out flight information exception
      */
-    private final String LIVE_FLIGHT_INFORMATION_EXCEPTION_MSG = "An Exception was caught while trying to acquire live flight information. Details: {}";
+    private static final String LIVE_FLIGHT_INFORMATION_EXCEPTION_MSG = "An Exception was caught while trying to acquire live flight information. Details: {}";
 
     /**
      * Used when logging out root messages
      */
-    private final String ROOT_MSG = "root: {}";
+    private static final String ROOT_MSG = "root: {}";
 
     /**
      * This is the constructor for this client caller class
@@ -77,7 +72,6 @@ public class AeroApiClientCaller {
         this.client = client;
         this.baseUrl = baseUrl;
         objectMapper = new ObjectMapper();
-        //objectMapper.enable();
 
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -93,7 +87,6 @@ public class AeroApiClientCaller {
      * @return A FlightInfo_Id Object that corresponds to the flight with a matching FaId
      */
     public FlightInfoFa_Id getFlightFromFaId(String flightFaId) {
-
         try {
             String url = String.format("%s/flights/%s/position", baseUrl, flightFaId);
 
