@@ -1,6 +1,6 @@
 package com.capstone.producer.clients;
 
-import com.capstone.producer.common.bindings.aviationstack.Airport_Aviation;
+import com.capstone.producer.common.bindings.aviationstack.AirportAviation;
 import com.capstone.producer.common.bindings.aviationstack.FlightInfo;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -152,7 +152,7 @@ public class AviationStackClientCaller {
      * @param airportName The provided airport name
      * @return An Airport Object that has latitude and longitude information
      */
-    public Airport_Aviation getAirportInfoFromName(String airportName) {
+    public AirportAviation getAirportInfoFromName(String airportName) {
         UriComponents urlComponents = UriComponentsBuilder.fromHttpUrl(baseUrl + AIRPORTS_SERVICE_NAME)
                 .queryParam("access_key", key)
                 .queryParam("search", airportName)
@@ -180,7 +180,7 @@ public class AviationStackClientCaller {
                 }
 
                 // Once a JSON Object is found, it can be mapped to a FlightInfo Object
-                Airport_Aviation airportInfo = jsonParser.readValueAs(Airport_Aviation.class);
+                AirportAviation airportInfo = jsonParser.readValueAs(AirportAviation.class);
 
                 // Makes sure a valid Airport is obtained
                 if (airportInfo == null || airportInfo.getLatitude() == 0 || airportInfo.getLongitude() == 0) {

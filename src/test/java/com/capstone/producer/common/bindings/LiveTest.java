@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LiveTest {
@@ -60,27 +61,25 @@ public class LiveTest {
 
     @Test
     public void getAndSetSpeed_horizontal(){
-        live.setSpeed_horizontal(1);
-        float result = live.getSpeed_horizontal();
+        live.setSpeedHorizontal(1);
+        float result = live.getSpeedHorizontal();
 
         assertEquals(1, result);
     }
 
     @Test
     public void getAndSetSpeed_vertical(){
-        live.setSpeed_vertical(1);
-        float result = live.getSpeed_vertical();
+        live.setSpeedVertical(1);
+        float result = live.getSpeedVertical();
 
         assertEquals(1, result);
     }
 
     @Test
     public void getAndSetIs_ground(){
-        live.setIs_ground(true);
-        boolean result = live.isIs_ground();
+        live.setGround(true);
+        boolean result = live.isGround();
 
-        assertEquals(true, result);
+        assertTrue(result);
     }
-
-
 }

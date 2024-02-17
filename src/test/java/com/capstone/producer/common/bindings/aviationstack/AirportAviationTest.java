@@ -10,23 +10,23 @@ import static org.junit.jupiter.api.Assertions.*;
 @RunWith(MockitoJUnitRunner.class)
 public class AirportAviationTest {
 
-    Airport_Aviation airportAviation;
+    AirportAviation airportAviation;
 
     @Before
     public void setUp() {
-        airportAviation = new Airport_Aviation();
-        airportAviation.setAirport_id("1")
+        airportAviation = new AirportAviation();
+        airportAviation.setAirportId("1")
                 .setGmt("gmt")
-                .setIata_code("iata_code")
-                .setCity_iata_code("city_iata_code")
-                .setIcao_code("icao_code")
-                .setCountry_iso2("country_iso2")
-                .setGeoname_id("geoname_id")
+                .setIataCode("iata_code")
+                .setCityIataCode("city_iata_code")
+                .setIcaoCode("icao_code")
+                .setCountryIso2("country_iso2")
+                .setGeonameId("geoname_id")
                 .setLatitude(1f)
                 .setLongitude(1f)
-                .setAirport_name("airport_name")
-                .setCountry_name("country_name")
-                .setPhone_number("phone_number")
+                .setAirportName("airport_name")
+                .setCountryName("country_name")
+                .setPhoneNumber("phone_number")
                 .setTimezone("timezone");
     }
 
@@ -37,19 +37,19 @@ public class AirportAviationTest {
 
     @Test
     public void equalsShouldReturnTrue() {
-        Airport_Aviation airportAviationToTest = new Airport_Aviation();
-        airportAviationToTest.setAirport_id("1")
+        AirportAviation airportAviationToTest = new AirportAviation();
+        airportAviationToTest.setAirportId("1")
                 .setGmt("gmt")
-                .setIata_code("iata_code")
-                .setCity_iata_code("city_iata_code")
-                .setIcao_code("icao_code")
-                .setCountry_iso2("country_iso2")
-                .setGeoname_id("geoname_id")
+                .setIataCode("iata_code")
+                .setCityIataCode("city_iata_code")
+                .setIcaoCode("icao_code")
+                .setCountryIso2("country_iso2")
+                .setGeonameId("geoname_id")
                 .setLatitude(1f)
                 .setLongitude(1f)
-                .setAirport_name("airport_name")
-                .setCountry_name("country_name")
-                .setPhone_number("phone_number")
+                .setAirportName("airport_name")
+                .setCountryName("country_name")
+                .setPhoneNumber("phone_number")
                 .setTimezone("timezone");
 
         assertEquals(airportAviation, airportAviationToTest);
@@ -57,19 +57,19 @@ public class AirportAviationTest {
 
     @Test
     public void equalsShouldReturnFalse() {
-        Airport_Aviation airportAviationToTest = new Airport_Aviation();
-        airportAviationToTest.setAirport_id("2")
+        AirportAviation airportAviationToTest = new AirportAviation();
+        airportAviationToTest.setAirportId("2")
                 .setGmt("gmt2")
-                .setIata_code("iata_code2")
-                .setCity_iata_code("city_iata_code2")
-                .setIcao_code("icao_code2")
-                .setCountry_iso2("country_iso22")
-                .setGeoname_id("geoname_id2")
+                .setIataCode("iata_code2")
+                .setCityIataCode("city_iata_code2")
+                .setIcaoCode("icao_code2")
+                .setCountryIso2("country_iso22")
+                .setGeonameId("geoname_id2")
                 .setLatitude(2f)
                 .setLongitude(2f)
-                .setAirport_name("airport_name2")
-                .setCountry_name("country_name2")
-                .setPhone_number("phone_number2")
+                .setAirportName("airport_name2")
+                .setCountryName("country_name2")
+                .setPhoneNumber("phone_number2")
                 .setTimezone("timezone2");
 
         assertNotEquals(airportAviation, airportAviationToTest);

@@ -3,6 +3,7 @@ package com.capstone.producer.controller;
 import com.capstone.producer.ServiceHandler;
 import com.capstone.producer.common.bindings.AirportGenerateRequest;
 import com.capstone.producer.common.bindings.GenerateRequest;
+import com.capstone.producer.exceptions.HttpException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -13,8 +14,6 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 public class GenerateController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(GenerateController.class);
-
     /**
      * Service Handler Object that facilitates the logic that needs to happen when a request is received
      */
@@ -31,14 +30,13 @@ public class GenerateController {
      * @return A string representing the message that was sent to the Kafka broker
      */
     @CrossOrigin("*")
-    @RequestMapping(
+    @PostMapping(
             path= "/custom/generate",
-            method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseBody
-    public String generateCustomMockFlight(@RequestBody GenerateRequest generateRequest) throws InterruptedException {
+    public String generateCustomMockFlight(@RequestBody GenerateRequest generateRequest) throws InterruptedException, HttpException {
         return serviceHandler.handleGenerateRequest(generateRequest);
     }
 
@@ -50,14 +48,13 @@ public class GenerateController {
      * @return A string representing the message that was sent to the Kafka broker
      */
     @CrossOrigin("*")
-    @RequestMapping(
+    @PostMapping(
             path= "/airport/generate",
-            method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseBody
-    public String generateMockFlight(@RequestBody AirportGenerateRequest generateRequest) throws InterruptedException {
+    public String generateMockFlight(@RequestBody AirportGenerateRequest generateRequest) throws InterruptedException, HttpException {
         return serviceHandler.handleGenerateRequest(generateRequest);
     }
 }

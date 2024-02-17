@@ -1,6 +1,6 @@
 package com.capstone.producer.clients;
 
-import com.capstone.producer.common.bindings.aero.FlightInfoFa_Id;
+import com.capstone.producer.common.bindings.aero.FlightInfoFaid;
 import com.capstone.producer.common.bindings.aero.Operator;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.Before;
@@ -11,7 +11,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -41,7 +40,7 @@ public class AeroApiClientCallerTest {
         when(client.exchange(anyString(), any(), any(), eq(JsonNode.class))).thenReturn(responseEntity);
         when(responseEntity.getBody()).thenReturn(null);
 
-        FlightInfoFa_Id flightInfoFaId = aeroApiClientCaller.getFlightFromFaId(null);
+        FlightInfoFaid flightInfoFaId = aeroApiClientCaller.getFlightFromFaId(null);
 
         assertNull(flightInfoFaId);
     }
@@ -71,7 +70,7 @@ public class AeroApiClientCallerTest {
         when(client.exchange(anyString(), any(), any(), eq(JsonNode.class))).thenReturn(responseEntity);
         when(responseEntity.getBody()).thenReturn(null);
 
-        List<FlightInfoFa_Id> flightInfoFaIds = aeroApiClientCaller.getAllActiveFlightsWithLive();
+        List<FlightInfoFaid> flightInfoFaIds = aeroApiClientCaller.getAllActiveFlightsWithLive();
 
         assertTrue(flightInfoFaIds.isEmpty());
     }

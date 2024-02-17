@@ -20,9 +20,9 @@ public class LiveTest {
         live.setLongitude(1f);
         live.setAltitude(1f);
         live.setDirection(1);
-        live.setSpeed_horizontal(1f);
-        live.setSpeed_vertical(1f);
-        live.setIs_ground(true);
+        live.setSpeedHorizontal(1f);
+        live.setSpeedVertical(1f);
+        live.setGround(true);
     }
 
     @Test
@@ -44,9 +44,9 @@ public class LiveTest {
         assertEquals(1f, live.getLongitude());
         assertEquals(1f, live.getAltitude());
         assertEquals(1, live.getDirection());
-        assertEquals(1f, live.getSpeed_horizontal());
-        assertEquals(1f, live.getSpeed_vertical());
-        assertTrue(live.isIs_ground());
+        assertEquals(1f, live.getSpeedHorizontal());
+        assertEquals(1f, live.getSpeedVertical());
+        assertTrue(live.isGround());
     }
 
     @Test
@@ -57,9 +57,9 @@ public class LiveTest {
         mockLive.setLongitude(2f);
         mockLive.setAltitude(2f);
         mockLive.setDirection(2);
-        mockLive.setSpeed_horizontal(2f);
-        mockLive.setSpeed_vertical(2f);
-        mockLive.setIs_ground(false);
+        mockLive.setSpeedHorizontal(2f);
+        mockLive.setSpeedVertical(2f);
+        mockLive.setGround(false);
 
         assertNotEquals(mockLive, live);
     }

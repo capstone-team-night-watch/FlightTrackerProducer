@@ -30,7 +30,6 @@ public class GetInfoController {
      * @return A String representing the message that was sent to the Kafka broker which is made up of
      * JSON that contains coordinate and other flight information
      */
-    @CrossOrigin("*")
     @GetMapping(
             path = "/operator/{opId}",
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -50,14 +49,12 @@ public class GetInfoController {
      * @return A String representing the message that was sent to the Kafka broker which is made up of
      * JSON that contains coordinate and other flight information
      */
-    @CrossOrigin("*")
-    @RequestMapping(
+    @GetMapping(
             path = "/flightident/{ident}",
-            method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseBody
-    public String getIdent(@PathVariable("ident") String flightIdent) throws InterruptedException {
+    public String getIdent(@PathVariable("ident") String flightIdent) {
         LOGGER.info("Received request with ident: {}", flightIdent);
 
         return serviceHandler.handleFlightIdent(flightIdent);
@@ -72,9 +69,8 @@ public class GetInfoController {
      * JSON that contains coordinate and other flight information
      */
     @CrossOrigin("*")
-    @RequestMapping(
+    @GetMapping(
             path = "/flightfaid/{faid}",
-            method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseBody
@@ -92,13 +88,30 @@ public class GetInfoController {
      * JSON that contains a list of flight icao numbers
      */
     @CrossOrigin("*")
-    @RequestMapping(
+    @GetMapping(
             path = "/flighticao/getLive",
-            method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseBody
     public String getLive() {
         return serviceHandler.handleLiveRequest();
+    }
+
+    /**
+     * Sets up the request mapping for getting information about a specific airport
+     * Cross Origin scripting setup allows requests from any cross-origin script
+     *
+     * @param airportName The name of the airport that information is being requested for
+     * @return A String representing the message that was sent to the Kafka broker which is made up of
+     * JSON that contains the coordinates for the request airport
+     */
+    @CrossOrigin("*")
+    @GetMapping(
+            path = "/airportInfo/{name}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseBody
+    public String getAirport(@PathVariable("name") String airportName) {
+        return serviceHandler.handleAirportRequest(airportName);
     }
 }

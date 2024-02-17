@@ -34,8 +34,8 @@ public class FlightInfoTest {
     @Before
     public void setUp() {
         flightInfo = new FlightInfo();
-        flightInfo.setFlight_date("flight_date");
-        flightInfo.setFlight_status("flight_status");
+        flightInfo.setFlightDate("flight_date");
+        flightInfo.setFlightStatus("flight_status");
         flightInfo.setDeparture(departure);
         flightInfo.setArrival(arrival);
         flightInfo.setAirline(airline);
@@ -57,8 +57,8 @@ public class FlightInfoTest {
 
     @Test
     public void shouldReturnValidInfo() {
-        assertEquals("flight_date", flightInfo.getFlight_date());
-        assertEquals("flight_status", flightInfo.getFlight_status());
+        assertEquals("flight_date", flightInfo.getFlightDate());
+        assertEquals("flight_status", flightInfo.getFlightStatus());
         assertEquals(departure, flightInfo.getDeparture());
         assertEquals(arrival, flightInfo.getArrival());
         assertEquals(airline, flightInfo.getAirline());

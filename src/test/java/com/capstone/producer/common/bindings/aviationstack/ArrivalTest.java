@@ -26,8 +26,8 @@ public class ArrivalTest {
         arrival.setScheduled("scheduled");
         arrival.setEstimated("estimated");
         arrival.setActual("actual");
-        arrival.setEstimated_runway("estimated_runway");
-        arrival.setActual_runway("actual_runway");
+        arrival.setEstimatedRunway("estimated_runway");
+        arrival.setActual("actual_runway");
     }
 
     @Test
@@ -43,8 +43,8 @@ public class ArrivalTest {
         assertEquals("scheduled", arrival.getScheduled());
         assertEquals("estimated", arrival.getEstimated());
         assertEquals("actual", arrival.getActual());
-        assertEquals("estimated_runway", arrival.getEstimated_runway());
-        assertEquals("actual_runway", arrival.getActual_runway());
+        assertEquals("estimated_runway", arrival.getEstimated());
+        assertEquals("actual_runway", arrival.getActualRunway());
     }
 
     @Test

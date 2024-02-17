@@ -5,15 +5,17 @@ import com.capstone.producer.clients.AviationStackClientCaller;
 import com.capstone.producer.common.bindings.AirportGenerateRequest;
 import com.capstone.producer.common.bindings.GenerateRequest;
 import com.capstone.producer.common.bindings.aero.*;
-import com.capstone.producer.common.bindings.aviationstack.Airport_Aviation;
-import com.capstone.producer.common.bindings.aviationstack.FlightInfo;
+import com.capstone.producer.common.bindings.aviationstack.AirportAviation;
 import com.capstone.producer.common.bindings.aviationstack.Live;
+import com.capstone.producer.exceptions.HttpException;
 import com.capstone.producer.kafka.KafkaProducer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -32,16 +34,16 @@ import java.util.stream.Collectors;
 public class ServiceHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceHandler.class);
 
-    @Autowired
-    private AviationStackClientCaller aviationStackClientCaller;
+    private final ObjectWriter objectWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
-    @Autowired
-    AeroApiClientCaller aeroApiClientCaller;
+    private final AviationStackClientCaller aviationStackClientCaller;
+
+    private final AeroApiClientCaller aeroApiClientCaller;
 
     /**
      * Keeps track of the previous flight icao encountered
      */
-    private String prev_flight_faId;
+    private String previousFlightFaid;
 
     /**
      * Keeps track of all flight icaos that have been encountered
@@ -85,27 +87,27 @@ public class ServiceHandler {
     /**
      * Used when logging out received requests
      */
-    private final String RECEIVED_REQUEST_MSG = "Received request: {}";
+    private static final String RECEIVED_REQUEST_MSG = "Received request: {}";
 
     /**
      * Used when an error occurs
      */
-    private final String ERROR_MSG = "error";
+    private static final String ERROR_MSG = "error";
 
     /**
      * Used when logging out sending messages
      */
-    private final String SENDING_MSG = "Sending: {}";
+    private static final String SENDING_MSG = "Sending: {}";
 
     /**
      * Used when logging out kafka metadata messages
      */
-    private final String KAFKA_METADATA_MSG = "Kafka metadata: {}";
+    private static final String KAFKA_METADATA_MSG = "Kafka metadata: {}";
 
     /**
      * Constructor for the class. Sets up the Objects used for keeping track of flights
      */
-    public ServiceHandler() {
+    public ServiceHandler(AviationStackClientCaller aviationStackClientCaller, AeroApiClientCaller aeroApiClientCaller) {
         // Objects are initialized using concurrent implementations of the List and Map interfaces
         // This is due to methods being Scheduled. There is the potential where a Map or List being accessed
         // will also be getting updated at the same time OR different methods will be attempting to access/update at the same time
@@ -115,7 +117,9 @@ public class ServiceHandler {
         mockFlightUpdateRecord = new ConcurrentHashMap<>();
 
         // Initialize String to prevent null pointers
-        this.prev_flight_faId = "";
+        this.previousFlightFaid = "";
+        this.aviationStackClientCaller = aviationStackClientCaller;
+        this.aeroApiClientCaller = aeroApiClientCaller;
     }
 
     /**
@@ -128,7 +132,7 @@ public class ServiceHandler {
      */
     public String handleFlightIdent(String flightIdent) {
         LOGGER.debug(RECEIVED_REQUEST_MSG, flightIdent);
-        LOGGER.debug("Previous Flight Ident: {} | Newly Received Ident: {}", prev_flight_faId, flightIdent);
+        LOGGER.debug("Previous Flight Ident: {} | Newly Received Ident: {}", previousFlightFaid, flightIdent);
 
         JSONObject jsonObject = new JSONObject();
         // Get the flight information from AeroApi
@@ -155,15 +159,15 @@ public class ServiceHandler {
      */
     public String handleFlightFaId(String flightFaId) throws InterruptedException {
         LOGGER.debug(RECEIVED_REQUEST_MSG, flightFaId);
-        LOGGER.debug("Previous Flight ICAO: {} | Newly Received ICAO: {}", prev_flight_faId, flightFaId);
+        LOGGER.debug("Previous Flight ICAO: {} | Newly Received ICAO: {}", previousFlightFaid, flightFaId);
 
         // Sets the variables keeping track of icaos
-        this.prev_flight_faId = flightFaId;
+        this.previousFlightFaid = flightFaId;
         this.flightFaIds.add(flightFaId);
 
         JSONObject jsonObject = new JSONObject();
         // Get the flight information from AeroApi
-        FlightInfoFa_Id flightResponse = aeroApiClientCaller.getFlightFromFaId(flightFaId);
+        FlightInfoFaid flightResponse = aeroApiClientCaller.getFlightFromFaId(flightFaId);
         // Return an error response if there was an issue getting the response or the requested flight doesn't have live data
         if (flightResponse == null) {
             String errorResponse = String.format("No relevant flight information could be found with the provided FA id: %s. " +
@@ -179,7 +183,7 @@ public class ServiceHandler {
 
         // Send message through kafka broker
         RecordMetadata metadata = KafkaProducer.runProducer(toBeSent);
-        LOGGER.debug(KAFKA_METADATA_MSG, metadata.toString());
+        LOGGER.debug("Kafka metadata: {}", metadata);
 
         return toBeSent;
     }
@@ -219,8 +223,7 @@ public class ServiceHandler {
      */
     public String handleLiveRequest() {
         LOGGER.info("Handling Live Request");
-        //List<FlightInfo> liveFlights = aviationStackClientCaller.getAllActiveFlightsWithLive();
-        List<FlightInfoFa_Id> liveFlights = aeroApiClientCaller.getAllActiveFlightsWithLive();
+        List<FlightInfoFaid> liveFlights = aeroApiClientCaller.getAllActiveFlightsWithLive();
 
         // Create a JsonObject containing the comma-separated list of icaos that will be easily parsable in the front-end
         // Will contain an error string if no live flights are found
@@ -234,7 +237,7 @@ public class ServiceHandler {
         }
 
         // Get just the flight icaos from the list of FlightInfo Object
-        String liveFlightIdents = liveFlights.stream().map(FlightInfoFa_Id::getFa_flight_id).collect(Collectors.joining(","));
+        String liveFlightIdents = liveFlights.stream().map(FlightInfoFaid::getFaFlightId).collect(Collectors.joining(","));
 
         jsonObject.put("faids", liveFlightIdents);
 
@@ -252,71 +255,14 @@ public class ServiceHandler {
      * or an error response.
      * @throws InterruptedException Sending a message using Kafka can trigger an InterruptedException
      */
-    public String handleGenerateRequest(GenerateRequest generateRequest) throws InterruptedException {
+    public String handleGenerateRequest(GenerateRequest generateRequest) throws InterruptedException, HttpException {
         generationHappening = true;
-        LOGGER.info(generateRequest.toString());
+
+        LOGGER.info("{}", generateRequest);
 
         // This block handles all the specific logic relating to generating a mock flight from airport to airport
-        if (generateRequest instanceof AirportGenerateRequest && ((AirportGenerateRequest) generateRequest).getArriveAirport() != null) {
-            // Creating a new object so that I don't have to cast every time.
-            // Should still be referencing the same Object though
-            AirportGenerateRequest airportGenerate = (AirportGenerateRequest) generateRequest;
-            //LOGGER.info("AirportGenerateRequest: {}", airportGenerate);
-
-            // Making sure there are airport names in the request before making the calls to aviation stack
-            if (StringUtils.hasText(airportGenerate.getArriveAirport()) && StringUtils.hasText(airportGenerate.getDepartAirport())) {
-                Airport_Aviation originAirport = aviationStackClientCaller.getAirportInfoFromName(airportGenerate.getDepartAirport());
-                Airport_Aviation destinationAirport = aviationStackClientCaller.getAirportInfoFromName(airportGenerate.getArriveAirport());
-
-                // Return an error response if information for either the origin or destination airports could not be retrieved from AviationStack
-                if (originAirport == null || destinationAirport == null) {
-                    String errorResponse = String.format("Airport information could not found with provided airport names. " +
-                                    "Provided name for origin: %s. Provided name for destination: %s",
-                            airportGenerate.getDepartAirport(), airportGenerate.getArriveAirport());
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put(ERROR_MSG, errorResponse);
-
-                    return jsonObject.toString();
-                }
-
-                // Setting the starting coordinates of the mock flight
-                airportGenerate.setLongitude(originAirport.getLongitude());
-                airportGenerate.setLatitude(originAirport.getLatitude());
-                airportGenerate.setAltitude(DEFAULT_ALTITUDE);
-
-                // Setting what should be the final coordinates of the mock flight
-                // Used for generating the incremental change applied during each scheduled update
-                airportGenerate.setFinalLongitude(destinationAirport.getLongitude());
-                airportGenerate.setFinalLatitude(destinationAirport.getLatitude());
-            }
-
-            // Below logic determines and sets how much the longitude will change on each mock flight update
-            boolean longIsNeg = airportGenerate.getLongitude() < 0;
-            boolean finalLongIsNeg = airportGenerate.getFinalLongitude() < 0;
-
-            float difference = 0;
-
-            if (longIsNeg && finalLongIsNeg) {
-                difference = airportGenerate.getFinalLongitude() + airportGenerate.getLongitude();
-            } else if (longIsNeg) {
-                difference = Math.abs(airportGenerate.getLongitude() - airportGenerate.getFinalLongitude());
-            } else if (finalLongIsNeg) {
-                difference = airportGenerate.getFinalLongitude() - airportGenerate.getLongitude();
-            }
-            airportGenerate.setLongitudeChange(difference / MAX_MOCK_FLIGHT_UPDATES);
-
-            // Below logic determines and sets how much the latitude will change on each mock flight update
-            boolean latIsNeg = airportGenerate.getLatitude() < 0;
-            boolean finalLatIsNeg = airportGenerate.getFinalLatitude() < 0;
-
-            if (latIsNeg && finalLatIsNeg) {
-                difference = airportGenerate.getFinalLongitude() + airportGenerate.getLongitude();
-            } else if (latIsNeg) {
-                difference = Math.abs(airportGenerate.getLongitude() - airportGenerate.getFinalLongitude());
-            } else if (finalLatIsNeg) {
-                difference = airportGenerate.getFinalLongitude() - airportGenerate.getLongitude();
-            }
-            airportGenerate.setLatitudeChange(difference / MAX_MOCK_FLIGHT_UPDATES);
+        if (generateRequest instanceof AirportGenerateRequest airportGenerate && airportGenerate.getArriveAirport() != null) {
+            handleAirportGenerateRequest(airportGenerate);
         }
 
         // Creating a key and adding mock flight to tracking Map
@@ -335,6 +281,64 @@ public class ServiceHandler {
     }
 
     /**
+     * This method handles the generation of mock flights from airport to airport
+     * @param airportGenerate The AirportGenerateRequest Object containing information about the mock flight, including airport names
+     */
+    public void handleAirportGenerateRequest(AirportGenerateRequest airportGenerate) throws HttpException {
+        var originAirport = aviationStackClientCaller.getAirportInfoFromName(airportGenerate.getDepartAirport());
+        var destinationAirport = aviationStackClientCaller.getAirportInfoFromName(airportGenerate.getArriveAirport());
+
+        // Return an error response if information for either the origin or destination airports could not be retrieved from AviationStack
+        if (originAirport == null || destinationAirport == null) {
+            throw new HttpException(
+                    HttpStatus.NOT_FOUND,
+                    String.format(
+                            "Airport information could not found with provided airport names. Provided name for origin: %s. Provided name for destination: %s",
+                            airportGenerate.getDepartAirport(), airportGenerate.getArriveAirport()
+                    )
+            );
+        }
+
+        // Setting the starting coordinates of the mock flight
+        airportGenerate.setLongitude(originAirport.getLongitude());
+        airportGenerate.setLatitude(originAirport.getLatitude());
+        airportGenerate.setAltitude(DEFAULT_ALTITUDE);
+
+        // Setting what should be the final coordinates of the mock flight
+        // Used for generating the incremental change applied during each scheduled update
+        airportGenerate.setFinalLongitude(destinationAirport.getLongitude());
+        airportGenerate.setFinalLatitude(destinationAirport.getLatitude());
+
+        // Below logic determines and sets how much the longitude will change on each mock flight update
+        boolean longIsNeg = airportGenerate.getLongitude() < 0;
+        boolean finalLongIsNeg = airportGenerate.getFinalLongitude() < 0;
+
+        float difference = 0;
+
+        if (longIsNeg && finalLongIsNeg) {
+            difference = airportGenerate.getFinalLongitude() + airportGenerate.getLongitude();
+        } else if (longIsNeg) {
+            difference = Math.abs(airportGenerate.getLongitude() - airportGenerate.getFinalLongitude());
+        } else if (finalLongIsNeg) {
+            difference = airportGenerate.getFinalLongitude() - airportGenerate.getLongitude();
+        }
+        airportGenerate.setLongitudeChange(difference / MAX_MOCK_FLIGHT_UPDATES);
+
+        // Below logic determines and sets how much the latitude will change on each mock flight update
+        boolean latIsNeg = airportGenerate.getLatitude() < 0;
+        boolean finalLatIsNeg = airportGenerate.getFinalLatitude() < 0;
+
+        if (latIsNeg && finalLatIsNeg) {
+            difference = airportGenerate.getFinalLongitude() + airportGenerate.getLongitude();
+        } else if (latIsNeg) {
+            difference = Math.abs(airportGenerate.getLongitude() - airportGenerate.getFinalLongitude());
+        } else if (finalLatIsNeg) {
+            difference = airportGenerate.getFinalLongitude() - airportGenerate.getLongitude();
+        }
+        airportGenerate.setLatitudeChange(difference / MAX_MOCK_FLIGHT_UPDATES);
+    }
+
+    /**
      * Acquires information about the specific airport that corresponds to the provided airport name
      *
      * @param airportName The provided airport name
@@ -342,7 +346,7 @@ public class ServiceHandler {
      * or an error response.
      */
     public String handleAirportRequest(String airportName) {
-        Airport_Aviation airportAviation = aviationStackClientCaller.getAirportInfoFromName(airportName);
+        AirportAviation airportAviation = aviationStackClientCaller.getAirportInfoFromName(airportName);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("longitude", airportAviation.getLongitude());
         jsonObject.put("latitude", airportAviation.getLatitude());
@@ -358,7 +362,7 @@ public class ServiceHandler {
      *                        necessary information to create a mock flight
      * @return A String that is ready to be sent through Kafka
      */
-    private String buildKafkaMessageFromGenerate(GenerateRequest generateRequest) {
+    private String buildKafkaMessageFromGenerate(GenerateRequest generateRequest) throws HttpException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("airline", generateRequest.getAirlineName());
         jsonObject.put("icao", generateRequest.getFlightIcao());
@@ -371,24 +375,15 @@ public class ServiceHandler {
         liveObj.setAltitude(generateRequest.getAltitude());
 
         // Need to provide a string that can be parsed as a JSON object for it to work in the front-end
-        jsonObject.put("live", liveObj.getJSON());
+        try {
 
-        return jsonObject.toString();
-    }
-
-    /**
-     * Helper method used to reduce repeated code.
-     * Builds a message that will be sent through Kafka using information contained in the provided FlightInfo object and flight ICAO number
-     *
-     * @param flightInfo The provided FlightInfo Object
-     * @param flightIcao The provided Flight ICAO number
-     * @return A String that is ready to be sent through Kafka
-     */
-    private String buildKafkaMessageFromFlightInfo(FlightInfo flightInfo, String flightIcao) {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("airline", flightInfo.getAirline().getName());
-        jsonObject.put("icao", flightIcao);
-        jsonObject.put("live", flightInfo.getLive());
+        jsonObject.put("live", objectWriter.writeValueAsString(liveObj));
+        }catch (Exception e){
+            throw new HttpException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error while trying to parse live message for mock flight"
+            );
+        }
 
         return jsonObject.toString();
     }
@@ -404,7 +399,7 @@ public class ServiceHandler {
     @Scheduled(fixedRate = 60000, initialDelay = 60000)
     public void updateFlightInfo() throws InterruptedException {
         // Don't attempt any updating if there is nothing to update
-        if (!StringUtils.hasText(this.prev_flight_faId) || this.flightFaIds.isEmpty()) {
+        if (!StringUtils.hasText(this.previousFlightFaid) || this.flightFaIds.isEmpty()) {
             return;
         }
 
@@ -426,9 +421,8 @@ public class ServiceHandler {
             }
 
             LOGGER.info("Getting updated Live Flight information for {}", flightFaId);
-            FlightInfoFa_Id response = aeroApiClientCaller.getFlightFromFaId(flightFaId);
+            FlightInfoFaid response = aeroApiClientCaller.getFlightFromFaId(flightFaId);
 
-            //String toBeSent = buildKafkaMessageFromFlightInfo(response, flightFaId);
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("flight", response.getFullJson());
             String toBeSent = jsonObject.toString();
@@ -453,7 +447,7 @@ public class ServiceHandler {
      * @throws InterruptedException Sending a message using Kafka can trigger an InterruptedException
      */
     @Scheduled(fixedRate = 30000, initialDelay = 60000)
-    public void updateGeneratedFlightInfo() throws InterruptedException {
+    public void updateGeneratedFlightInfo() throws InterruptedException, HttpException {
         // Don't attempt any updating if there is nothing to update
         if (!generationHappening || generatedFlights.isEmpty()) {
             return;
@@ -483,22 +477,6 @@ public class ServiceHandler {
             float currentLong = generateRequest.getLongitude();
             float currentLat = generateRequest.getLatitude();
             float currentAlt = generateRequest.getAltitude();
-
-            // Could be uncommented if wanted later. Honestly should already be happening like this due to how generation is set up
-            /*if (generateRequest instanceof AirportGenerateRequest) {
-                // Determine if current coordinates match the expected final coordinates
-                float absCurLong = Math.abs(currentLong);
-                float absFinalLong = ((AirportGenerateRequest) generateRequest).getFinalLongitude();
-                float absCurLat = Math.abs(currentLat);
-                float absFinalLat = ((AirportGenerateRequest) generateRequest).getFinalLatitude();
-
-                if (Math.abs(absCurLong - absFinalLong) < .1 && Math.abs(absCurLat - absFinalLat) < .1) {
-                    LOGGER.info("Expected Final Coordinates have been reached. Terminating flight tracking for mock: {}", flightLabel);
-                    toBeRemoved.add(flightLabel);
-                    mockFlightUpdateRecord.remove(flightLabel);
-                    continue;
-                }
-            }*/
 
             generateRequest = generateRequest
                     .setLongitude(currentLong + longChange)
