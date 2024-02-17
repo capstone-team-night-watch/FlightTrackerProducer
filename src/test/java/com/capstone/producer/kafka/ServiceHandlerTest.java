@@ -13,10 +13,12 @@ import com.capstone.producer.common.bindings.aviationstack.Live;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
@@ -37,6 +39,9 @@ public class ServiceHandlerTest {
 
     @InjectMocks
     private ServiceHandler serviceHandler;
+
+    @Mock
+    private KafkaProducer kafkaProducer;
 
     private final static ObjectMapper om = new ObjectMapper();
 
@@ -141,6 +146,21 @@ public class ServiceHandlerTest {
         serviceHandler.updateFlightInfo();
 
         verify(aeroCaller, times(2)).getFlightFromFaId(anyString());
+    }
+
+    @Test
+    public void updateGeneratedFlightInfoShouldHaveTwoCalls() {
+        GenerateRequest generateRequest = new GenerateRequest().setAirlineName("AIRLINE").setFlightIcao("ICAO");
+
+        try (MockedStatic<KafkaProducer> mockedStatic = mockStatic(KafkaProducer.class)) {
+            mockedStatic.when(() -> KafkaProducer.runProducer(anyString())).thenReturn(null);
+            serviceHandler.handleGenerateRequest(generateRequest);
+            serviceHandler.updateGeneratedFlightInfo();
+
+            mockedStatic.verify(() -> KafkaProducer.runProducer(anyString()), times(2));
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
