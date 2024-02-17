@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class AeroApiClientCallerTest {
 
-    private static final String BASE_URL = "http://localhost:9091/services";
+    private static final String BASE_URL = "http://localhost:8080/services";
 
     @Mock
     private RestTemplate client;
