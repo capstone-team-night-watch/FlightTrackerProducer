@@ -1,6 +1,6 @@
 package com.capstone.producer.common.bindings.aviationstack;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -10,21 +10,21 @@ import lombok.Data;
  */
 @Data
 public class CodeShared {
-    @JsonAlias("airline_name")
+    @JsonProperty("airline_name")
     private String airlineName;
 
-    @JsonAlias("airline_iata")
+    @JsonProperty("airline_iata")
     private String airlineIata;
 
-    @JsonAlias("airline_icao")
+    @JsonProperty("airline_icao")
     private String airlineIcao;
 
-    @JsonAlias("flight_number")
+    @JsonProperty("flight_number")
     private int flightNumber;
 
-    @JsonAlias("flight_iata")
+    @JsonProperty("flight_iata")
     private String flightIata;
 
-    @JsonAlias("flight_icao")
+    @JsonProperty("flight_icao")
     private String flightIcao;
 }

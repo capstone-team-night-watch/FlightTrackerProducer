@@ -1,6 +1,7 @@
 package com.capstone.producer.common.bindings.aviationstack;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -18,12 +19,12 @@ public class Live {
     private float altitude;
     private int direction;
 
-    @JsonAlias("speed_horizontal")
+    @JsonProperty("speed_horizontal")
     private float speedHorizontal;
 
-    @JsonAlias("speed_vertical")
+    @JsonProperty("speed_vertical")
     private float speedVertical;
 
-    @JsonAlias("is_ground")
+    @JsonProperty("is_ground")
     private boolean isGround;
 }

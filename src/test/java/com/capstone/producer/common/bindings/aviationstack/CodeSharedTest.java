@@ -1,5 +1,7 @@
 package com.capstone.producer.common.bindings.aviationstack;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,7 +11,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CodesharedTest {
+public class CodeSharedTest {
 
     private CodeShared codeshared;
 
@@ -26,13 +28,16 @@ public class CodesharedTest {
     }
 
     @Test
-    public void toStringShouldContainAllInfo() {
-        assertTrue(codeshared.toString().contains("airline_name"));
-        assertTrue(codeshared.toString().contains("airline_iata"));
-        assertTrue(codeshared.toString().contains("airline_icao"));
-        assertTrue(codeshared.toString().contains("flight_number"));
-        assertTrue(codeshared.toString().contains("flight_iata"));
-        assertTrue(codeshared.toString().contains("flight_icao"));
+    public void toStringShouldContainAllInfo() throws JsonProcessingException {
+        var writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        var json = writer.writeValueAsString(codeshared);
+
+        assertTrue(json.contains("airline_name"));
+        assertTrue(json.contains("airline_iata"));
+        assertTrue(json.contains("airline_icao"));
+        assertTrue(json.contains("flight_number"));
+        assertTrue(json.contains("flight_iata"));
+        assertTrue(json.contains("flight_icao"));
     }
 
     @Test

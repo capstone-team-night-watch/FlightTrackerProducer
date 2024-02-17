@@ -1,6 +1,6 @@
 package com.capstone.producer.common.bindings.aviationstack;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -32,9 +32,9 @@ public class Arrival {
 
     private String actual;
 
-    @JsonAlias("estimated_runway")
+    @JsonProperty("estimated_runway")
     private String estimatedRunway;
 
-    @JsonAlias("actual_runway")
+    @JsonProperty("actual_runway")
     private String actualRunway;
 }

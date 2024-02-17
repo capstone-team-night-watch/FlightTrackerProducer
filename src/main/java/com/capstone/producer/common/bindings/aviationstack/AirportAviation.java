@@ -1,6 +1,6 @@
 package com.capstone.producer.common.bindings.aviationstack;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -14,34 +14,34 @@ public class AirportAviation {
     private String id;
     private String gmt;
 
-    @JsonAlias("airport_id")
+    @JsonProperty("airport_id")
     private String airportId;
 
-    @JsonAlias("iata_code")
+    @JsonProperty("iata_code")
     private String iataCode;
 
-    @JsonAlias("city_iata_code")
+    @JsonProperty("city_iata_code")
     private String cityIataCode;
 
-    @JsonAlias("icao_code")
+    @JsonProperty("icao_code")
     private String icaoCode;
 
-    @JsonAlias("country_iso2")
+    @JsonProperty("country_iso2")
     private String countryIso2;
 
-    @JsonAlias("geoname_id")
+    @JsonProperty("geoname_id")
     private String geonameId;
 
     private float latitude;
     private float longitude;
 
-    @JsonAlias("airport_name")
+    @JsonProperty("airport_name")
     private String airportName;
 
-    @JsonAlias("country_name")
+    @JsonProperty("country_name")
     private String countryName;
 
-    @JsonAlias("phone_number")
+    @JsonProperty("phone_number")
     private String phoneNumber;
 
     private String timezone;

@@ -1,5 +1,8 @@
 package com.capstone.producer.common.bindings.aviationstack;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LiveTest {
+    private ObjectWriter objectWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
     private Live live;
 
@@ -26,15 +30,17 @@ public class LiveTest {
     }
 
     @Test
-    public void toStringShouldContainAllInfo() {
-        assertTrue(live.toString().contains("updated"));
-        assertTrue(live.toString().contains("latitude"));
-        assertTrue(live.toString().contains("longitude"));
-        assertTrue(live.toString().contains("altitude"));
-        assertTrue(live.toString().contains("direction"));
-        assertTrue(live.toString().contains("speed_horizontal"));
-        assertTrue(live.toString().contains("speed_vertical"));
-        assertTrue(live.toString().contains("is_ground"));
+    public void toStringShouldContainAllInfo() throws JsonProcessingException {
+        var liveJson = objectWriter.writeValueAsString(live);
+
+        assertTrue(liveJson.contains("updated"));
+        assertTrue(liveJson.contains("latitude"));
+        assertTrue(liveJson.contains("longitude"));
+        assertTrue(liveJson.contains("altitude"));
+        assertTrue(liveJson.contains("direction"));
+        assertTrue(liveJson.contains("speed_horizontal"));
+        assertTrue(liveJson.contains("speed_vertical"));
+        assertTrue(liveJson.contains("is_ground"));
     }
 
     @Test
