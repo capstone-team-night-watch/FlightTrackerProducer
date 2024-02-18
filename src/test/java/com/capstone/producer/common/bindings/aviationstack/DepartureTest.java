@@ -25,8 +25,8 @@ public class DepartureTest {
                 .setScheduled("scheduled")
                 .setEstimated("estimated")
                 .setActual("actual")
-                .setEstimated_runway("estimated_runway")
-                .setActual_runway("actual_runway");
+                .setEstimatedRunway("estimated_runway")
+                .setActualRunway("actual_runway");
 
     }
 
@@ -58,7 +58,7 @@ public class DepartureTest {
         assertEquals("scheduled", departure.getScheduled());
         assertEquals("estimated", departure.getEstimated());
         assertEquals("actual", departure.getActual());
-        assertEquals("estimated_runway", departure.getEstimated_runway());
-        assertEquals("actual_runway", departure.getActual_runway());
+        assertEquals("estimated_runway", departure.getEstimatedRunway());
+        assertEquals("actual_runway", departure.getActualRunway());
     }
 }

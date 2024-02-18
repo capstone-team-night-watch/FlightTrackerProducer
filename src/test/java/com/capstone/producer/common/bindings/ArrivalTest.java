@@ -110,16 +110,16 @@ public class ArrivalTest {
 
     @Test
     public void setAndGetEstimated_runway(){
-        arrival.setEstimated_runway("ESTIMATED_RUNWAY");
-        result = arrival.getEstimated_runway();
+        arrival.setEstimatedRunway("ESTIMATED_RUNWAY");
+        result = arrival.getEstimatedRunway();
 
         assertEquals("ESTIMATED_RUNWAY", result);
     }
 
     @Test
     public void setAndGetActual_runway(){
-        arrival.setActual_runway("ACTUAL_RUNWAY");
-        result = arrival.getActual_runway();
+        arrival.setActualRunway("ACTUAL_RUNWAY");
+        result = arrival.getActualRunway();
 
         assertEquals("ACTUAL_RUNWAY", result);
     }

@@ -1,6 +1,6 @@
 package com.capstone.producer.clients;
 
-import com.capstone.producer.common.bindings.aero.FlightInfoFa_Id;
+import com.capstone.producer.common.bindings.aero.FlightInfoFaid;
 import com.capstone.producer.common.bindings.aero.Operator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -24,11 +24,6 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * @author Nick Horihan
- * @version 1.0.0
- * @file
- * @section DESCRIPTION
- * <p>
  * Client Caller class that facilitates interaction with the FlightAware's Aero API
  */
 public class AeroApiClientCaller {
@@ -59,12 +54,12 @@ public class AeroApiClientCaller {
     /**
      * Used when logging out flight information exception
      */
-    private final String LIVE_FLIGHT_INFORMATION_EXCEPTION_MSG = "An Exception was caught while trying to acquire live flight information. Details: {}";
+    private static final String LIVE_FLIGHT_INFORMATION_EXCEPTION_MSG = "An Exception was caught while trying to acquire live flight information. Details: {}";
 
     /**
      * Used when logging out root messages
      */
-    private final String ROOT_MSG = "root: {}";
+    private static final String ROOT_MSG = "root: {}";
 
     /**
      * This is the constructor for this client caller class
@@ -77,7 +72,6 @@ public class AeroApiClientCaller {
         this.client = client;
         this.baseUrl = baseUrl;
         objectMapper = new ObjectMapper();
-        //objectMapper.enable();
 
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -92,8 +86,7 @@ public class AeroApiClientCaller {
      * @param flightFaId The provided flight aware id number
      * @return A FlightInfo_Id Object that corresponds to the flight with a matching FaId
      */
-    public FlightInfoFa_Id getFlightFromFaId(String flightFaId) {
-
+    public FlightInfoFaid getFlightFromFaId(String flightFaId) {
         try {
             String url = String.format("%s/flights/%s/position", baseUrl, flightFaId);
 
@@ -119,10 +112,10 @@ public class AeroApiClientCaller {
                 }
 
                 // Once a JSON Object is found, it can be mapped to a FlightInfo Object
-                FlightInfoFa_Id flightInfo = jsonParser.readValueAs(FlightInfoFa_Id.class);
+                FlightInfoFaid flightInfo = jsonParser.readValueAs(FlightInfoFaid.class);
 
                 // Makes sure a valid FlightInfo is obtained
-                if (flightInfo == null || flightInfo.getFa_flight_id() == null || flightInfo.getLast_position() == null) {
+                if (flightInfo == null || flightInfo.getFaFlightId() == null || flightInfo.getLastPosition() == null) {
                     LOGGER.error("No flight with live information found given this ICAO: {}", flightFaId);
                     return null;
                 }
@@ -235,8 +228,8 @@ public class AeroApiClientCaller {
      *
      * @return A list of FlightInfo Objects that contain non-null Live Objects
      */
-    public List<FlightInfoFa_Id> getAllActiveFlightsWithLive() {
-        List<FlightInfoFa_Id> flightInfos = new ArrayList<>();
+    public List<FlightInfoFaid> getAllActiveFlightsWithLive() {
+        List<FlightInfoFaid> flightInfos = new ArrayList<>();
 
         // Pagination count
         int count = 0;
@@ -265,10 +258,10 @@ public class AeroApiClientCaller {
                     jsonParser.nextToken();
                     while (jsonParser.nextToken() == JsonToken.START_OBJECT) {
                         // Once a JSON Object is found, it can be mapped to a FlightInfo Object
-                        FlightInfoFa_Id flightInfo = jsonParser.readValueAs(FlightInfoFa_Id.class);
+                        FlightInfoFaid flightInfo = jsonParser.readValueAs(FlightInfoFaid.class);
 
                         // Only add a flight to the list if it has live information
-                        if (flightInfo.getLast_position() != null) {
+                        if (flightInfo.getLastPosition() != null) {
                             LOGGER.debug("Live flight found: {}", flightInfo.getIdent());
                             flightInfos.add(flightInfo);
                         }

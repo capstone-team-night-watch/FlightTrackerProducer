@@ -14,7 +14,7 @@ public class FlightTest {
     private Flight flight;
 
     @Mock
-    private Codeshared codeshared;
+    private CodeShared codeshared;
 
     @Before
     public void setUp() {
