@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ExceptionAdvice {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionAdvice.class);
 
-    public ExceptionAdvice() {}
-
     /**
      * Adds a handler for RequestInvalidExceptions. Allows for more complex exception handling if needed
      * @param ex Exception being thrown

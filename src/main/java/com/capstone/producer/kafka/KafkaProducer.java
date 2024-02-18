@@ -8,6 +8,7 @@ import org.apache.kafka.common.serialization.LongSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Properties;
@@ -20,7 +21,10 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class KafkaProducer {
 
-    private final static String BOOTSTRAP_SERVER = "localhost:9092";
+    private final static String TOPIC_NAME = "FlightData";
+
+    @Value("${kafka.host}")
+    private final static String BOOTSTRAP_SERVER = "kafka:9092";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducer.class);
 
@@ -64,5 +68,4 @@ public class KafkaProducer {
             producer.flush();
         }
     }
-
 }

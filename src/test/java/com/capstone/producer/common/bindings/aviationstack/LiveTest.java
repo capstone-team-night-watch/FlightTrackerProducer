@@ -1,5 +1,8 @@
 package com.capstone.producer.common.bindings.aviationstack;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LiveTest {
+    private ObjectWriter objectWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
     private Live live;
 
@@ -20,21 +24,23 @@ public class LiveTest {
         live.setLongitude(1f);
         live.setAltitude(1f);
         live.setDirection(1);
-        live.setSpeed_horizontal(1f);
-        live.setSpeed_vertical(1f);
-        live.setIs_ground(true);
+        live.setSpeedHorizontal(1f);
+        live.setSpeedVertical(1f);
+        live.setGround(true);
     }
 
     @Test
-    public void toStringShouldContainAllInfo() {
-        assertTrue(live.toString().contains("updated"));
-        assertTrue(live.toString().contains("latitude"));
-        assertTrue(live.toString().contains("longitude"));
-        assertTrue(live.toString().contains("altitude"));
-        assertTrue(live.toString().contains("direction"));
-        assertTrue(live.toString().contains("speed_horizontal"));
-        assertTrue(live.toString().contains("speed_vertical"));
-        assertTrue(live.toString().contains("is_ground"));
+    public void toStringShouldContainAllInfo() throws JsonProcessingException {
+        var liveJson = objectWriter.writeValueAsString(live);
+
+        assertTrue(liveJson.contains("updated"));
+        assertTrue(liveJson.contains("latitude"));
+        assertTrue(liveJson.contains("longitude"));
+        assertTrue(liveJson.contains("altitude"));
+        assertTrue(liveJson.contains("direction"));
+        assertTrue(liveJson.contains("speed_horizontal"));
+        assertTrue(liveJson.contains("speed_vertical"));
+        assertTrue(liveJson.contains("is_ground"));
     }
 
     @Test
@@ -44,9 +50,9 @@ public class LiveTest {
         assertEquals(1f, live.getLongitude());
         assertEquals(1f, live.getAltitude());
         assertEquals(1, live.getDirection());
-        assertEquals(1f, live.getSpeed_horizontal());
-        assertEquals(1f, live.getSpeed_vertical());
-        assertTrue(live.isIs_ground());
+        assertEquals(1f, live.getSpeedHorizontal());
+        assertEquals(1f, live.getSpeedVertical());
+        assertTrue(live.isGround());
     }
 
     @Test
@@ -57,9 +63,9 @@ public class LiveTest {
         mockLive.setLongitude(2f);
         mockLive.setAltitude(2f);
         mockLive.setDirection(2);
-        mockLive.setSpeed_horizontal(2f);
-        mockLive.setSpeed_vertical(2f);
-        mockLive.setIs_ground(false);
+        mockLive.setSpeedHorizontal(2f);
+        mockLive.setSpeedVertical(2f);
+        mockLive.setGround(false);
 
         assertNotEquals(mockLive, live);
     }

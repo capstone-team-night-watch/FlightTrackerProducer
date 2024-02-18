@@ -23,15 +23,6 @@ public class GetInfoControllerTest {
     private GetInfoController getInfoController;
 
     @Test
-    public void shouldCallGetICAO() throws JsonProcessingException, InterruptedException {
-        //when(serviceHandler.handleFlightIcao(anyString())).thenReturn("RESULT");
-
-        //String result = getInfoController.getICAO("ICAO");
-
-        //assertEquals("RESULT", result);
-    }
-
-    @Test
     public void shouldCallServiceGetLive() throws JsonProcessingException {
         when(serviceHandler.handleLiveRequest()).thenReturn("RESULT");
 
