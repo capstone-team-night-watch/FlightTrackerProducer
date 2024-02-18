@@ -41,7 +41,7 @@ public class TfrHandler {
         if(addToHashMap(notamNumber, tfrNotam)) {
             return "Received all of NOTAM, processing now";
         }
-        return "Received Notam: " + notamNumber + "waiting on further parts";
+        return "Received Notam: " + notamNumber + " waiting on further parts";
     }
 
     private static String extractNotamNumber(String notam) {
@@ -60,17 +60,18 @@ public class TfrHandler {
             arryBuilder = receivedNotams.get(notamNumber);
         }
 
-        Pattern pattern = Pattern.compile("PART (?<part>\\d) OF (?<of>\\d)");
+        Pattern pattern = Pattern.compile("(PART\s)(\\d+)(\sOF\s)(\\d+)");
         Matcher matcher = pattern.matcher(notam);
-        LOGGER.debug("Processing TFR NOTAM PART {} of {}", matcher.group("part"), matcher.group("of"));
+        
 
         // if matcher has a string, we have a multipart notam.
         // if not, it is a single part notam
         if(matcher.find()){
+            LOGGER.debug("Processing TFR NOTAM PART {} of {}", matcher.group(2), matcher.group(4));
             if(arryBuilder == null){
-                arryBuilder = new String[Integer.parseInt(matcher.group("of"))];
+                arryBuilder = new String[Integer.parseInt(matcher.group(4))];
             }
-            arryBuilder[Integer.parseInt(matcher.group("part"))] = notam;
+            arryBuilder[Integer.parseInt(matcher.group(2)) - 1] = notam;
             receivedNotams.put(notamNumber, arryBuilder);
             //test if array is filled out
             for(int i = 0; i < arryBuilder.length; i++) {
@@ -79,7 +80,7 @@ public class TfrHandler {
             }
             return true;
         }
-        //single message NOTAM
+        // single message NOTAM
         arryBuilder = new String[1];
         arryBuilder[0] = notam;
         receivedNotams.put(notamNumber, arryBuilder );
