@@ -179,10 +179,10 @@ public class ServiceHandlerTest {
 
         MockedStatic<KafkaProducer> mockedStatic = mockStatic(KafkaProducer.class);
 
-        mockedStatic.when(() -> KafkaProducer.runProducer(anyString())).thenReturn(null);
+        mockedStatic.when(() -> KafkaProducer.runProducer(anyString(), "FlightData")).thenReturn(null);
         serviceHandler.handleGenerateRequest(generateRequest);
         serviceHandler.updateGeneratedFlightInfo();
 
-        mockedStatic.verify(() -> KafkaProducer.runProducer(anyString()), times(2));
+        mockedStatic.verify(() -> KafkaProducer.runProducer(anyString(), "FlightData"), times(2));
     }
 }

@@ -21,8 +21,6 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class KafkaProducer {
 
-    private final static String TOPIC_NAME = "FlightData";
-
     @Value("${kafka.host}")
     private final static String BOOTSTRAP_SERVER = "kafka:9092";
 
