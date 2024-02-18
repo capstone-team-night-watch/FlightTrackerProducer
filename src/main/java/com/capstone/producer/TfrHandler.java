@@ -62,7 +62,7 @@ public class TfrHandler {
 
         Pattern pattern = Pattern.compile("PART (?<part>\\d) OF (?<of>\\d)");
         Matcher matcher = pattern.matcher(notam);
-
+        LOGGER.debug("Processing TFR NOTAM PART {} of {}", matcher.group("part"), matcher.group("of"));
 
         // if matcher has a string, we have a multipart notam.
         // if not, it is a single part notam
