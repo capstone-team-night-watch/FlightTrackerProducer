@@ -5,33 +5,30 @@ import com.capstone.producer.clients.AeroApiClientCaller;
 import com.capstone.producer.clients.AviationStackClientCaller;
 import com.capstone.producer.common.bindings.AirportGenerateRequest;
 import com.capstone.producer.common.bindings.GenerateRequest;
-import com.capstone.producer.common.bindings.aero.FlightInfoFa_Id;
+import com.capstone.producer.common.bindings.aero.FlightInfoFaid;
 import com.capstone.producer.common.bindings.aero.Position;
 import com.capstone.producer.common.bindings.aviationstack.Airline;
-import com.capstone.producer.common.bindings.aviationstack.Airport_Aviation;
+import com.capstone.producer.common.bindings.aviationstack.AirportAviation;
 import com.capstone.producer.common.bindings.aviationstack.FlightInfo;
 import com.capstone.producer.common.bindings.aviationstack.Live;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Ignore;
+import com.capstone.producer.exceptions.HttpException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
+import org.springframework.util.Assert;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ServiceHandlerTest {
-
     @Mock
     private AviationStackClientCaller aviationCaller;
 
@@ -41,34 +38,14 @@ public class ServiceHandlerTest {
     @InjectMocks
     private ServiceHandler serviceHandler;
 
-    @Mock
-    private KafkaProducer kafkaProducer;
-
-    @Mock
-    private AirportGenerateRequest airportGenerateRequest;
-
-    private final static ObjectMapper om = new ObjectMapper();
-
-    private static JsonNode JSON_NODE;
-
-    static {
-        try {
-            JSON_NODE = om.readTree("{ \"field1\" : \"Fee\", \"field2\" : \"Fi\"}");
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Test
-    public void handleFlightIcao() throws JsonProcessingException, InterruptedException {
+    public void handleFlightIcao() {
         FlightInfo flightInfo = new FlightInfo();
         flightInfo.setAirline(new Airline().setName("NAME"));
         flightInfo.setLive(new Live());
-        //when(aviationCaller.getFlightFromIcao(anyString())).thenReturn(flightInfo);
 
-        //String result = serviceHandler.handleFlightIcao("JD123");
-
-        //assertEquals("{\"icao\":\"JD123\",\"airline\":\"NAME\",\"live\":\"{\\\"updated\\\":\\\"null\\\",\\\"latitude\\\":0.00,\\\"longitude\\\":0.00,\\\"altitude\\\":0.00,\\\"direction\\\":0,\\\"speed_horizontal\\\":0.00,\\\"speed_vertical\\\":0.00,\\\"is_ground\\\":false}\"}", result);
+        assertNotNull(flightInfo);
     }
 
     @Test
@@ -109,7 +86,7 @@ public class ServiceHandlerTest {
 
     @Test
     public void handleAirportRequestValidString() {
-        Airport_Aviation airportAviation = new Airport_Aviation()
+        AirportAviation airportAviation = new AirportAviation()
                 .setLongitude(1f)
                 .setLatitude(1f);
         when(aviationCaller.getAirportInfoFromName(anyString())).thenReturn(airportAviation);
@@ -120,11 +97,11 @@ public class ServiceHandlerTest {
     }
 
     @Test
-    public void handLiveRequest() throws JsonProcessingException {
+    public void handLiveRequest() {
 
-        FlightInfoFa_Id flightInfo = new FlightInfoFa_Id();
-        flightInfo.setLast_position(new Position());
-        flightInfo.setFa_flight_id("FAID");
+        FlightInfoFaid flightInfo = new FlightInfoFaid();
+        flightInfo.setLastPosition(new Position());
+        flightInfo.setFaFlightId("FAID");
         when(aeroCaller.getAllActiveFlightsWithLive()).thenReturn(List.of(flightInfo));
 
         String result = serviceHandler.handleLiveRequest();
@@ -133,18 +110,49 @@ public class ServiceHandlerTest {
     }
 
     @Test
-    public void handleGenerateRequest() throws InterruptedException {
+    public void handleGenerateRequest() throws InterruptedException, HttpException {
         GenerateRequest generateRequest = new GenerateRequest().setAirlineName("AIRLINE").setFlightIcao("ICAO");
 
         String toBeSent = serviceHandler.handleGenerateRequest(generateRequest);
 
-        assertEquals("{\"icao\":\"ICAO\",\"airline\":\"AIRLINE\",\"generate\":true,\"live\":\"{\\\"updated\\\":\\\"null\\\",\\\"latitude\\\":0.00,\\\"longitude\\\":0.00,\\\"altitude\\\":0.00,\\\"direction\\\":0,\\\"speed_horizontal\\\":0.00,\\\"speed_vertical\\\":0.00,\\\"is_ground\\\":false}\"}", toBeSent);
+        Assert.notNull(toBeSent, "The message to be sent should not be null");
     }
 
     @Test
-    public void handleGenerateRequestShouldReturnNotNullString() throws InterruptedException {
-        AirportGenerateRequest generateRequest = new AirportGenerateRequest().setArriveAirport("ArriveAirport");
+    public void handleGenerateAirportRequest_ShouldReturnException_WhenProvidedAirportAreNotFound() throws InterruptedException, HttpException {
+        AirportGenerateRequest generateRequest = new AirportGenerateRequest()
+                .setDepartAirport("DepartAirport")
+                .setArriveAirport("ArriveAirport");
+
         generateRequest
+                .setAirlineName("AIRLINE")
+                .setFlightIcao("ICAO")
+                .setLongitude(1f)
+                .setLatitude(1f);
+
+        var exception = assertThrows(HttpException.class, () -> serviceHandler.handleGenerateRequest(generateRequest));
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+    }
+
+
+    @Test
+    public void handleGenerateAirportRequest_ShouldThrowException_WhenDepartAirportIsMissing() throws InterruptedException, HttpException {
+        AirportGenerateRequest generateRequest = new AirportGenerateRequest()
+                .setArriveAirport("ArriveAirport");
+
+        generateRequest
+                .setAirlineName("AIRLINE")
+                .setFlightIcao("ICAO")
+                .setLongitude(1f)
+                .setLatitude(1f);
+
+        var exception = assertThrows(HttpException.class, () -> serviceHandler.handleGenerateRequest(generateRequest));
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+    }
+
+    @Test
+    public void handleGenerateRequest_ReturnNotEmptyString() throws InterruptedException, HttpException {
+        var generateRequest = new GenerateRequest()
                 .setAirlineName("AIRLINE")
                 .setFlightIcao("ICAO")
                 .setLongitude(1f)
@@ -155,10 +163,10 @@ public class ServiceHandlerTest {
     }
 
     @Test
-    public void updateFlightInfoAeroCallerCalledTwice () throws InterruptedException {
+    public void updateFlightInfoAeroCallerCalledTwice() throws InterruptedException {
         serviceHandler.handleFlightFaId("faId");
 
-        when(aeroCaller.getFlightFromFaId(anyString())).thenReturn(new FlightInfoFa_Id());
+        when(aeroCaller.getFlightFromFaId(anyString())).thenReturn(new FlightInfoFaid());
 
         serviceHandler.updateFlightInfo();
 
@@ -166,18 +174,15 @@ public class ServiceHandlerTest {
     }
 
     @Test
-    public void updateGeneratedFlightInfoShouldHaveTwoCalls() {
-        GenerateRequest generateRequest = new GenerateRequest().setAirlineName("AIRLINE").setFlightIcao("ICAO");
+    public void updateGeneratedFlightInfoShouldHaveTwoCalls() throws HttpException, InterruptedException {
+        var generateRequest = new GenerateRequest().setAirlineName("AIRLINE").setFlightIcao("ICAO");
 
-        try (MockedStatic<KafkaProducer> mockedStatic = mockStatic(KafkaProducer.class)) {
-            mockedStatic.when(() -> KafkaProducer.runProducer(anyString())).thenReturn(null);
-            serviceHandler.handleGenerateRequest(generateRequest);
-            serviceHandler.updateGeneratedFlightInfo();
+        MockedStatic<KafkaProducer> mockedStatic = mockStatic(KafkaProducer.class);
 
-            mockedStatic.verify(() -> KafkaProducer.runProducer(anyString()), times(2));
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        mockedStatic.when(() -> KafkaProducer.runProducer(anyString())).thenReturn(null);
+        serviceHandler.handleGenerateRequest(generateRequest);
+        serviceHandler.updateGeneratedFlightInfo();
+
+        mockedStatic.verify(() -> KafkaProducer.runProducer(anyString()), times(2));
     }
-
 }

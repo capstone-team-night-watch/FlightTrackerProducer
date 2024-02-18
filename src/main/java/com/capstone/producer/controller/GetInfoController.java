@@ -30,10 +30,8 @@ public class GetInfoController {
      * @return A String representing the message that was sent to the Kafka broker which is made up of
      * JSON that contains coordinate and other flight information
      */
-    @CrossOrigin("*")
-    @RequestMapping(
+    @GetMapping(
             path = "/operator/{opId}",
-            method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseBody
@@ -51,14 +49,12 @@ public class GetInfoController {
      * @return A String representing the message that was sent to the Kafka broker which is made up of
      * JSON that contains coordinate and other flight information
      */
-    @CrossOrigin("*")
-    @RequestMapping(
+    @GetMapping(
             path = "/flightident/{ident}",
-            method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseBody
-    public String getIdent(@PathVariable("ident") String flightIdent) throws InterruptedException {
+    public String getIdent(@PathVariable("ident") String flightIdent) {
         LOGGER.info("Received request with ident: {}", flightIdent);
 
         return serviceHandler.handleFlightIdent(flightIdent);
@@ -73,9 +69,8 @@ public class GetInfoController {
      * JSON that contains coordinate and other flight information
      */
     @CrossOrigin("*")
-    @RequestMapping(
+    @GetMapping(
             path = "/flightfaid/{faid}",
-            method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseBody
@@ -93,9 +88,8 @@ public class GetInfoController {
      * JSON that contains a list of flight icao numbers
      */
     @CrossOrigin("*")
-    @RequestMapping(
+    @GetMapping(
             path = "/flighticao/getLive",
-            method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseBody
@@ -112,9 +106,8 @@ public class GetInfoController {
      * JSON that contains the coordinates for the request airport
      */
     @CrossOrigin("*")
-    @RequestMapping(
+    @GetMapping(
             path = "/airportInfo/{name}",
-            method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseBody

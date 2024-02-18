@@ -1,5 +1,9 @@
 package com.capstone.producer.common.bindings;
 
+import jakarta.validation.constraints.NotEmpty;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.StringJoiner;
 
 /**
@@ -7,48 +11,17 @@ import java.util.StringJoiner;
  * Helps facilitate the generation of a Mock flight when only given airport names
  * Airport information is the additional functionality added on top of the GenerateRequest class
  */
+@Setter
+@Getter
 public class AirportGenerateRequest extends GenerateRequest {
+    @NotEmpty
     private String departAirport;
+
+    @NotEmpty
     private String arriveAirport;
 
     private float finalLongitude;
     private float finalLatitude;
-
-    public String getDepartAirport() {
-        return departAirport;
-    }
-
-    public AirportGenerateRequest setDepartAirport(String departAirport) {
-        this.departAirport = departAirport;
-        return this;
-    }
-
-    public String getArriveAirport() {
-        return arriveAirport;
-    }
-
-    public AirportGenerateRequest setArriveAirport(String arriveAirport) {
-        this.arriveAirport = arriveAirport;
-        return this;
-    }
-
-    public float getFinalLongitude() {
-        return finalLongitude;
-    }
-
-    public AirportGenerateRequest setFinalLongitude(float finalLongitude) {
-        this.finalLongitude = finalLongitude;
-        return this;
-    }
-
-    public float getFinalLatitude() {
-        return finalLatitude;
-    }
-
-    public AirportGenerateRequest setFinalLatitude(float finalLatitude) {
-        this.finalLatitude = finalLatitude;
-        return this;
-    }
 
     @Override
     public String toString() {
