@@ -21,11 +21,9 @@ public class TfrHandler {
      * Keeps track of all TFRs Injected
      */
     private static Map<String, String[]> receivedNotams;
-    private static Map<String, String> combinedNotams;
 
     public TfrHandler() {
         receivedNotams = new ConcurrentHashMap<>();
-        combinedNotams = new ConcurrentHashMap<>();
     }
 
     /**
@@ -110,15 +108,15 @@ public class TfrHandler {
         Pattern pattern = Pattern.compile("(FDC\\s*\\d/\\d{4}\\s*.*..TEMPORARY\\s*(FLIGHT)?\\s*(RESTRICTIONS.)?)(.*)(\\b\\d{10}-\\d{10})");
         String stringToParse = "";
         for(int i = 0; i < allMessages.length; i++) {
-            LOGGER.info("AllMessage of message: {}", allMessages[i]);
+            LOGGER.debug("AllMessage of message: {}", allMessages[i]);
             stringToParse = allMessages[i].replaceAll(System.getProperty("line.separator"), " ");
-            LOGGER.info("String to parse: {}", stringToParse);
+            stringToParse = stringToParse.replaceAll("[\\n\\r]", " ");
+            LOGGER.debug("String to parse: {}", stringToParse);
             Matcher matcher = pattern.matcher(stringToParse);
             if(matcher.find()) {
                 fullMessage += matcher.group(4);
             }
         }
-        combinedNotams.put(notamNumber, fullMessage);
         return fullMessage;
     }
 
@@ -127,7 +125,7 @@ public class TfrHandler {
         Matcher matcher = pattern.matcher(message);
         boolean successfulMatching = false;
         while(matcher.find()){ //Allows for multiple finds.
-            LOGGER.info("String matched Radius test: {}", matcher.group(0));
+            LOGGER.debug("String matched Radius test: {}", matcher.group(0));
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("notamNumber", notamNumber);
             jsonObject.put("type", "RADIUS");

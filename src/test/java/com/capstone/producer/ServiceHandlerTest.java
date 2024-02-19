@@ -186,5 +186,6 @@ public class ServiceHandlerTest {
         serviceHandler.updateGeneratedFlightInfo();
 
         mockedStatic.verify(() -> KafkaProducer.runProducer(anyString(), anyString()), times(2));
+        mockedStatic.close();
     }
 }
