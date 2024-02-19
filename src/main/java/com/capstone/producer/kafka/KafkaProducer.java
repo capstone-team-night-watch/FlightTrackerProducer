@@ -8,6 +8,7 @@ import org.apache.kafka.common.serialization.LongSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +22,14 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class KafkaProducer {
 
-    @Value("${kafka.host}")
-    private final static String BOOTSTRAP_SERVER = "kafka:9092";
+    private static String BOOTSTRAP_SERVER;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducer.class);
 
+    @Autowired
+    public KafkaProducer(@Value("${kafka.host}") String BOOTSTRAP_SERVER) {
+        this.BOOTSTRAP_SERVER = BOOTSTRAP_SERVER;
+    }
 
     private static Producer<Long, String> createProducer() {
         Properties props = new Properties();
