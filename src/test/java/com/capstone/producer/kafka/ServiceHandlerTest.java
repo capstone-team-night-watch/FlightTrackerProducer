@@ -1,4 +1,4 @@
-package com.capstone.producer;
+package com.capstone.producer.kafka;
 
 import com.capstone.producer.ServiceHandler;
 import com.capstone.producer.clients.AeroApiClientCaller;
@@ -12,8 +12,9 @@ import com.capstone.producer.common.bindings.aviationstack.AirportAviation;
 import com.capstone.producer.common.bindings.aviationstack.FlightInfo;
 import com.capstone.producer.common.bindings.aviationstack.Live;
 import com.capstone.producer.exceptions.HttpException;
-import com.capstone.producer.kafka.KafkaProducer;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -39,6 +40,20 @@ public class ServiceHandlerTest {
 
     @InjectMocks
     private ServiceHandler serviceHandler;
+
+    private static MockedStatic<KafkaProducer> mockedStatic;
+
+    @BeforeClass
+    public static void init() {
+        mockedStatic = mockStatic(KafkaProducer.class);
+
+        mockedStatic.when(() -> KafkaProducer.runProducer(anyString(), anyString())).thenReturn(null);
+    }
+
+    @AfterClass
+    public static void close() {
+        mockedStatic.close();
+    }
 
 
     @Test
@@ -179,13 +194,10 @@ public class ServiceHandlerTest {
     public void updateGeneratedFlightInfoShouldHaveTwoCalls() throws HttpException, InterruptedException {
         var generateRequest = new GenerateRequest().setAirlineName("AIRLINE").setFlightIcao("ICAO");
 
-        MockedStatic<KafkaProducer> mockedStatic = mockStatic(KafkaProducer.class);
-
-        mockedStatic.when(() -> KafkaProducer.runProducer(anyString(), anyString())).thenReturn(null);
+        
         serviceHandler.handleGenerateRequest(generateRequest);
         serviceHandler.updateGeneratedFlightInfo();
 
         mockedStatic.verify(() -> KafkaProducer.runProducer(anyString(), anyString()), times(2));
-        mockedStatic.close();
     }
 }
