@@ -7,7 +7,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -92,7 +91,7 @@ public class TfrHandler {
             }
             arryBuilder[Integer.parseInt(matcher.group(2)) - 1] = notam;
             receivedNotams.put(notamNumber, arryBuilder);
-            //test if array is filled out
+            // test if array is filled out
             for(int i = 0; i < arryBuilder.length; i++) {
                 if(arryBuilder[i] == null)
                     return false;
