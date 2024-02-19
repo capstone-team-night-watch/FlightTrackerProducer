@@ -22,14 +22,11 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class KafkaProducer {
 
-    private static String BOOTSTRAP_SERVER;
+    @Value("${kafka.host}")
+    private final static String BOOTSTRAP_SERVER = "kafka:9092";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducer.class);
 
-    @Autowired
-    public KafkaProducer(@Value("${kafka.host}") String BOOTSTRAP_SERVER) {
-        this.BOOTSTRAP_SERVER = BOOTSTRAP_SERVER;
-    }
 
     private static Producer<Long, String> createProducer() {
         Properties props = new Properties();
