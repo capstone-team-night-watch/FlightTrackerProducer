@@ -1,13 +1,18 @@
 package com.capstone.producer;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import com.capstone.producer.kafka.KafkaProducer;
 
 @Service
 public class TfrHandler {
@@ -16,9 +21,11 @@ public class TfrHandler {
      * Keeps track of all TFRs Injected
      */
     private static Map<String, String[]> receivedNotams;
+    private static Map<String, String> combinedNotams;
 
     public TfrHandler() {
         receivedNotams = new ConcurrentHashMap<>();
+        combinedNotams = new ConcurrentHashMap<>();
     }
 
     /**
@@ -39,8 +46,18 @@ public class TfrHandler {
         //True means all parts have been received.
         //False means we are waiting on other parts
         if(addToHashMap(notamNumber, tfrNotam)) {
-            return "Received all of NOTAM, processing now";
+            //combine all parts of the notam into one for easier TFR parsing.
+            String fullMessage = combineNotamMessages(notamNumber);
+            
+            if(pointRadiusParse(notamNumber, fullMessage)){
+                return "Point Radius Parsed";
+            }
+            if(boundaryParse(notamNumber, fullMessage)){
+                return "Boundary Parsed";
+            }
+            return "Unable to parse :(";
         }
+        //No further processing needed
         return "Received Notam: " + notamNumber + " waiting on further parts";
     }
 
@@ -85,7 +102,78 @@ public class TfrHandler {
         arryBuilder[0] = notam;
         receivedNotams.put(notamNumber, arryBuilder );
         return true;
-        
+    }
+
+    private static String combineNotamMessages(String notamNumber) {
+        String[] allMessages = receivedNotams.get(notamNumber);
+        String fullMessage = "";
+        Pattern pattern = Pattern.compile("(FDC\\s*\\d/\\d{4}\\s*.*..TEMPORARY\\s*(FLIGHT)?\\s*(RESTRICTIONS.)?)(.*)(\\b\\d{10}-\\d{10})");
+        String stringToParse = "";
+        for(int i = 0; i < allMessages.length; i++) {
+            LOGGER.info("AllMessage of message: {}", allMessages[i]);
+            stringToParse = allMessages[i].replaceAll(System.getProperty("line.separator"), " ");
+            LOGGER.info("String to parse: {}", stringToParse);
+            Matcher matcher = pattern.matcher(stringToParse);
+            if(matcher.find()) {
+                fullMessage += matcher.group(4);
+            }
+        }
+        combinedNotams.put(notamNumber, fullMessage);
+        return fullMessage;
+    }
+
+    private static boolean pointRadiusParse(String notamNumber, String message) throws InterruptedException{
+        Pattern pattern = Pattern.compile("(WI\\s*AN\\s*AREA\\s*DEFINED\\s*AS\\s*(\\d*.?\\d*)NM\\s*RADIUS\\s*OF\\s*(\\d+[NS]\\d+[EW])(.*?)EFFECTIVE\\s*(\\d{10})\\s*UTC.*?UNTIL\\s*(\\d{10})?)");
+        Matcher matcher = pattern.matcher(message);
+        boolean successfulMatching = false;
+        while(matcher.find()){ //Allows for multiple finds.
+            LOGGER.info("String matched Radius test: {}", matcher.group(0));
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("notamNumber", notamNumber);
+            jsonObject.put("type", "RADIUS");
+            jsonObject.put("latlong", matcher.group(3));
+            jsonObject.put("radius", matcher.group(2));
+            jsonObject.put("startTime", matcher.group(5));
+            if(matcher.group(6) != null) {
+                jsonObject.put("endTime", matcher.group(6));
+            } else {
+                jsonObject.put("endTime", "PERM");
+            }
+
+            KafkaProducer.runProducer(jsonObject.toString(), "TFRData");
+            successfulMatching = true;
+        }
+        return successfulMatching; //doesn't appear to be a straight circle
+    }
+
+    private static boolean boundaryParse(String notamNumber, String message) throws InterruptedException{
+        Pattern boundaryPattern = Pattern.compile("WI\\s*AN\\s*AREA\\s*DEFINED\\s*AS\\s*\\d+[NS]\\d+[EW].*?TO.*?ORIGIN.*?EFFECTIVE\\s*(\\d{10}).*?UNTIL\\s*(\\d{10})?");
+        Pattern latlongPattern = Pattern.compile("\\d+[NS]\\d+[EW]");
+        Matcher boundaryMatch = boundaryPattern.matcher(message);
+        boolean successfulMatching = false;
+        while(boundaryMatch.find()) {
+            Matcher latlongMatch = latlongPattern.matcher(boundaryMatch.group(0));
+            List<String> latlong = new ArrayList<String>();
+            while(latlongMatch.find()){
+                latlong.add(latlongMatch.group(0));
+            }
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("notamNumber", notamNumber);
+            jsonObject.put("type", "BOUNDARY");
+            jsonObject.put("latlong", latlong);
+            jsonObject.put("startTime", boundaryMatch.group(1));
+            if(boundaryMatch.group(2) != null) {
+                jsonObject.put("endTime", boundaryMatch.group(2));
+            } else {
+                jsonObject.put("endTime", "PERM");
+            }
+
+            KafkaProducer.runProducer(jsonObject.toString(), "TFRData");
+
+            successfulMatching = true;
+        }
+        return successfulMatching; //doesn't appear to be a boundary
     }
     
 }

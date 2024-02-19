@@ -32,7 +32,7 @@ public class NotamInjector {
      */
     @PutMapping("/tfr")
     public ResponseEntity<?> postTFR(@RequestBody String tfrNotam) throws InterruptedException {
-        LOGGER.info("Received TFR NOTAM: {}", tfrNotam);
+        //LOGGER.info("Received TFR NOTAM: {}", tfrNotam);
 
         return new ResponseEntity<>(tfrHandler.handleTfrAddition(tfrNotam), HttpStatus.OK);
     }
