@@ -1,6 +1,7 @@
 package com.capstone.producer;
 
 import com.capstone.producer.kafka.KafkaProducer;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -96,19 +97,19 @@ public class TfrHandlerTest {
                 "2402182100-2402240500";
 
     @Test
-    public void testInvalidTfr() throws InterruptedException{
+    public void testInvalidTfr() throws InterruptedException, JsonProcessingException{
         String  result = tfrHandler.handleTfrAddition("INVALID");
         assertEquals("Unable to parse NOTAM", result);
     }
 
     @Test
-    public void testValidTfrBoundaryPart1() throws InterruptedException{
+    public void testValidTfrBoundaryPart1() throws InterruptedException, JsonProcessingException{
         String  result = tfrHandler.handleTfrAddition(boundaryPart1);
         assertEquals("Received Notam: 4/3473 waiting on further parts", result);
     }
 
     @Test
-    public void testValidTfrBoundaryPart2() throws InterruptedException{
+    public void testValidTfrBoundaryPart2() throws InterruptedException, JsonProcessingException{
         MockedStatic<KafkaProducer> mockedStatic = mockStatic(KafkaProducer.class);
 
         mockedStatic.when(() -> KafkaProducer.runProducer(anyString(), anyString())).thenReturn(null);
@@ -121,7 +122,7 @@ public class TfrHandlerTest {
     }
 
     @Test
-    public void testValidTfrRadius() throws InterruptedException{
+    public void testValidTfrRadius() throws InterruptedException, JsonProcessingException{
         MockedStatic<KafkaProducer> mockedStatic = mockStatic(KafkaProducer.class);
 
         mockedStatic.when(() -> KafkaProducer.runProducer(anyString(), anyString())).thenReturn(null);
@@ -132,7 +133,7 @@ public class TfrHandlerTest {
     }
 
     @Test
-    public void testBadTfrBody() throws InterruptedException{
+    public void testBadTfrBody() throws InterruptedException, JsonProcessingException{
         String  result = tfrHandler.handleTfrAddition(invalidTfrBody);
         assertEquals("Unable to parse :(", result);
     }

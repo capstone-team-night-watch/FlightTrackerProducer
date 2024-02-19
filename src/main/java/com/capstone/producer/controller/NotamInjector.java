@@ -1,6 +1,7 @@
 package com.capstone.producer.controller;
 
 import com.capstone.producer.TfrHandler;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,8 +32,11 @@ public class NotamInjector {
     @PutMapping("/tfr")
     public ResponseEntity<?> postTFR(@RequestBody String tfrNotam) throws InterruptedException {
         LOGGER.debug("Received TFR NOTAM: {}", tfrNotam);
-
-        return new ResponseEntity<>(tfrHandler.handleTfrAddition(tfrNotam), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(tfrHandler.handleTfrAddition(tfrNotam), HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            return new ResponseEntity<>("Unknown processing error occured", HttpStatus.UNPROCESSABLE_ENTITY);
+        }
     }
 
 }

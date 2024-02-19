@@ -12,7 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.capstone.producer.common.bindings.TfrNotam;
 import com.capstone.producer.kafka.KafkaProducer;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class TfrHandler {
@@ -34,8 +37,9 @@ public class TfrHandler {
      * later when all parts make it in
      * 
      * @throws InterruptedException Sending a message using Kafka can trigger an InterruptedException
+     * @throws JsonProcessingException 
      */
-    public String handleTfrAddition(String tfrNotam) throws InterruptedException {
+    public String handleTfrAddition(String tfrNotam) throws InterruptedException, JsonProcessingException {
         LOGGER.debug("Received TFR: {}", tfrNotam);
         String notamNumber = extractNotamNumber(tfrNotam);
         if (notamNumber == null){
@@ -120,54 +124,55 @@ public class TfrHandler {
         return fullMessage;
     }
 
-    private static boolean pointRadiusParse(String notamNumber, String message) throws InterruptedException{
+    private static boolean pointRadiusParse(String notamNumber, String message) throws InterruptedException, JsonProcessingException {
         Pattern pattern = Pattern.compile("(WI\\s*AN\\s*AREA\\s*DEFINED\\s*AS\\s*(\\d*.?\\d*)NM\\s*RADIUS\\s*OF\\s*(\\d+[NS]\\d+[EW])(.*?)EFFECTIVE\\s*(\\d{10})\\s*UTC.*?UNTIL\\s*(\\d{10})?)");
         Matcher matcher = pattern.matcher(message);
+        ObjectMapper objectMapper = new ObjectMapper();
         boolean successfulMatching = false;
         while(matcher.find()){ //Allows for multiple finds.
             LOGGER.debug("String matched Radius test: {}", matcher.group(0));
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("notamNumber", notamNumber);
-            jsonObject.put("type", "RADIUS");
-            jsonObject.put("latlong", matcher.group(3));
-            jsonObject.put("radius", matcher.group(2));
-            jsonObject.put("startTime", matcher.group(5));
+
+            String endString;
             if(matcher.group(6) != null) {
-                jsonObject.put("endTime", matcher.group(6));
+                endString = matcher.group(6);
             } else {
-                jsonObject.put("endTime", "PERM");
+                endString = "PERM";
             }
 
-            KafkaProducer.runProducer(jsonObject.toString(), "TFRData");
+            List<String> latlong = new ArrayList<String>();
+            latlong.add(matcher.group(3));
+            
+            TfrNotam notamObject = new TfrNotam(notamNumber, "RADIUS", latlong, matcher.group(2), matcher.group(5), endString);
+            KafkaProducer.runProducer(objectMapper.writeValueAsString(notamObject), "TFRData");
             successfulMatching = true;
         }
         return successfulMatching; //doesn't appear to be a straight circle
     }
 
-    private static boolean boundaryParse(String notamNumber, String message) throws InterruptedException{
+    private static boolean boundaryParse(String notamNumber, String message) throws InterruptedException, JsonProcessingException{
         Pattern boundaryPattern = Pattern.compile("WI\\s*AN\\s*AREA\\s*DEFINED\\s*AS\\s*\\d+[NS]\\d+[EW].*?TO.*?ORIGIN.*?EFFECTIVE\\s*(\\d{10}).*?UNTIL\\s*(\\d{10})?");
         Pattern latlongPattern = Pattern.compile("\\d+[NS]\\d+[EW]");
         Matcher boundaryMatch = boundaryPattern.matcher(message);
+        ObjectMapper objectMapper = new ObjectMapper();
         boolean successfulMatching = false;
         while(boundaryMatch.find()) {
             Matcher latlongMatch = latlongPattern.matcher(boundaryMatch.group(0));
+
             List<String> latlong = new ArrayList<String>();
             while(latlongMatch.find()){
                 latlong.add(latlongMatch.group(0));
             }
 
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("notamNumber", notamNumber);
-            jsonObject.put("type", "BOUNDARY");
-            jsonObject.put("latlong", latlong);
-            jsonObject.put("startTime", boundaryMatch.group(1));
+
+            String endString;
             if(boundaryMatch.group(2) != null) {
-                jsonObject.put("endTime", boundaryMatch.group(2));
+                endString = boundaryMatch.group(2);
             } else {
-                jsonObject.put("endTime", "PERM");
+                endString = "PERM";
             }
 
-            KafkaProducer.runProducer(jsonObject.toString(), "TFRData");
+            TfrNotam notamObject = new TfrNotam(notamNumber, "BOUNDARY", latlong, "0", boundaryMatch.group(1), endString);
+            KafkaProducer.runProducer(objectMapper.writeValueAsString(notamObject), "TFRData");
 
             successfulMatching = true;
         }
