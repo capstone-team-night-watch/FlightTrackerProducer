@@ -1,4 +1,4 @@
-package com.capstone.producer.kafka;
+package com.capstone.producer;
 
 import com.capstone.producer.ServiceHandler;
 import com.capstone.producer.clients.AeroApiClientCaller;
@@ -12,6 +12,8 @@ import com.capstone.producer.common.bindings.aviationstack.AirportAviation;
 import com.capstone.producer.common.bindings.aviationstack.FlightInfo;
 import com.capstone.producer.common.bindings.aviationstack.Live;
 import com.capstone.producer.exceptions.HttpException;
+import com.capstone.producer.kafka.KafkaProducer;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -179,10 +181,10 @@ public class ServiceHandlerTest {
 
         MockedStatic<KafkaProducer> mockedStatic = mockStatic(KafkaProducer.class);
 
-        mockedStatic.when(() -> KafkaProducer.runProducer(anyString(), "FlightData")).thenReturn(null);
+        mockedStatic.when(() -> KafkaProducer.runProducer(anyString(), anyString())).thenReturn(null);
         serviceHandler.handleGenerateRequest(generateRequest);
         serviceHandler.updateGeneratedFlightInfo();
 
-        mockedStatic.verify(() -> KafkaProducer.runProducer(anyString(), "FlightData"), times(2));
+        mockedStatic.verify(() -> KafkaProducer.runProducer(anyString(), anyString()), times(2));
     }
 }
