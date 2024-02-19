@@ -8,6 +8,7 @@ import org.apache.kafka.common.serialization.LongSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +22,8 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class KafkaProducer {
 
-    private final static String TOPIC_NAME = "FlightData";
-
     @Value("${kafka.host}")
-    private final static String BOOTSTRAP_SERVER = "kafka:9092";
+    private final static String BOOTSTRAP_SERVER = "localhost:9092";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducer.class);
 
@@ -47,12 +46,12 @@ public class KafkaProducer {
      * @return A RecordMetadata Object that relates to the ProducerRecord sent through Kafka in some way
      * @throws InterruptedException Calling get() on the result of Producer.send(ProducerRecord) can trigger a InterruptedException
      */
-    public static RecordMetadata runProducer(String message) throws InterruptedException {
+    public static RecordMetadata runProducer(String message, String topicName) throws InterruptedException {
         final Producer<Long, String> producer = createProducer();
 
         try {
             LOGGER.info("Sending message to Topic");
-            final ProducerRecord<Long, String> record = new ProducerRecord<>(TOPIC_NAME, message);
+            final ProducerRecord<Long, String> record = new ProducerRecord<>(topicName, message);
             return producer.send(record).get();
         } catch (ExecutionException exEx) {
             LOGGER.error("An ExecutionException was caught when trying to sent this message: {}. " +
