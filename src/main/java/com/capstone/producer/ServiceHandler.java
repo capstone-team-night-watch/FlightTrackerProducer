@@ -323,12 +323,18 @@ public class ServiceHandler {
 
         float difference = 0;
 
-        if (longIsNeg && finalLongIsNeg) {
-            difference = airportGenerate.getFinalLongitude() + airportGenerate.getLongitude();
-        } else if (longIsNeg) {
-            difference = Math.abs(airportGenerate.getLongitude() - airportGenerate.getFinalLongitude());
-        } else if (finalLongIsNeg) {
+        if (longIsNeg && finalLongIsNeg || !longIsNeg && !finalLongIsNeg) {
             difference = airportGenerate.getFinalLongitude() - airportGenerate.getLongitude();
+        } else if (longIsNeg) {
+            difference = Math.min(
+                Math.abs(airportGenerate.getLongitude() - airportGenerate.getFinalLongitude()),
+                (airportGenerate.getLongitude() + 180.0) + (180.0 - airportGenerate.getFinalLongitude())
+            );
+        } else if (finalLongIsNeg) {
+            difference = Math.max(
+                airportGenerate.getFinalLongitude() - airportGenerate.getLongitude(),
+                (-180.0 - airportGenerate.getFinalLongitude()) + (airportGenerate.getLongitude() - 180.0)
+            );
         }
         airportGenerate.setLongitudeChange(difference / MAX_MOCK_FLIGHT_UPDATES);
 
@@ -337,11 +343,11 @@ public class ServiceHandler {
         boolean finalLatIsNeg = airportGenerate.getFinalLatitude() < 0;
 
         if (latIsNeg && finalLatIsNeg) {
-            difference = airportGenerate.getFinalLongitude() + airportGenerate.getLongitude();
+            difference = airportGenerate.getFinalLatitude() + airportGenerate.getLatitude();
         } else if (latIsNeg) {
-            difference = Math.abs(airportGenerate.getLongitude() - airportGenerate.getFinalLongitude());
+            difference = Math.abs(airportGenerate.getLatitude() - airportGenerate.getFinalLatitude());
         } else if (finalLatIsNeg) {
-            difference = airportGenerate.getFinalLongitude() - airportGenerate.getLongitude();
+            difference = airportGenerate.getFinalLatitude() - airportGenerate.getLatitude();
         }
         airportGenerate.setLatitudeChange(difference / MAX_MOCK_FLIGHT_UPDATES);
     }
