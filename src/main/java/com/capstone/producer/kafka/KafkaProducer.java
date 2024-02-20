@@ -8,7 +8,6 @@ import org.apache.kafka.common.serialization.LongSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -23,10 +22,12 @@ import java.util.concurrent.ExecutionException;
 public class KafkaProducer {
 
     @Value("${kafka.host}")
-    private final static String BOOTSTRAP_SERVER = "localhost:9092";
+    private static final String BOOTSTRAP_SERVER = "kafka:9092";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducer.class);
 
+    private KafkaProducer(){
+    }
 
     private static Producer<Long, String> createProducer() {
         Properties props = new Properties();
@@ -51,8 +52,8 @@ public class KafkaProducer {
 
         try {
             LOGGER.info("Sending message to Topic");
-            final ProducerRecord<Long, String> record = new ProducerRecord<>(topicName, message);
-            return producer.send(record).get();
+            final ProducerRecord<Long, String> producerRecord = new ProducerRecord<>(topicName, message);
+            return producer.send(producerRecord).get();
         } catch (ExecutionException exEx) {
             LOGGER.error("An ExecutionException was caught when trying to sent this message: {}. " +
                     "Rethrowing exception as a RuntimeException...", message);
