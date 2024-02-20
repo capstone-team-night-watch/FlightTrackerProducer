@@ -1,10 +1,7 @@
 package com.capstone.producer.common.bindings.aviationstack;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
  * Class used as bindings for the Aviation Stack API responses.

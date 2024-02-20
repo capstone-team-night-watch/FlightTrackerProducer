@@ -22,11 +22,7 @@ public class TfrHandler {
     /**
      * Keeps track of all TFRs Injected
      */
-    private static Map<String, String[]> receivedNotams;
-
-    public TfrHandler() {
-        receivedNotams = new ConcurrentHashMap<>();
-    }
+    private static Map<String, String[]> receivedNotams = new ConcurrentHashMap<>();
 
     /**
      * Facilitates the creation and tracking of TFRs
@@ -138,7 +134,7 @@ public class TfrHandler {
                 endString = "PERM";
             }
 
-            List<String> latlong = new ArrayList<String>();
+            List<String> latlong = new ArrayList<>();
             latlong.add(matcher.group(3));
             
             TfrNotam notamObject = new TfrNotam(notamNumber, "RADIUS", latlong, matcher.group(2), matcher.group(5), endString);
@@ -157,7 +153,7 @@ public class TfrHandler {
         while(boundaryMatch.find()) {
             Matcher latlongMatch = latlongPattern.matcher(boundaryMatch.group(0));
 
-            List<String> latlong = new ArrayList<String>();
+            List<String> latlong = new ArrayList<>();
             while(latlongMatch.find()){
                 latlong.add(latlongMatch.group(0));
             }

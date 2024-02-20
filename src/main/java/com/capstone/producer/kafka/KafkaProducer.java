@@ -25,6 +25,8 @@ public class KafkaProducer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducer.class);
 
+    private KafkaProducer(){
+    }
 
     private static Producer<Long, String> createProducer() {
         Properties props = new Properties();
@@ -49,8 +51,8 @@ public class KafkaProducer {
 
         try {
             LOGGER.info("Sending message to Topic");
-            final ProducerRecord<Long, String> record = new ProducerRecord<>(topicName, message);
-            return producer.send(record).get();
+            final ProducerRecord<Long, String> producerRecord = new ProducerRecord<>(topicName, message);
+            return producer.send(producerRecord).get();
         } catch (ExecutionException exEx) {
             LOGGER.error("An ExecutionException was caught when trying to sent this message: {}. " +
                     "Rethrowing exception as a RuntimeException...", message);
