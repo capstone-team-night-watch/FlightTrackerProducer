@@ -20,9 +20,8 @@ import java.util.concurrent.ExecutionException;
  */
 @Service
 public class KafkaProducer {
-
     @Value("${kafka.host}")
-    private static final String BOOTSTRAP_SERVER = "kafka:9092";
+    private final static String BOOTSTRAP_SERVER = "kafka:9092";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducer.class);
 
@@ -68,4 +67,5 @@ public class KafkaProducer {
             producer.flush();
         }
     }
+
 }

@@ -1,5 +1,6 @@
 FROM openjdk:17-jdk-slim
-ARG build_type=
+
+ARG build_type
 ENV MODE=${build_type}
 
 EXPOSE 8080

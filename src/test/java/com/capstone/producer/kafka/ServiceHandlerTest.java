@@ -194,7 +194,7 @@ public class ServiceHandlerTest {
     public void updateGeneratedFlightInfoShouldHaveTwoCalls() throws HttpException, InterruptedException {
         var generateRequest = new GenerateRequest().setAirlineName("AIRLINE").setFlightIcao("ICAO");
 
-        
+
         serviceHandler.handleGenerateRequest(generateRequest);
         serviceHandler.updateGeneratedFlightInfo();
 

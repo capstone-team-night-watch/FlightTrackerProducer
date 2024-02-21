@@ -79,5 +79,7 @@ jobs:
       - name: Build and Publish Docker Image to dockerhub
         run : |
           docker tag night-watch-repository:latest ewagner2802/flighttrackerproducer:${BUILD_NUMBER}
-          docker push ewagner2802/flighttrackerproducer:${BUILD_NUMBER}
+          docker tag night-watch-repository:latest ewagner2802/flighttrackerproducer:latest
+          
+          docker push ewagner2802/flighttrackerproducer --all-tags
 
