@@ -25,7 +25,7 @@ public class KafkaProducer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducer.class);
 
-    private KafkaProducer(){
+    private KafkaProducer() {
     }
 
     private static Producer<Long, String> createProducer() {
