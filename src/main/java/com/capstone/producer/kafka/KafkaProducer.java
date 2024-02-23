@@ -20,19 +20,18 @@ import java.util.concurrent.ExecutionException;
  */
 @Service
 public class KafkaProducer {
-
     @Value("${kafka.host}")
-    private static final String BOOTSTRAP_SERVER = "kafka:9092";
+    private final static String BOOTSTRAP_SERVER = "kafka:9092";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducer.class);
 
-    private KafkaProducer(){
+    private KafkaProducer() {
     }
 
     private static Producer<Long, String> createProducer() {
         Properties props = new Properties();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVER);
-        props.put(ProducerConfig.CLIENT_ID_CONFIG, "KafkaExampleProducer-TESTER");
+        props.put(ProducerConfig.CLIENT_ID_CONFIG, "flight-tracker-producer");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
@@ -68,4 +67,5 @@ public class KafkaProducer {
             producer.flush();
         }
     }
+
 }
