@@ -14,15 +14,22 @@ public class TfrNotam {
     @NotEmpty
     private String notamType;
 
-    List<String> latlong;
+    // stores standard degrees longitude first then latitude after.
+    List<Double> latlong;
 
-    private String radius;
+    // Radius is in meters
+    private double radius;
 
     private String startTime;
 
     private String endTime;
 
-    public TfrNotam(String notamNumber, String notamType, List<String> latlong, String radius, String startTime, String endTime){
+    // Required to deserialize a serialized object
+    public TfrNotam() {
+        super();
+    }
+
+    public TfrNotam(String notamNumber, String notamType, List<Double> latlong, double radius, String startTime, String endTime){
         this.notamNumber = notamNumber;
         this.notamType = notamType;
         this.latlong = latlong;

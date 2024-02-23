@@ -134,10 +134,15 @@ public class TfrHandler {
                 endString = "PERM";
             }
 
-            List<String> latlong = new ArrayList<>();
-            latlong.add(matcher.group(3));
+            List<Double> latlong = new ArrayList<>();
+            Double[] arry = convertDmsToDd(matcher.group(3));
+            latlong.add(arry[0]);
+            latlong.add(arry[1]);
+
+            // Nauticle miles to meters is 1:1852
+            Double meters = Double.parseDouble(matcher.group(2)) * 1852;
             
-            TfrNotam notamObject = new TfrNotam(notamNumber, "RADIUS", latlong, matcher.group(2), matcher.group(5), endString);
+            TfrNotam notamObject = new TfrNotam(notamNumber, "RADIUS", latlong, meters, matcher.group(5), endString);
             KafkaProducer.runProducer(objectMapper.writeValueAsString(notamObject), "TFRData");
             successfulMatching = true;
         }
@@ -153,9 +158,11 @@ public class TfrHandler {
         while(boundaryMatch.find()) {
             Matcher latlongMatch = latlongPattern.matcher(boundaryMatch.group(0));
 
-            List<String> latlong = new ArrayList<>();
+            List<Double> latlong = new ArrayList<>();
             while(latlongMatch.find()){
-                latlong.add(latlongMatch.group(0));
+                Double[] arry = convertDmsToDd(latlongMatch.group(0));
+                latlong.add(arry[0]);
+                latlong.add(arry[1]);
             }
 
 
@@ -166,12 +173,39 @@ public class TfrHandler {
                 endString = "PERM";
             }
 
-            TfrNotam notamObject = new TfrNotam(notamNumber, "BOUNDARY", latlong, "0", boundaryMatch.group(1), endString);
+            TfrNotam notamObject = new TfrNotam(notamNumber, "BOUNDARY", latlong, 0, boundaryMatch.group(1), endString);
             KafkaProducer.runProducer(objectMapper.writeValueAsString(notamObject), "TFRData");
 
             successfulMatching = true;
         }
         return successfulMatching; //doesn't appear to be a boundary
+    }
+
+    //Converts Degrees minutes seconds into Decimal Degrees
+    //Expects input of XXXXXXN/SXXXXXXXE/W
+    private static Double[] convertDmsToDd(String dms){
+        Pattern latlongPattern = Pattern.compile("(\\d{2})(\\d{2})(\\d{2})([NS])(\\d{3})(\\d{2})(\\d{2})([EW])");
+        Matcher matcher = latlongPattern.matcher(dms);
+
+        if (matcher.find()){
+            //convert latitude
+            Double latitude = Double.parseDouble(matcher.group(1));
+            latitude += Double.parseDouble(matcher.group(2)) / 60;
+            latitude += Double.parseDouble(matcher.group(3)) / 3600;
+            if (matcher.group(4).equals("S"))
+                latitude *= -1;
+
+            //convert longitude
+            Double longitude = Double.parseDouble(matcher.group(5));
+            longitude += Double.parseDouble(matcher.group(6)) / 60;
+            longitude += Double.parseDouble(matcher.group(7)) / 3600;
+            if (matcher.group(8).equals("W"))
+                longitude *= -1;
+
+            return new Double[] {longitude, latitude};
+        }
+        
+        return null;
     }
     
 }
