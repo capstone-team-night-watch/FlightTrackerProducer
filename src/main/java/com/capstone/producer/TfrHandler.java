@@ -169,7 +169,7 @@ public class TfrHandler {
 
             List<Integer> altitudes = new ArrayList<>();
             while(altitudeMatch.find()) {
-                Integer[] alt = convertAltitudeOrigin(altitudeMatch.group(0)); // will need to change
+                Integer[] alt = convertAltitudeOrigin(altitudeMatch.group(0));
                 altitudes.add(alt[0]);
                 altitudes.add(alt[1]);
             }
