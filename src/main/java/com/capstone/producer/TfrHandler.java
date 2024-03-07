@@ -142,7 +142,7 @@ public class TfrHandler {
             // Nauticle miles to meters is 1:1852
             Double meters = Double.parseDouble(matcher.group(2)) * 1852;
             
-            TfrNotam notamObject = new TfrNotam(notamNumber, "RADIUS", latlong, meters, 0, 0, matcher.group(5), endString);
+            TfrNotam notamObject = new TfrNotam(notamNumber, "RADIUS", latlong, meters, List.of(0), matcher.group(5), endString);
             KafkaProducer.runProducer(objectMapper.writeValueAsString(notamObject), "TFRData");
             successfulMatching = true;
         }
@@ -167,11 +167,11 @@ public class TfrHandler {
                 latlong.add(arry[1]);
             }
 
-            List<Integer> altitude = new ArrayList<>();
+            List<Integer> altitudes = new ArrayList<>();
             while(altitudeMatch.find()) {
                 Integer[] alt = convertAltitudeOrigin(altitudeMatch.group(0)); // will need to change
-                altitude.add(alt[0]);
-                altitude.add(alt[1]);
+                altitudes.add(alt[0]);
+                altitudes.add(alt[1]);
             }
 
 
@@ -182,7 +182,7 @@ public class TfrHandler {
                 endString = "PERM";
             }
 
-            TfrNotam notamObject = new TfrNotam(notamNumber, "BOUNDARY", latlong, 0, altitude.get(0), altitude.get(1) ,boundaryMatch.group(1), endString);
+            TfrNotam notamObject = new TfrNotam(notamNumber, "BOUNDARY", latlong, 0, altitudes, boundaryMatch.group(1), endString);
             KafkaProducer.runProducer(objectMapper.writeValueAsString(notamObject), "TFRData");
 
             successfulMatching = true;
