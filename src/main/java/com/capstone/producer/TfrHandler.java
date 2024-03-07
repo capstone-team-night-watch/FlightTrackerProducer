@@ -150,15 +150,15 @@ public class TfrHandler {
     }
 
     private static boolean boundaryParse(String notamNumber, String message) throws InterruptedException, JsonProcessingException{
-        Pattern boundaryPattern = Pattern.compile("WI\\s*AN\\s*AREA\\s*DEFINED\\s*AS\\s*\\d+[NS]\\d+[EW].*?TO.*?ORIGIN.*?EFFECTIVE\\s*(\\d{10}).*?UNTIL\\s*(\\d{10})?");
+        Pattern boundaryPattern = Pattern.compile("WI\\s*AN\\s*AREA\\s*DEFINED\\s*AS\\s*\\d+[NS]\\d+[EW].*?TO.*?ORIGIN\\s(\\d)*FT\\s.*?EFFECTIVE\\s*(\\d{10}).*?UNTIL\\s*(\\d{10})?");
         Pattern latlongPattern = Pattern.compile("\\d+[NS]\\d+[EW]");
-        Pattern altitudePattern = Pattern.compile("\\d+FT\\d+FT");
+        Pattern altitudePattern = Pattern.compile("ORIGIN\\s(\\d)*FT");
         Matcher boundaryMatch = boundaryPattern.matcher(message);
         ObjectMapper objectMapper = new ObjectMapper();
         boolean successfulMatching = false;
         while(boundaryMatch.find()) {
             Matcher latlongMatch = latlongPattern.matcher(boundaryMatch.group(0));
-            Matcher altitudeMatch = altitudePattern.matcher(boundaryMatch.group(1));
+            Matcher altitudeMatch = altitudePattern.matcher(boundaryMatch.group(0));
 
             List<Double> latlong = new ArrayList<>();
             while(latlongMatch.find()){
@@ -167,9 +167,9 @@ public class TfrHandler {
                 latlong.add(arry[1]);
             }
 
-            List<Double> altitude = new ArrayList<>();
+            List<Integer> altitude = new ArrayList<>();
             while(altitudeMatch.find()) {
-                Double[] alt = convertDmsToDd(altitudeMatch.group(1)); // will need to change
+                Integer[] alt = convertAltitudeOrigin(altitudeMatch.group(0)); // will need to change
                 altitude.add(alt[0]);
                 altitude.add(alt[1]);
             }
@@ -214,6 +214,24 @@ public class TfrHandler {
             return new Double[] {longitude, latitude};
         }
         
+        return null;
+    }
+
+    /**
+     * Converts a string message that contains the altitude into an Integer[]
+     * @param msg altitude string containing the height
+     * @return Integer[] containing the values for heights
+     */
+    private static Integer[] convertAltitudeOrigin(String msg) {
+        Pattern originPattern = Pattern.compile("(\\d)*FT");
+        Matcher matcher = originPattern.matcher(msg);
+
+        if (matcher.find()) {
+            String originHeightString = matcher.group(0).substring(0, matcher.group(0).length() - 2);
+            int originHeight = Integer.parseInt(originHeightString);
+
+            return new Integer[] { originHeight, 0 };
+        }
         return null;
     }
     
