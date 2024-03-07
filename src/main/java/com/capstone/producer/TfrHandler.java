@@ -152,7 +152,7 @@ public class TfrHandler {
     private static boolean boundaryParse(String notamNumber, String message) throws InterruptedException, JsonProcessingException{
         Pattern boundaryPattern = Pattern.compile("WI\\s*AN\\s*AREA\\s*DEFINED\\s*AS\\s*\\d+[NS]\\d+[EW].*?TO.*?ORIGIN\\s(\\d)*FT\\s.*?EFFECTIVE\\s*(\\d{10}).*?UNTIL\\s*(\\d{10})?");
         Pattern latlongPattern = Pattern.compile("\\d+[NS]\\d+[EW]");
-        Pattern altitudePattern = Pattern.compile("ORIGIN\\s(\\d)*FT");
+        Pattern altitudePattern = Pattern.compile("ORIGIN\\s(\\d)*FT\\s.*?MSL.*?(\\d)*FT");
         Matcher boundaryMatch = boundaryPattern.matcher(message);
         ObjectMapper objectMapper = new ObjectMapper();
         boolean successfulMatching = false;
@@ -223,14 +223,17 @@ public class TfrHandler {
      * @return Integer[] containing the values for heights
      */
     private static Integer[] convertAltitudeOrigin(String msg) {
-        Pattern originPattern = Pattern.compile("(\\d)*FT");
+        Pattern originPattern = Pattern.compile("(\\d)*FT\\sMSL.*?(\\d)*FT");
         Matcher matcher = originPattern.matcher(msg);
 
         if (matcher.find()) {
-            String originHeightString = matcher.group(0).substring(0, matcher.group(0).length() - 2);
-            int originHeight = Integer.parseInt(originHeightString);
+            String temp = matcher.group(0);
+            String[] altitudes = matcher.group(0).split(" ");
 
-            return new Integer[] { originHeight, 0 };
+            int originHeight = Integer.parseInt(altitudes[0].substring(0, altitudes[0].length() - 2));
+            int mslHeight = Integer.parseInt(altitudes[1].substring(3, altitudes[1].length() - 2));
+
+            return new Integer[] { originHeight, mslHeight };
         }
         return null;
     }
