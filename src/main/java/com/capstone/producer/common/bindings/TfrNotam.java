@@ -20,6 +20,8 @@ public class TfrNotam {
     // Radius is in meters
     private double radius;
 
+    private List<Integer> altitude;
+
     private String startTime;
 
     private String endTime;
@@ -29,11 +31,12 @@ public class TfrNotam {
         super();
     }
 
-    public TfrNotam(String notamNumber, String notamType, List<Double> latlong, double radius, String startTime, String endTime){
+    public TfrNotam(String notamNumber, String notamType, List<Double> latlong, double radius, List<Integer> altitude, String startTime, String endTime){
         this.notamNumber = notamNumber;
         this.notamType = notamType;
         this.latlong = latlong;
         this.radius = radius;
+        this.altitude = altitude;
         this.startTime = startTime;
         this.endTime = endTime;
     }

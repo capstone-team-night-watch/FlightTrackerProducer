@@ -142,7 +142,7 @@ public class TfrHandler {
             // Nauticle miles to meters is 1:1852
             Double meters = Double.parseDouble(matcher.group(2)) * 1852;
             
-            TfrNotam notamObject = new TfrNotam(notamNumber, "RADIUS", latlong, meters, matcher.group(5), endString);
+            TfrNotam notamObject = new TfrNotam(notamNumber, "RADIUS", latlong, meters, List.of(0), matcher.group(5), endString);
             KafkaProducer.runProducer(objectMapper.writeValueAsString(notamObject), "TFRData");
             successfulMatching = true;
         }
@@ -150,19 +150,28 @@ public class TfrHandler {
     }
 
     private static boolean boundaryParse(String notamNumber, String message) throws InterruptedException, JsonProcessingException{
-        Pattern boundaryPattern = Pattern.compile("WI\\s*AN\\s*AREA\\s*DEFINED\\s*AS\\s*\\d+[NS]\\d+[EW].*?TO.*?ORIGIN.*?EFFECTIVE\\s*(\\d{10}).*?UNTIL\\s*(\\d{10})?");
+        Pattern boundaryPattern = Pattern.compile("WI\\s*AN\\s*AREA\\s*DEFINED\\s*AS\\s*\\d+[NS]\\d+[EW].*?TO.*?ORIGIN\\s(\\d)*FT\\s.*?EFFECTIVE\\s*(\\d{10}).*?UNTIL\\s*(\\d{10})?");
         Pattern latlongPattern = Pattern.compile("\\d+[NS]\\d+[EW]");
+        Pattern altitudePattern = Pattern.compile("ORIGIN\\s(\\d)*FT\\s.*?MSL.*?(\\d)*FT");
         Matcher boundaryMatch = boundaryPattern.matcher(message);
         ObjectMapper objectMapper = new ObjectMapper();
         boolean successfulMatching = false;
         while(boundaryMatch.find()) {
             Matcher latlongMatch = latlongPattern.matcher(boundaryMatch.group(0));
+            Matcher altitudeMatch = altitudePattern.matcher(boundaryMatch.group(0));
 
             List<Double> latlong = new ArrayList<>();
             while(latlongMatch.find()){
                 Double[] arry = convertDmsToDd(latlongMatch.group(0));
                 latlong.add(arry[0]);
                 latlong.add(arry[1]);
+            }
+
+            List<Integer> altitudes = new ArrayList<>();
+            while(altitudeMatch.find()) {
+                Integer[] alt = convertAltitudeOrigin(altitudeMatch.group(0));
+                altitudes.add(alt[0]);
+                altitudes.add(alt[1]);
             }
 
 
@@ -173,7 +182,7 @@ public class TfrHandler {
                 endString = "PERM";
             }
 
-            TfrNotam notamObject = new TfrNotam(notamNumber, "BOUNDARY", latlong, 0, boundaryMatch.group(1), endString);
+            TfrNotam notamObject = new TfrNotam(notamNumber, "BOUNDARY", latlong, 0, altitudes, boundaryMatch.group(1), endString);
             KafkaProducer.runProducer(objectMapper.writeValueAsString(notamObject), "TFRData");
 
             successfulMatching = true;
@@ -205,6 +214,27 @@ public class TfrHandler {
             return new Double[] {longitude, latitude};
         }
         
+        return null;
+    }
+
+    /**
+     * Converts a string message that contains the altitude into an Integer[]
+     * @param msg altitude string containing the height
+     * @return Integer[] containing the values for heights
+     */
+    private static Integer[] convertAltitudeOrigin(String msg) {
+        Pattern originPattern = Pattern.compile("(\\d)*FT\\sMSL.*?(\\d)*FT");
+        Matcher matcher = originPattern.matcher(msg);
+
+        if (matcher.find()) {
+            String temp = matcher.group(0);
+            String[] altitudes = matcher.group(0).split(" ");
+
+            int originHeight = Integer.parseInt(altitudes[0].substring(0, altitudes[0].length() - 2));
+            int mslHeight = Integer.parseInt(altitudes[1].substring(3, altitudes[1].length() - 2));
+
+            return new Integer[] { originHeight, mslHeight };
+        }
         return null;
     }
     
