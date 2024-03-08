@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -18,6 +19,10 @@ public class FlightInjectionHandlerTest {
 
     @InjectMocks
     private FlightInjectionHandler flightInjectionHandler;
+
+    @Mock
+    private MockedStatic<KafkaProducer> mockedStatic;
+
 
     private String flightsNotInArray = """
         {
@@ -130,13 +135,13 @@ public class FlightInjectionHandlerTest {
 
     @Test
     public void testValidInput() throws InterruptedException, JsonProcessingException{
-        MockedStatic<KafkaProducer> mockedStatic = mockStatic(KafkaProducer.class);
-
+        mockedStatic.when(() -> KafkaProducer.emitFlightInformationUpdate(any())).thenCallRealMethod();
         mockedStatic.when(() -> KafkaProducer.runProducer(anyString(), anyString())).thenReturn(null);
 
         
         String result = flightInjectionHandler.handleFlightInjection(validFlights);
         assertEquals("All flights processed successfully", result);
+
 
         mockedStatic.verify(() -> KafkaProducer.runProducer(anyString(), anyString()), times(1));
         mockedStatic.close();

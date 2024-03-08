@@ -1,5 +1,9 @@
 package com.capstone.producer.kafka;
 
+import com.capstone.producer.shared.JsonHelper;
+import com.capstone.producer.shared.bindings.CircularNoFlyZone;
+import com.capstone.producer.shared.bindings.FlightInformation;
+import com.capstone.producer.shared.bindings.PolygonNoFlyZone;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -68,4 +72,15 @@ public class KafkaProducer {
         }
     }
 
+    public static void emitCircularNoFlyZone(CircularNoFlyZone circularNoFlyZone) throws InterruptedException {
+        runProducer(JsonHelper.toJson(circularNoFlyZone), "PolygonNoFlyZone");
+    }
+
+    public static void emitPolygonNoFlyZone(PolygonNoFlyZone polygonNoFlyZone) throws InterruptedException {
+        runProducer(JsonHelper.toJson(polygonNoFlyZone), "CircularNoFlyZone");
+    }
+
+    public static void emitFlightInformationUpdate(FlightInformation flightInformation) throws InterruptedException {
+        runProducer(JsonHelper.toJson(flightInformation), "FlightLocationData");
+    }
 }

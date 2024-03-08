@@ -3,9 +3,11 @@ package com.capstone.producer;
 import com.capstone.producer.kafka.KafkaProducer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -96,6 +98,13 @@ public class TfrHandlerTest {
                 "BY ATC:\r\n" + //
                 "2402182100-2402240500";
 
+    @Mock
+    private MockedStatic<KafkaProducer> mockedStatic;
+
+    @Before
+    public void setUp() {
+    }
+
     @Test
     public void testInvalidTfr() throws InterruptedException, JsonProcessingException{
         String  result = tfrHandler.handleTfrAddition("INVALID");
@@ -110,8 +119,7 @@ public class TfrHandlerTest {
 
     @Test
     public void testValidTfrBoundaryPart2() throws InterruptedException, JsonProcessingException{
-        MockedStatic<KafkaProducer> mockedStatic = mockStatic(KafkaProducer.class);
-
+        mockedStatic.when(() -> KafkaProducer.emitPolygonNoFlyZone(any())).thenCallRealMethod();
         mockedStatic.when(() -> KafkaProducer.runProducer(anyString(), anyString())).thenReturn(null);
         tfrHandler.handleTfrAddition(boundaryPart1);
         String  result = tfrHandler.handleTfrAddition(boundaryPart2);
@@ -123,8 +131,7 @@ public class TfrHandlerTest {
 
     @Test
     public void testValidTfrRadius() throws InterruptedException, JsonProcessingException{
-        MockedStatic<KafkaProducer> mockedStatic = mockStatic(KafkaProducer.class);
-
+        mockedStatic.when(() -> KafkaProducer.emitCircularNoFlyZone(any())).thenCallRealMethod();
         mockedStatic.when(() -> KafkaProducer.runProducer(anyString(), anyString())).thenReturn(null);
         String  result = tfrHandler.handleTfrAddition(radius);
         assertEquals("Point Radius Parsed", result);
