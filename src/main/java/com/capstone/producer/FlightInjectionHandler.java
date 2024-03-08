@@ -37,6 +37,9 @@ public class FlightInjectionHandler {
                 } catch (JsonProcessingException e) {
                     LOGGER.error("Error Processing flight {}", flight.textValue());
                     allSuccessful = false;
+                } catch (IllegalArgumentException e) {
+                    LOGGER.error("Error Processing flight {}", flight.textValue());
+                    allSuccessful = false;
                 }
             }
             if(allSuccessful){
