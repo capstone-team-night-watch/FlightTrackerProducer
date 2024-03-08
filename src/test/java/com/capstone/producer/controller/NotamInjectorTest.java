@@ -1,10 +1,6 @@
 package com.capstone.producer.controller;
 
-import com.capstone.producer.FlightInjectionHandler;
-import com.capstone.producer.ServiceHandler;
 import com.capstone.producer.TfrHandler;
-import com.capstone.producer.common.bindings.AirportGenerateRequest;
-import com.capstone.producer.common.bindings.GenerateRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import org.junit.Test;
