@@ -8,7 +8,7 @@ import lombok.Data;
 public class Destination {
     private String code;
 
-    @JsonProperty("code_ica0")
+    @JsonProperty("code_icao")
     private String codeIcao;
 
     @JsonProperty("code_iata")
