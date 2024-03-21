@@ -1,29 +1,32 @@
 package com.capstone.producer.clients;
 
+import com.capstone.producer.clients.AeroApiClientCaller;
 import com.capstone.producer.common.bindings.aero.FlightInfoFaid;
 import com.capstone.producer.common.bindings.aero.Operator;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AeroApiClientCallerTest {
 
     private static final String BASE_URL = "http://localhost:8080/services";
+    private static final String FLIGHT_DATA_JSON = "flight_data.json";
+    private static final String FLIGHTS_DATA_JSON = "flights_data.json";
+    private static final String OPERATOR_JSON = "operator.json";
 
     @Mock
     private RestTemplate client;
@@ -31,134 +34,89 @@ public class AeroApiClientCallerTest {
     @Mock
     private ResponseEntity<JsonNode> responseEntity;
 
+    @InjectMocks
     private AeroApiClientCaller aeroApiClientCaller;
 
-    private static JsonNode jsonNode;
+    private FlightInfoFaid flightInfoFaid;
+    private Operator operator;
+    private JsonNode flightData;
+    private JsonNode flightsData;
+    private JsonNode operatorData;
 
-    private FlightInfoFaid FLIGHT_INFO_FAID;
-
-    private Operator OPERATOR;
-
-    @Before
-    public void setUp() {
+    @BeforeEach
+    public void setUp() throws IOException {
         aeroApiClientCaller = new AeroApiClientCaller(client, BASE_URL, "key");
-
-        // read in json flight data
-        try(InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("flight_data.json")){
-            ObjectMapper mapper = new ObjectMapper();
-            jsonNode = mapper.readValue(in, JsonNode.class);
-            FLIGHT_INFO_FAID = mapper.createParser(jsonNode.toString()).readValueAs(FlightInfoFaid.class);
-        }
-        catch(Exception e){
-            throw new RuntimeException(e);
-        }
+        flightInfoFaid = readJson(FLIGHT_DATA_JSON, FlightInfoFaid.class);
+        operator = readJson(OPERATOR_JSON, Operator.class);
+        operatorData = readJsonNode(OPERATOR_JSON);
+        flightData = readJsonNode(FLIGHT_DATA_JSON);
+        flightsData = readJsonNode(FLIGHTS_DATA_JSON);
     }
 
     @Test
-    public void getFlightFromNoFightIdShouldReturnNull () {
-        when(client.exchange(anyString(), any(), any(), eq(JsonNode.class))).thenReturn(responseEntity);
-        when(responseEntity.getBody()).thenReturn(null);
-
-        FlightInfoFaid flightInfoFaId = aeroApiClientCaller.getFlightFromFaId(null);
-
-        assertNull(flightInfoFaId);
+    public void getFlightFromNoFlightIdShouldReturnNull() {
+        mockResponse(null);
+        assertNull(aeroApiClientCaller.getFlightFromFaId(null));
     }
 
     @Test
-    public void getFlightFromFaIdShouldFlightInfoIdObject() {
-        when(client.exchange(anyString(), any(), any(), eq(JsonNode.class))).thenReturn(responseEntity);
-        when(responseEntity.getBody()).thenReturn(jsonNode);
-
-        FlightInfoFaid result = aeroApiClientCaller.getFlightFromFaId("AIC102");
-        result.setFullJson(null);
-
-        assertEquals(FLIGHT_INFO_FAID, result);
+    public void getFlightFromFaIdShouldReturnFlightInfoIdObject() {
+        mockResponse(flightData);
+        assertEquals(flightInfoFaid, aeroApiClientCaller.getFlightFromFaId("AIC102").setFullJson(null));
     }
 
     @Test
     public void getFlightFromIndentShouldReturnNull() {
-        when(client.exchange(anyString(), any(), any(), eq(JsonNode.class))).thenReturn(responseEntity);
-        when(responseEntity.getBody()).thenReturn(null);
-
-        String flightFromIndent = aeroApiClientCaller.getFlightFromIdent(null);
-
-        assertNull(flightFromIndent);
+        mockResponse(null);
+        assertNull(aeroApiClientCaller.getFlightFromIdent(null));
     }
 
     @Test
     public void getFlightFromIndentShouldReturnValid() {
-        try(InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("flights_data.json")){
-            ObjectMapper mapper = new ObjectMapper();
-            jsonNode = mapper.readValue(in, JsonNode.class);
-        }
-        catch(Exception e){
-            fail("Could not read json data");
-        }
-
-        when(client.exchange(anyString(), any(), any(), eq(JsonNode.class))).thenReturn(responseEntity);
-        when(responseEntity.getBody()).thenReturn(jsonNode);
-
-        String result = aeroApiClientCaller.getFlightFromIdent("THY29");
-
-        assertEquals(jsonNode.path("flights").get(0).toString(), result);
+        mockResponse(flightsData);
+        assertEquals(flightsData.path("flights").get(0).toString(), aeroApiClientCaller.getFlightFromIdent("THY29"));
     }
 
     @Test
     public void getOperatorFromIdShouldReturnNull() {
-        when(client.exchange(anyString(), any(), any(), eq(JsonNode.class))).thenReturn(responseEntity);
-        when(responseEntity.getBody()).thenReturn(null);
-
-        Operator operator = aeroApiClientCaller.getOperatorFromId(null);
-
-        assertNull(operator);
+        mockResponse(null);
+        assertNull(aeroApiClientCaller.getOperatorFromId(null));
     }
 
     @Test
-    public void getOperatorFromIdShouldReturnOperator() {
-        try (InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("operator.json")) {
-            ObjectMapper mapper = new ObjectMapper();
-            jsonNode = mapper.readValue(in, JsonNode.class);
-            OPERATOR = mapper.createParser(jsonNode.toString()).readValueAs(Operator.class);
-        } catch (Exception e) {
-            fail("Could not read json data");
-        }
-
-        when(client.exchange(anyString(), any(), any(), eq((JsonNode.class)))).thenReturn(responseEntity);
-        when(responseEntity.getBody()).thenReturn(jsonNode);
-
-        Operator result = aeroApiClientCaller.getOperatorFromId("THY29");
-        result.setFullJson(null);
-
-        assertEquals(OPERATOR, result);
+    public void getOperatorFromIdShouldReturnOperator() throws IOException {
+        mockResponse(operatorData);
+        assertEquals(operator, aeroApiClientCaller.getOperatorFromId("THY29").setFullJson(null));
     }
 
     @Test
     public void getAllActiveFlightsWithLiveShouldReturnEmpty() {
-        when(client.exchange(anyString(), any(), any(), eq(JsonNode.class))).thenReturn(responseEntity);
-        when(responseEntity.getBody()).thenReturn(null);
-
-        List<FlightInfoFaid> flightInfoFaIds = aeroApiClientCaller.getAllActiveFlightsWithLive();
-
-        assertTrue(flightInfoFaIds.isEmpty());
+        mockResponse(null);
+        assertTrue(aeroApiClientCaller.getAllActiveFlightsWithLive().isEmpty());
     }
 
     @Test
     public void getAllActiveFlightsWithLiveShouldReturnList() {
-
-        try(InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("flights_data.json")){
-            ObjectMapper mapper = new ObjectMapper();
-            jsonNode = mapper.readValue(in, JsonNode.class);
-        }
-        catch(Exception e){
-            fail("Could not read json data");
-        }
-
-        when(client.exchange(anyString(), any(), any(), eq(JsonNode.class))).thenReturn(responseEntity);
-        when(responseEntity.getBody()).thenReturn(jsonNode);
-
-        List<FlightInfoFaid> flightInfoFaids = aeroApiClientCaller.getAllActiveFlightsWithLive();
-
-        assertEquals(5, flightInfoFaids.size());
+        mockResponse(flightsData);
+        assertEquals(5, aeroApiClientCaller.getAllActiveFlightsWithLive().size());
     }
 
+    private <T> T readJson(String fileName, Class<T> valueType) throws IOException {
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream(fileName)) {
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(in, valueType);
+        }
+    }
+
+    private JsonNode readJsonNode(String fileName) throws IOException {
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream(fileName)) {
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readTree(in);
+        }
+    }
+
+    private void mockResponse(JsonNode body) {
+        when(client.exchange(anyString(), any(), any(), eq(JsonNode.class))).thenReturn(responseEntity);
+        when(responseEntity.getBody()).thenReturn(body);
+    }
 }
