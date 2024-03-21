@@ -37,6 +37,8 @@ public class AeroApiClientCallerTest {
 
     private FlightInfoFaid FLIGHT_INFO_FAID;
 
+    private Operator OPERATOR;
+
     @Before
     public void setUp() {
         aeroApiClientCaller = new AeroApiClientCaller(client, BASE_URL, "key");
@@ -84,6 +86,24 @@ public class AeroApiClientCallerTest {
     }
 
     @Test
+    public void getFlightFromIndentShouldReturnValid() {
+        try(InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("flights_data.json")){
+            ObjectMapper mapper = new ObjectMapper();
+            jsonNode = mapper.readValue(in, JsonNode.class);
+        }
+        catch(Exception e){
+            fail("Could not read json data");
+        }
+
+        when(client.exchange(anyString(), any(), any(), eq(JsonNode.class))).thenReturn(responseEntity);
+        when(responseEntity.getBody()).thenReturn(jsonNode);
+
+        String result = aeroApiClientCaller.getFlightFromIdent("THY29");
+
+        assertEquals(jsonNode.path("flights").get(0).toString(), result);
+    }
+
+    @Test
     public void getOperatorFromIdShouldReturnNull() {
         when(client.exchange(anyString(), any(), any(), eq(JsonNode.class))).thenReturn(responseEntity);
         when(responseEntity.getBody()).thenReturn(null);
@@ -94,6 +114,25 @@ public class AeroApiClientCallerTest {
     }
 
     @Test
+    public void getOperatorFromIdShouldReturnOperator() {
+        try (InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("operator.json")) {
+            ObjectMapper mapper = new ObjectMapper();
+            jsonNode = mapper.readValue(in, JsonNode.class);
+            OPERATOR = mapper.createParser(jsonNode.toString()).readValueAs(Operator.class);
+        } catch (Exception e) {
+            fail("Could not read json data");
+        }
+
+        when(client.exchange(anyString(), any(), any(), eq((JsonNode.class)))).thenReturn(responseEntity);
+        when(responseEntity.getBody()).thenReturn(jsonNode);
+
+        Operator result = aeroApiClientCaller.getOperatorFromId("THY29");
+        result.setFullJson(null);
+
+        assertEquals(OPERATOR, result);
+    }
+
+    @Test
     public void getAllActiveFlightsWithLiveShouldReturnEmpty() {
         when(client.exchange(anyString(), any(), any(), eq(JsonNode.class))).thenReturn(responseEntity);
         when(responseEntity.getBody()).thenReturn(null);
@@ -101,6 +140,25 @@ public class AeroApiClientCallerTest {
         List<FlightInfoFaid> flightInfoFaIds = aeroApiClientCaller.getAllActiveFlightsWithLive();
 
         assertTrue(flightInfoFaIds.isEmpty());
+    }
+
+    @Test
+    public void getAllActiveFlightsWithLiveShouldReturnList() {
+
+        try(InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("flights_data.json")){
+            ObjectMapper mapper = new ObjectMapper();
+            jsonNode = mapper.readValue(in, JsonNode.class);
+        }
+        catch(Exception e){
+            fail("Could not read json data");
+        }
+
+        when(client.exchange(anyString(), any(), any(), eq(JsonNode.class))).thenReturn(responseEntity);
+        when(responseEntity.getBody()).thenReturn(jsonNode);
+
+        List<FlightInfoFaid> flightInfoFaids = aeroApiClientCaller.getAllActiveFlightsWithLive();
+
+        assertEquals(5, flightInfoFaids.size());
     }
 
 }
