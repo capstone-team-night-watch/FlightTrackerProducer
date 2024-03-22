@@ -118,7 +118,7 @@ public class AviationStackClientCaller {
                     jsonParser.nextToken();
 
                     // Traversing through the JSON array by finding the beginning of JSON Objects
-                    while (jsonParser.nextToken() != JsonToken.START_OBJECT) {
+                    while (jsonParser.nextToken() == JsonToken.START_OBJECT) {
                         // Once a JSON Object is found, it can be mapped to a FlightInfo Object
                         FlightInfo flightInfo = jsonParser.readValueAs(FlightInfo.class);
 
@@ -143,7 +143,7 @@ public class AviationStackClientCaller {
 
         // return only at max the first 5 live flights acquired.
         // Doing this to prevent clutter on the page. 5 flights is more than sufficient for testing
-        return flightInfos.subList(0, Math.max(5, flightInfos.size()));
+        return flightInfos.subList(0, Math.min(5, flightInfos.size()));
     }
 
     /**
