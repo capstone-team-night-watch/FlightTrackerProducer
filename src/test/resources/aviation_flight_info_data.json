@@ -1,0 +1,46 @@
+{
+  "flight_date": "2024-03-05",
+  "flight_status": "active",
+  "departure": {
+    "airport": "Madras International (Meenambakkam)",
+    "timezone": "Asia/Kolkata",
+    "iata": "MAA",
+    "icao": "VOMM",
+    "terminal": "4",
+    "gate": null,
+    "delay": 6,
+    "scheduled": "2024-03-05T05:05:00+00:00",
+    "estimated": "2024-03-05T05:05:00+00:00",
+    "actual": "2024-03-05T05:10:00+00:00",
+    "estimated_runway": "2024-03-05T05:10:00+00:00",
+    "actual_runway": "2024-03-05T05:10:00+00:00"
+  },
+  "arrival": {
+    "airport": "Port Blair",
+    "timezone": "Asia/Kolkata",
+    "iata": "IXZ",
+    "icao": "VOPB",
+    "terminal": null,
+    "gate": null,
+    "baggage": null,
+    "delay": null,
+    "scheduled": "2024-03-05T07:25:00+00:00",
+    "estimated": "2024-03-05T07:25:00+00:00",
+    "actual": null,
+    "estimated_runway": null,
+    "actual_runway": null
+  },
+  "airline": {
+    "name": "Air India",
+    "iata": "AI",
+    "icao": "AIC"
+  },
+  "flight": {
+    "number": "549",
+    "iata": "AI549",
+    "icao": "AIC549",
+    "codeshared": null
+  },
+  "aircraft": null,
+  "live": null
+}
