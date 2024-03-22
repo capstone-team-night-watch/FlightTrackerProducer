@@ -1,13 +1,26 @@
 {
-  "icao": "THY29",
-  "iata": "TK29",
-  "callsign": "callsign",
-  "name": "Jeff Jeff",
-  "country": "USA",
-  "location": "USA",
-  "phone": "000-000-0000",
-  "shortname": "Jeff",
-  "url": "https://localhost:8080",
-  "wiki_url": "https://www.wiki.com",
-  "alternatives": []
+  "icao": "string",
+  "iata": "string",
+  "callsign": "string",
+  "name": "string",
+  "country": "string",
+  "location": "string",
+  "phone": "string",
+  "shortname": "string",
+  "url": "string",
+  "wiki_url": "string",
+  "alternatives": [
+    {
+      "icao": "string",
+      "iata": "string",
+      "callsign": "string",
+      "name": "string",
+      "country": "string",
+      "location": "string",
+      "phone": "string",
+      "shortname": "string",
+      "url": "string",
+      "wiki_url": "string"
+    }
+  ]
 }
