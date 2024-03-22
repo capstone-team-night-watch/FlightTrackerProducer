@@ -24,12 +24,17 @@ import java.util.concurrent.ExecutionException;
  */
 @Service
 public class KafkaProducer {
-    @Value("${kafka.host}")
-    private final static String BOOTSTRAP_SERVER = "kafka:9092";
+    
+    private static String BOOTSTRAP_SERVER = "kafka:9092";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducer.class);
 
     private KafkaProducer() {
+    }
+
+    @Value("${kafka.host}")
+    private void setBootstrap(String bootstrap) {
+        BOOTSTRAP_SERVER = bootstrap;
     }
 
     private static Producer<Long, String> createProducer() {
