@@ -1,0 +1,26 @@
+{
+  "icao": "string",
+  "iata": "string",
+  "callsign": "string",
+  "name": "string",
+  "country": "string",
+  "location": "string",
+  "phone": "string",
+  "shortname": "string",
+  "url": "string",
+  "wiki_url": "string",
+  "alternatives": [
+    {
+      "icao": "string",
+      "iata": "string",
+      "callsign": "string",
+      "name": "string",
+      "country": "string",
+      "location": "string",
+      "phone": "string",
+      "shortname": "string",
+      "url": "string",
+      "wiki_url": "string"
+    }
+  ]
+}

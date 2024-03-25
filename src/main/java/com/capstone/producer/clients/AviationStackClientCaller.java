@@ -118,7 +118,7 @@ public class AviationStackClientCaller {
                     jsonParser.nextToken();
 
                     // Traversing through the JSON array by finding the beginning of JSON Objects
-                    while (jsonParser.nextToken() != JsonToken.START_OBJECT) {
+                    while (jsonParser.nextToken() == JsonToken.START_OBJECT) {
                         // Once a JSON Object is found, it can be mapped to a FlightInfo Object
                         FlightInfo flightInfo = jsonParser.readValueAs(FlightInfo.class);
 
@@ -143,7 +143,7 @@ public class AviationStackClientCaller {
 
         // return only at max the first 5 live flights acquired.
         // Doing this to prevent clutter on the page. 5 flights is more than sufficient for testing
-        return flightInfos.subList(0, Math.max(5, flightInfos.size()));
+        return flightInfos.subList(0, Math.min(5, flightInfos.size()));
     }
 
     /**
@@ -170,25 +170,23 @@ public class AviationStackClientCaller {
 
             // Creates a JSON parser from the JSON 'data' array Object
             try (JsonParser jsonParser = objectMapper.createParser(dataNodeStr)) {
+                // Skipping the array block
+                jsonParser.nextToken();
+
                 // Traversing through the JSON array by finding the beginning of JSON Objects
-                while (jsonParser.nextToken() != JsonToken.START_OBJECT) {
-                    // nextToken() will return null if there isn't a next token.
-                    // The loop needs to be broken in that case otherwise, it would be infinite
-                    if (jsonParser.nextToken() == null) {
-                        break;
+                while (jsonParser.nextToken() == JsonToken.START_OBJECT) {
+                    // Once a JSON Object is found, it can be mapped to a FlightInfo Object
+                    AirportAviation airportInfo = jsonParser.readValueAs(AirportAviation.class);
+
+                    // Makes sure a valid Airport is obtained
+                    if (airportInfo == null || airportInfo.getLatitude() == 0 || airportInfo.getLongitude() == 0) {
+                        LOGGER.error("No relevant airport information found.");
+                        return null;
                     }
+
+                    return airportInfo;
                 }
 
-                // Once a JSON Object is found, it can be mapped to a FlightInfo Object
-                AirportAviation airportInfo = jsonParser.readValueAs(AirportAviation.class);
-
-                // Makes sure a valid Airport is obtained
-                if (airportInfo == null || airportInfo.getLatitude() == 0 || airportInfo.getLongitude() == 0) {
-                    LOGGER.error("No relevant airport information found.");
-                    return null;
-                }
-
-                return airportInfo;
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -197,6 +195,7 @@ public class AviationStackClientCaller {
             LOGGER.error("Exception caught: {}", e.toString());
             throw e;
         }
+        return null;
     }
 
 
