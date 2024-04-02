@@ -62,6 +62,9 @@ public class FlightInfoFaid {
     @JsonProperty("last_position")
     private Position lastPosition;
 
+    @JsonProperty("positions")
+    private Position[] positions;
+
     @JsonProperty("bounding_box")
     private float[] boundingBox;
 

@@ -1,11 +1,9 @@
 package com.capstone.producer.clients;
 
 import com.capstone.producer.common.bindings.aviationstack.AirportAviation;
-import com.capstone.producer.common.bindings.aviationstack.FlightInfo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -24,7 +22,6 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class AviationStackClientCallerTest {
     private final String BASE_URL = "http://localhost:8080/services";
-    private static final String FLIGHT_INFO_DATA_JSON = "aviation_flight_info_data.json";
     private static final String FLIGHTS_INFO_DATA_JSON = "aviation_flights_info_data.json";
     private static final String AVIATION_AIRPORT_DATA_JSON = "aviation_airport_data.json";
     private static final String AVIATION_AIRPORTS_DATA_JSON = "aviation_airports_data.json";
@@ -37,8 +34,6 @@ public class AviationStackClientCallerTest {
 
     private AviationStackClientCaller aviationStackClientCaller;
 
-    private FlightInfo flightInfo;
-    private JsonNode flightInfoData;
     private JsonNode flightsInfoData;
     private AirportAviation aviationAirport;
     private JsonNode aviationAirportsData;
@@ -46,8 +41,6 @@ public class AviationStackClientCallerTest {
     @Before
     public void setUp() throws IOException {
         aviationStackClientCaller = new AviationStackClientCaller(client, BASE_URL, "key");
-        flightInfo = readJson(FLIGHT_INFO_DATA_JSON, FlightInfo.class);
-        flightInfoData = readJsonNode(FLIGHT_INFO_DATA_JSON);
         flightsInfoData = readJsonNode(FLIGHTS_INFO_DATA_JSON);
         aviationAirport = readJson(AVIATION_AIRPORT_DATA_JSON, AirportAviation.class);
         aviationAirportsData = readJsonNode(AVIATION_AIRPORTS_DATA_JSON);
