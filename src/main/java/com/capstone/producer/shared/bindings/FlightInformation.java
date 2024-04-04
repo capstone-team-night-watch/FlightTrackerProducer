@@ -1,7 +1,7 @@
 package com.capstone.producer.shared.bindings;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
@@ -43,7 +43,7 @@ public class FlightInformation {
     private Airport destination;
 
     /**
-     * List of checkpoints that the flight must pass through. Only specified on initial flight creation or on update
+     * List of checkpoints that the flight must pass through. Only specified on initial flight creation or on update in lat long format
      */
-    private List<GeographicCoordinates2D> checkPoints;
+    private List<Double> checkPoints;
 }

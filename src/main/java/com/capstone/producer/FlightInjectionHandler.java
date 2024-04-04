@@ -39,17 +39,16 @@ public class FlightInjectionHandler {
 
                     if(injectedFlight.getLastPosition() != null) {
                         KafkaProducer.emitFlightInformationUpdate(handleRealInjection(injectedFlight));
-                    } else {
-                        if (injectedFlight.getPositions() != null){
-                            for(int index = 0; index < injectedFlight.getPositions().length; index++) {
-                                KafkaProducer.emitFlightInformationUpdate(handleSimulationInjection(injectedFlight, index));
-                                Thread.sleep(1000);
-                            }
-                        } else {
-                            LOGGER.error("No position data for flight {}", flight.textValue());
-                            return "No parsable position data";
+                    } else if (injectedFlight.getPositions() != null){
+                        for(int index = 0; index < injectedFlight.getPositions().length; index++) {
+                            KafkaProducer.emitFlightInformationUpdate(handleSimulationInjection(injectedFlight, index));
+                            Thread.sleep(1000);
                         }
+                    } else {
+                        LOGGER.error("No position data for flight {}", flight.textValue());
+                        return "No parsable position data";
                     }
+                    
                     
                 } catch (IllegalArgumentException e) {
                     LOGGER.error("Error Processing flight {}", flight.textValue());
