@@ -3,11 +3,13 @@ package com.capstone.producer;
 
 import com.capstone.producer.shared.bindings.FlightInformation;
 import com.capstone.producer.shared.bindings.GeographicCoordinates3D;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.capstone.producer.common.bindings.aero.FlightInfoFaid;
+import com.capstone.producer.common.bindings.aero.Position;
 import com.capstone.producer.kafka.KafkaProducer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -18,9 +20,9 @@ public class FlightInjectionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(FlightInjectionHandler.class);
 
     /**
-     * Facilitates the creation and tracking of TFRs
+     * Facilitates the creation and tracking of Injected Flights
      *
-     * @param tfrNotam Receives the full NOTAM to start parsing
+     * @param receivedJSON Receives the full flight object to start parsing
      * @return The message that was sent through Kafka, or part was added to the list for parsing
      * later when all parts make it in
      * @throws InterruptedException    Kafka can throw an interrupted exception.
@@ -33,21 +35,21 @@ public class FlightInjectionHandler {
         if (jsonNode.isArray()) {
             for (JsonNode flight : jsonNode) {
                 try {
-                    var injectedFlight = objectMapper.convertValue(flight, FlightInfoFaid.class);
+                    FlightInfoFaid injectedFlight = objectMapper.convertValue(flight, FlightInfoFaid.class);
 
-                    var flightPosition = injectedFlight.getLastPosition();
-
-                    var flightInformationUpdate = new FlightInformation()
-                            .setFlightId("aero-" + injectedFlight.getFaFlightId())
-                            .setHeading(90) // TODO : replace this with real heading
-                            .setLocation(new GeographicCoordinates3D()
-                                    .setAltitude(flightPosition.getAltitude())
-                                    .setLatitude(flightPosition.getLatitude())
-                                    .setLongitude(flightPosition.getLongitude())
-                            ).setGroundSpeed(20000); // TODO : replace with real speed;
-
-
-                    KafkaProducer.emitFlightInformationUpdate(flightInformationUpdate);
+                    if(injectedFlight.getLastPosition() != null) {
+                        KafkaProducer.emitFlightInformationUpdate(handleRealInjection(injectedFlight));
+                    } else if (injectedFlight.getPositions() != null){
+                        for(int index = 0; index < injectedFlight.getPositions().length; index++) {
+                            KafkaProducer.emitFlightInformationUpdate(handleSimulationInjection(injectedFlight, index));
+                            Thread.sleep(1000);
+                        }
+                    } else {
+                        LOGGER.error("No position data for flight {}", flight.textValue());
+                        return "No parsable position data";
+                    }
+                    
+                    
                 } catch (IllegalArgumentException e) {
                     LOGGER.error("Error Processing flight {}", flight.textValue());
                     allSuccessful = false;
@@ -61,5 +63,30 @@ public class FlightInjectionHandler {
         }
 
         return "Received not as an array of flight objects";
+    }
+
+    private FlightInformation handleSimulationInjection(FlightInfoFaid injectedFlight, int index) throws JsonProcessingException, InterruptedException {
+        Position[] positions = injectedFlight.getPositions();
+
+        return new FlightInformation()
+                            .setFlightId("aero-sim-" + injectedFlight.getFaFlightId())
+                            .setHeading(positions[index].getHeading())
+                            .setLocation(new GeographicCoordinates3D()
+                                    .setAltitude(positions[index].getAltitude())
+                                    .setLatitude(positions[index].getLatitude())
+                                    .setLongitude(positions[index].getLongitude()))
+                            .setGroundSpeed(positions[index].getGroundSpeed());
+    }
+
+    private FlightInformation handleRealInjection(FlightInfoFaid injectedFlight) throws JsonProcessingException, InterruptedException {
+        Position flightPosition = injectedFlight.getLastPosition();
+        return new FlightInformation()
+                            .setFlightId("aero-" + injectedFlight.getFaFlightId())
+                            .setHeading(flightPosition.getHeading())
+                            .setLocation(new GeographicCoordinates3D()
+                                    .setAltitude(flightPosition.getAltitude())
+                                    .setLatitude(flightPosition.getLatitude())
+                                    .setLongitude(flightPosition.getLongitude())
+                            ).setGroundSpeed(flightPosition.getGroundSpeed());
     }
 }

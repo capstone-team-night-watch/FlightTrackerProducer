@@ -1,6 +1,5 @@
 package com.capstone.producer;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,15 +11,12 @@ import java.util.regex.Pattern;
 import com.capstone.producer.shared.bindings.CircularNoFlyZone;
 import com.capstone.producer.shared.bindings.GeographicCoordinates2D;
 import com.capstone.producer.shared.bindings.PolygonNoFlyZone;
-import com.capstone.producer.shared.enums.NoFlyZoneType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.capstone.producer.common.bindings.TfrNotam;
 import com.capstone.producer.kafka.KafkaProducer;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class TfrHandler {
@@ -127,7 +123,6 @@ public class TfrHandler {
     private static boolean pointRadiusParse(String notamNumber, String message) throws InterruptedException, JsonProcessingException {
         Pattern pattern = Pattern.compile("(WI\\s*AN\\s*AREA\\s*DEFINED\\s*AS\\s*(\\d*.?\\d*)NM\\s*RADIUS\\s*OF\\s*(\\d+[NS]\\d+[EW])(.*?)EFFECTIVE\\s*(\\d{10})\\s*UTC.*?UNTIL\\s*(\\d{10})?)");
         Matcher matcher = pattern.matcher(message);
-        ObjectMapper objectMapper = new ObjectMapper();
         boolean successfulMatching = false;
         while (matcher.find()) { //Allows for multiple finds.
             LOGGER.debug("String matched Radius test: {}", matcher.group(0));
@@ -241,7 +236,6 @@ public class TfrHandler {
         Matcher matcher = originPattern.matcher(msg);
 
         if (matcher.find()) {
-            String temp = matcher.group(0);
             String[] altitudes = matcher.group(0).split(" ");
 
             int originHeight = Integer.parseInt(altitudes[0].substring(0, altitudes[0].length() - 2));

@@ -1,6 +1,5 @@
 package com.capstone.producer.clients;
 
-import com.capstone.producer.clients.AeroApiClientCaller;
 import com.capstone.producer.common.bindings.aero.FlightInfoFaid;
 import com.capstone.producer.common.bindings.aero.Operator;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -15,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;

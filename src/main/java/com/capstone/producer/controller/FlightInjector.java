@@ -35,6 +35,7 @@ public class FlightInjector {
         try {
             return new ResponseEntity<>(flightHandler.handleFlightInjection(aeroFlights), HttpStatus.OK);
         } catch (JsonProcessingException e) {
+            LOGGER.error("JsonProcessingException Received: {}", e);
             return new ResponseEntity<>("Unknown processing error occured", HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
