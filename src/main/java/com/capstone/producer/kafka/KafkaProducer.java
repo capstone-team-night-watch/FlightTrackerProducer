@@ -78,11 +78,11 @@ public class KafkaProducer {
     }
 
     public static void emitCircularNoFlyZone(CircularNoFlyZone circularNoFlyZone) throws InterruptedException {
-        runProducer(JsonHelper.toJson(circularNoFlyZone), "PolygonNoFlyZone");
+        runProducer(JsonHelper.toJson(circularNoFlyZone), "CircularNoFlyZone");
     }
 
     public static void emitPolygonNoFlyZone(PolygonNoFlyZone polygonNoFlyZone) throws InterruptedException {
-        runProducer(JsonHelper.toJson(polygonNoFlyZone), "CircularNoFlyZone");
+        runProducer(JsonHelper.toJson(polygonNoFlyZone), "PolygonNoFlyZone");
     }
 
     public static void emitFlightInformationUpdate(FlightInformation flightInformation) throws InterruptedException {
