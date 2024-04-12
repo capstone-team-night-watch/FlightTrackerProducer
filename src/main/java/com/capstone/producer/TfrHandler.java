@@ -127,10 +127,7 @@ public class TfrHandler {
         while (matcher.find()) { //Allows for multiple finds.
             LOGGER.debug("String matched Radius test: {}", matcher.group(0));
 
-            List<Double> latlong = new ArrayList<>();
-            Double[] arry = convertDmsToDd(matcher.group(3));
-            latlong.add(arry[0]);
-            latlong.add(arry[1]);
+            Double[] latlong = convertDmsToDd(matcher.group(3));
 
             // Nauticle miles to meters is 1:1852
             Double meters = Double.parseDouble(matcher.group(2)) * 1852;
@@ -139,7 +136,7 @@ public class TfrHandler {
 
             circularNoFlyZone
                     .setRadius(meters)
-                    .setCenter(new GeographicCoordinates2D(arry[0], arry[1]))
+                    .setCenter(new GeographicCoordinates2D(latlong[0], latlong[1]))
                     .setAltitude(1000) // TODO : Update with real altitude
                     .setNotamNumber(notamNumber)
                     .setDescription(message)
@@ -163,13 +160,10 @@ public class TfrHandler {
             Matcher altitudeMatch = altitudePattern.matcher(boundaryMatch.group(0));
 
             var vertices = new ArrayList<GeographicCoordinates2D>();
-            List<Double> latlong = new ArrayList<>();
             while (latlongMatch.find()) {
-                Double[] arry = convertDmsToDd(latlongMatch.group(0));
-                latlong.add(arry[0]);
-                latlong.add(arry[1]);
+                Double[] latlong = convertDmsToDd(latlongMatch.group(0));
 
-                vertices.add(new GeographicCoordinates2D(arry[0], arry[1]));
+                vertices.add(new GeographicCoordinates2D(latlong[0], latlong[1]));
             }
 
             List<Integer> altitudes = new ArrayList<>();
