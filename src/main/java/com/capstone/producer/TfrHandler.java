@@ -219,7 +219,7 @@ public class TfrHandler {
             if (matcher.group(8).equals("W"))
                 longitude *= -1;
 
-            return new Double[]{longitude, latitude};
+            return new Double[]{latitude, longitude};
         }
 
         return null;
