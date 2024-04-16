@@ -75,7 +75,8 @@ public class FlightInjectionHandler {
                                     .setAltitude(positions[index].getAltitude())
                                     .setLatitude(positions[index].getLatitude())
                                     .setLongitude(positions[index].getLongitude()))
-                            .setGroundSpeed(positions[index].getGroundSpeed());
+                            .setGroundSpeed(positions[index].getGroundSpeed())
+                            .setCheckPoints(injectedFlight.getWaypoints());
     }
 
     private FlightInformation handleRealInjection(FlightInfoFaid injectedFlight) throws JsonProcessingException, InterruptedException {
@@ -87,6 +88,7 @@ public class FlightInjectionHandler {
                                     .setAltitude(flightPosition.getAltitude())
                                     .setLatitude(flightPosition.getLatitude())
                                     .setLongitude(flightPosition.getLongitude())
-                            ).setGroundSpeed(flightPosition.getGroundSpeed());
+                            ).setGroundSpeed(flightPosition.getGroundSpeed())
+                            .setCheckPoints(injectedFlight.getWaypoints());
     }
 }
