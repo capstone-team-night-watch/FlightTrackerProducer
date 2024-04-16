@@ -1,5 +1,7 @@
 package com.capstone.producer.common.bindings.aero;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -54,7 +56,7 @@ public class FlightInfoFaid {
     
     private Destination destination;
     
-    private float[] waypoints;
+    private List<Double> waypoints;
     
     @JsonProperty("first_position_time")
     private String firstPositionTime;
