@@ -2,7 +2,6 @@ package com.capstone.producer;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
@@ -121,9 +120,10 @@ public class TfrHandler {
     }
 
     private static boolean pointRadiusParse(String notamNumber, String message) throws InterruptedException, JsonProcessingException {
-        Pattern pattern = Pattern.compile("(WI\\s*AN\\s*AREA\\s*DEFINED\\s*AS\\s*(\\d*.?\\d*)NM\\s*RADIUS\\s*OF\\s*(\\d+[NS]\\d+[EW])(.*?)EFFECTIVE\\s*(\\d{10})\\s*UTC.*?UNTIL\\s*(\\d{10})?)");
+        Pattern pattern = Pattern.compile("(WI\\s*AN\\s*AREA\\s*DEFINED\\s*AS\\s*(\\d*.?\\d*)NM\\s*RADIUS\\s*OF\\s*(\\d+[NS]\\d+[EW])(.*?)(\\d*)FT(.*?)EFFECTIVE\\s*(\\d{10})\\s*UTC.*?UNTIL\\s*(\\d{10}))");
         Matcher matcher = pattern.matcher(message);
         boolean successfulMatching = false;
+        Integer numFound = 0;
         while (matcher.find()) { //Allows for multiple finds.
             LOGGER.debug("String matched Radius test: {}", matcher.group(0));
 
@@ -132,26 +132,29 @@ public class TfrHandler {
             // Nauticle miles to meters is 1:1852
             Double meters = Double.parseDouble(matcher.group(2)) * 1852;
 
+            Integer height = Integer.parseInt(matcher.group(5));
+
             var circularNoFlyZone = new CircularNoFlyZone();
 
             circularNoFlyZone
                     .setRadius(meters)
                     .setCenter(new GeographicCoordinates2D(latlong[0], latlong[1]))
-                    .setAltitude(1000) // TODO : Update with real altitude
-                    .setNotamNumber(notamNumber)
+                    .setAltitude(height)
+                    .setNotamNumber(notamNumber + "-" + numFound.toString())
                     .setDescription(message)
                     .setCreatedAt(new Date());
 
             KafkaProducer.emitCircularNoFlyZone(circularNoFlyZone);
+            numFound += 1;
             successfulMatching = true;
         }
         return successfulMatching; //doesn't appear to be a straight circle
     }
 
     private static boolean boundaryParse(String notamNumber, String message) throws InterruptedException, JsonProcessingException {
-        Pattern boundaryPattern = Pattern.compile("WI\\s*AN\\s*AREA\\s*DEFINED\\s*AS\\s*\\d+[NS]\\d+[EW].*?TO.*?ORIGIN\\s(\\d)*FT\\s.*?EFFECTIVE\\s*(\\d{10}).*?UNTIL\\s*(\\d{10})?");
+        Pattern boundaryPattern = Pattern.compile("WI\\s*AN\\s*AREA\\s*DEFINED\\s*AS\\s*\\d+[NS]\\d+[EW].*?TO.*?ORIGIN\\s.*?EFFECTIVE\\s*(\\d{10}).*?UNTIL\\s*(\\d{10})?");
         Pattern latlongPattern = Pattern.compile("\\d+[NS]\\d+[EW]");
-        Pattern altitudePattern = Pattern.compile("ORIGIN\\s(\\d)*FT\\s.*?MSL.*?(\\d)*FT");
+        Pattern altitudePattern = Pattern.compile("ORIGIN\\s(.*?)(\\d+)");
         Matcher boundaryMatch = boundaryPattern.matcher(message);
 
         boolean successfulMatching = false;
@@ -166,23 +169,24 @@ public class TfrHandler {
                 vertices.add(new GeographicCoordinates2D(latlong[0], latlong[1]));
             }
 
-            List<Integer> altitudes = new ArrayList<>();
-            while (altitudeMatch.find()) {
-                Integer[] alt = convertAltitudeOrigin(altitudeMatch.group(0));
-                altitudes.add(alt[0]);
-                altitudes.add(alt[1]);
-            }
+            
 
 
             var polygonNoFlyZone = new PolygonNoFlyZone();
 
             polygonNoFlyZone
                     .setVertices(vertices)
-                    .setDescription(message);
-
-            polygonNoFlyZone.setNotamNumber(notamNumber)
-                    .setAltitude(altitudes.get(1))
+                    .setDescription(message)
+                    .setNotamNumber(notamNumber)
                     .setCreatedAt(new Date());
+
+            if (altitudeMatch.find()) {
+                polygonNoFlyZone
+                    .setAltitude(Integer.parseInt(altitudeMatch.group(2)));
+            } else {
+                polygonNoFlyZone
+                    .setAltitude(25000);
+            }
 
 
             KafkaProducer.emitPolygonNoFlyZone(polygonNoFlyZone);
@@ -216,27 +220,6 @@ public class TfrHandler {
             return new Double[]{latitude, longitude};
         }
 
-        return null;
-    }
-
-    /**
-     * Converts a string message that contains the altitude into an Integer[]
-     *
-     * @param msg altitude string containing the height
-     * @return Integer[] containing the values for heights
-     */
-    private static Integer[] convertAltitudeOrigin(String msg) {
-        Pattern originPattern = Pattern.compile("(\\d)*FT\\sMSL.*?(\\d)*FT");
-        Matcher matcher = originPattern.matcher(msg);
-
-        if (matcher.find()) {
-            String[] altitudes = matcher.group(0).split(" ");
-
-            int originHeight = Integer.parseInt(altitudes[0].substring(0, altitudes[0].length() - 2));
-            int mslHeight = Integer.parseInt(altitudes[1].substring(3, altitudes[1].length() - 2));
-
-            return new Integer[]{originHeight, mslHeight};
-        }
         return null;
     }
 
