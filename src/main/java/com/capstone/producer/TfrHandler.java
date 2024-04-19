@@ -156,22 +156,21 @@ public class TfrHandler {
         Pattern latlongPattern = Pattern.compile("\\d+[NS]\\d+[EW]");
         Pattern altitudePattern = Pattern.compile("ORIGIN\\s(.*?)(\\d+)");
         Matcher boundaryMatch = boundaryPattern.matcher(message);
-
+        
         boolean successfulMatching = false;
         while (boundaryMatch.find()) {
+            if (boundaryMatch.group(0).contains("CENTERED ON")){
+                continue;
+            }
             Matcher latlongMatch = latlongPattern.matcher(boundaryMatch.group(0));
             Matcher altitudeMatch = altitudePattern.matcher(boundaryMatch.group(0));
 
             var vertices = new ArrayList<GeographicCoordinates2D>();
             while (latlongMatch.find()) {
                 Double[] latlong = convertDmsToDd(latlongMatch.group(0));
-
                 vertices.add(new GeographicCoordinates2D(latlong[0], latlong[1]));
             }
-
             
-
-
             var polygonNoFlyZone = new PolygonNoFlyZone();
 
             polygonNoFlyZone
