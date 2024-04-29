@@ -1,4 +1,4 @@
-package com.capstone.shared;
+package com.capstone.producer.shared;
 
 import com.capstone.producer.shared.FileHelper;
 import org.junit.jupiter.api.Test;
