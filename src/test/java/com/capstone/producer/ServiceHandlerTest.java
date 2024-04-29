@@ -1,4 +1,4 @@
-package com.capstone.producer.kafka;
+package com.capstone.producer;
 
 import com.capstone.producer.ServiceHandler;
 import com.capstone.producer.clients.AeroApiClientCaller;
@@ -13,6 +13,7 @@ import com.capstone.producer.common.bindings.aviationstack.FlightInfo;
 import com.capstone.producer.common.bindings.aviationstack.Live;
 import com.capstone.producer.exceptions.HttpException;
 
+import com.capstone.producer.kafka.KafkaProducer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -115,7 +116,6 @@ public class ServiceHandlerTest {
     }
 
     @Test
-    @Ignore
     public void handleAirportGenerateRequest_should_set_lat_long() throws HttpException {
         AirportAviation originAirportAviation = new AirportAviation().setLongitude(1f).setLatitude(1f);
         AirportAviation destinationAirportAviation = new AirportAviation().setLongitude(2f).setLatitude(2f);
