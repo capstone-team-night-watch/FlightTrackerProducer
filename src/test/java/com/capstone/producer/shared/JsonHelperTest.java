@@ -35,16 +35,18 @@ public class JsonHelperTest {
 
     @Test
     public void should_covert_to_optional_string() {
-        String jsonString = "{\n" +
-                "  \"code\": \"origin-code\",\n" +
-                "  \"code_icao\": \"origin-codeIcao\",\n" +
-                "  \"code_iata\": \"origin-codeIata\",\n" +
-                "  \"code_lid\": \"origin-codeLid\",\n" +
-                "  \"timezone\": \"timezone\",\n" +
-                "  \"name\": \"origin-name\",\n" +
-                "  \"city\": \"origin-city\",\n" +
-                "  \"airport_info_url\": \"airport-info-url\"\n" +
-                "}";
+        String jsonString = """
+                    {
+                      "code": "origin-code",
+                      "code_icao": "origin-codeIcao",
+                      "code_iata": "origin-codeIata",
+                      "code_lid": "origin-codeLid",
+                      "timezone": "timezone",
+                      "name": "origin-name",
+                      "city": "origin-city",
+                      "airport_info_url": "airport-info-url"
+                    }
+                    """;
         Optional<Origin> result = JsonHelper.fromJson(jsonString, Origin.class);
         assertTrue(result.isPresent());
     }
