@@ -1,4 +1,4 @@
-package com.capstone.producer.kafka;
+package com.capstone.producer;
 
 import com.capstone.producer.ServiceHandler;
 import com.capstone.producer.clients.AeroApiClientCaller;
@@ -13,8 +13,10 @@ import com.capstone.producer.common.bindings.aviationstack.FlightInfo;
 import com.capstone.producer.common.bindings.aviationstack.Live;
 import com.capstone.producer.exceptions.HttpException;
 
+import com.capstone.producer.kafka.KafkaProducer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -114,6 +116,23 @@ public class ServiceHandlerTest {
     }
 
     @Test
+    public void handleAirportGenerateRequest_should_set_lat_long() throws HttpException {
+        AirportAviation originAirportAviation = new AirportAviation().setLongitude(1f).setLatitude(1f);
+        AirportAviation destinationAirportAviation = new AirportAviation().setLongitude(2f).setLatitude(2f);
+
+        when(aviationCaller.getAirportInfoFromName(anyString())).thenReturn(originAirportAviation);
+        when(aviationCaller.getAirportInfoFromName(anyString())).thenReturn(destinationAirportAviation);
+
+        AirportGenerateRequest request = new AirportGenerateRequest()
+                .setArriveAirport("arrive-airport")
+                .setDepartAirport("depart-airport");
+        serviceHandler.handleAirportGenerateRequest(request);
+
+        assertEquals(0, request.getLongitudeChange());
+        assertEquals(0, request.getLatitudeChange());
+    }
+
+    @Test
     public void handLiveRequest() {
 
         FlightInfoFaid flightInfo = new FlightInfoFaid();
@@ -132,7 +151,7 @@ public class ServiceHandlerTest {
 
         String toBeSent = serviceHandler.handleGenerateRequest(generateRequest);
 
-        Assert.notNull(toBeSent, "The message to be sent should not be null");
+        assertNotNull(toBeSent, "The message to be sent should not be null");
     }
 
     @Test
