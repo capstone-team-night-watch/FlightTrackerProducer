@@ -1,13 +1,20 @@
 package com.capstone.producer.shared;
 
 import com.capstone.producer.common.bindings.aero.Origin;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.RuntimeJsonMappingException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JsonHelperTest {
@@ -34,6 +41,13 @@ public class JsonHelperTest {
     }
 
     @Test
+    public void should_throw_RuntimeJsonMappingException() {
+        assertThrows(RuntimeJsonMappingException.class, () -> {
+            JsonHelper.toJson(new Object());
+        });
+    }
+
+    @Test
     public void should_covert_to_optional_string() {
         String jsonString = """
                     {
@@ -49,6 +63,11 @@ public class JsonHelperTest {
                     """;
         Optional<Origin> result = JsonHelper.fromJson(jsonString, Origin.class);
         assertTrue(result.isPresent());
+    }
+
+    @Test
+    public void should_return_empty_optional() {
+        assertEquals(Optional.empty(), JsonHelper.fromJson(null, null));
     }
 
 }
