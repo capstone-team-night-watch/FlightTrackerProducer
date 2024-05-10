@@ -3,6 +3,9 @@ package com.capstone.producer.common.bindings.aero;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+/**
+ * Position object
+ */
 @Data
 public class Position {
     @JsonProperty("fa_flight_id")

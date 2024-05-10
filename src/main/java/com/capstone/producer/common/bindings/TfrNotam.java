@@ -6,6 +6,9 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Temporary Flight restriciton notam, used for storing and transmitting information about received temporary flight restrictions
+ */
 @Setter
 @Getter
 public class TfrNotam {

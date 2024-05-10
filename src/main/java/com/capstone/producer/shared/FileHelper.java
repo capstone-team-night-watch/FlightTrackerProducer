@@ -5,6 +5,9 @@ import org.springframework.util.ResourceUtils;
 import java.io.IOException;
 import java.nio.file.Files;
 
+/**
+ * FileHelper class for reading files
+ */
 public class FileHelper {
     private FileHelper() {
     }

@@ -17,6 +17,9 @@ public class PolygonNoFlyZone extends BaseNoFlyZone {
      */
     private List<GeographicCoordinates2D> vertices;
 
+    /**
+     * constructor for the class
+     */
     public PolygonNoFlyZone() {
         this.type = NoFlyZoneType.POLYGON;
     }

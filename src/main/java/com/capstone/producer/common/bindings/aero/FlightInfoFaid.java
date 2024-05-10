@@ -5,7 +5,9 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-
+/**
+ * Flight information object
+ */
 @Data
 public class FlightInfoFaid {
     private String ident;
