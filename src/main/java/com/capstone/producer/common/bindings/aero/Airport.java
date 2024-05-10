@@ -3,6 +3,9 @@ package com.capstone.producer.common.bindings.aero;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+/**
+ * Airport object
+ */
 @Data
 public class Airport {
     @JsonProperty("airport_code")

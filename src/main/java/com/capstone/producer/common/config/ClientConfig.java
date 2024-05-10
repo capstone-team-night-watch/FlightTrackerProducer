@@ -13,17 +13,26 @@ import org.springframework.web.client.RestTemplate;
  */
 @Configuration
 public class ClientConfig {
+    /**
+     * Creates the bean for the restTemplate
+     */
     @Bean
     @Qualifier("restTemplate")
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
 
+    /**
+     * Creates the bean for the aviationStackClientCaller
+     */
     @Bean(name="aviationStackClientCaller")
     public AviationStackClientCaller aviationStackClientCaller(RestTemplate restTemplate, @Value("${aviation.base.url}") String baseUrl, @Value("${aviation.key}") String key) {
         return new AviationStackClientCaller(restTemplate, baseUrl, key);
     }
 
+    /**
+     * Creates the bean for the aeroApiClientCaller
+     */
     @Bean(name="aeroApiClientCaller")
     public AeroApiClientCaller aeroApiClientCaller(RestTemplate restTemplate, @Value("${aero.base.url}") String baseUrl, @Value("${aero.key}") String key) {
         return new AeroApiClientCaller(restTemplate, baseUrl, key);

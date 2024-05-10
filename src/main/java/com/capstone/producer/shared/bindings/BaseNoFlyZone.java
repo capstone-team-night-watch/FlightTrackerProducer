@@ -6,6 +6,9 @@ import lombok.Data;
 
 import java.util.Date;
 
+/**
+ * Base Object class for transmitting NoFlyZone information
+ */
 @Data
 public abstract class BaseNoFlyZone {
     protected float altitude;

@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 import com.capstone.producer.kafka.KafkaProducer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+/**
+ * Handler class for temporary flight restrictions
+ */
 @Service
 public class TfrHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(TfrHandler.class);
@@ -67,6 +70,12 @@ public class TfrHandler {
         return null;
     }
 
+    /**
+     * adds objects to the hash map
+     * @param notamNumber notam being processed
+     * @param notam notam text
+     * @return
+     */
     private static boolean addToHashMap(String notamNumber, String notam) {
         String[] arryBuilder = null;
         //check if notam currently exists in map
@@ -101,6 +110,11 @@ public class TfrHandler {
         return true;
     }
 
+    /**
+     * combines notam messages from the hash map
+     * @param notamNumber notam to be combined
+     * @return combined text from the notam
+     */
     private static String combineNotamMessages(String notamNumber) {
         String[] allMessages = receivedNotams.get(notamNumber);
         String fullMessage = "";
@@ -119,6 +133,14 @@ public class TfrHandler {
         return fullMessage;
     }
 
+    /**
+     * Parses radius object
+     * @param notamNumber notam being parsed
+     * @param message full text of notam
+     * @return boolean indicating succeded or failed
+     * @throws InterruptedException
+     * @throws JsonProcessingException
+     */
     private static boolean pointRadiusParse(String notamNumber, String message) throws InterruptedException, JsonProcessingException {
         Pattern pattern = Pattern.compile("(WI\\s*AN\\s*AREA\\s*DEFINED\\s*AS\\s*(\\d*.?\\d*)NM\\s*RADIUS\\s*OF\\s*(\\d+[NS]\\d+[EW])(.*?)(\\d*)FT(.*?)EFFECTIVE\\s*(\\d{10})\\s*UTC.*?UNTIL\\s*(\\d{10}))");
         Matcher matcher = pattern.matcher(message);
@@ -151,6 +173,14 @@ public class TfrHandler {
         return successfulMatching; //doesn't appear to be a straight circle
     }
 
+    /**
+     * Boundary to parse
+     * @param notamNumber notam being parsed
+     * @param message text being parsed
+     * @return boolean indicating success or fail
+     * @throws InterruptedException
+     * @throws JsonProcessingException
+     */
     private static boolean boundaryParse(String notamNumber, String message) throws InterruptedException, JsonProcessingException {
         Pattern boundaryPattern = Pattern.compile("WI\\s*AN\\s*AREA\\s*DEFINED\\s*AS\\s*\\d+[NS]\\d+[EW].*?TO.*?ORIGIN\\s.*?EFFECTIVE\\s*(\\d{10}).*?UNTIL\\s*(\\d{10})?");
         Pattern latlongPattern = Pattern.compile("\\d+[NS]\\d+[EW]");

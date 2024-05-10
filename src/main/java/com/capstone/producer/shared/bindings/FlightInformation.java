@@ -5,6 +5,9 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
+/**
+ * class for transmitting FlightInformation
+ */
 @Data
 public class FlightInformation {
     /**

@@ -3,6 +3,9 @@ package com.capstone.producer.common.bindings.aero;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+/**
+ * Origin object
+ */
 @Data
 public class Origin {
     private String code;

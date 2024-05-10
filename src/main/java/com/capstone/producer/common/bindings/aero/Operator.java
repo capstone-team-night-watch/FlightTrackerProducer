@@ -3,6 +3,9 @@ package com.capstone.producer.common.bindings.aero;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+/**
+ * Operator object
+ */
 @Data
 public class Operator {
     private String icao;

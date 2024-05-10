@@ -3,7 +3,9 @@ package com.capstone.producer.common.bindings.aero;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-
+/**
+ * Flight information object
+ */
 @Data
 public class FlightInfoIdent {
     private String ident;
