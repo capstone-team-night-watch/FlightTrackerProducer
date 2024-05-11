@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['operator_0',['Operator',['../classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1aero_1_1Operator.html',1,'com::capstone::producer::common::bindings::aero']]],
-  ['origin_1',['Origin',['../classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1aero_1_1Origin.html',1,'com::capstone::producer::common::bindings::aero']]]
+  ['jsonhelper_0',['JsonHelper',['../classcom_1_1capstone_1_1producer_1_1shared_1_1_json_helper.html',1,'com::capstone::producer::shared']]],
+  ['jsonhelper_2ejava_1',['JsonHelper.java',['../_json_helper_8java.html',1,'']]]
 ];

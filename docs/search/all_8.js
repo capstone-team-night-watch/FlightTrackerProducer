@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['live_0',['Live',['../classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1aviationstack_1_1Live.html',1,'com::capstone::producer::common::bindings::aviationstack']]],
-  ['livetest_1',['LiveTest',['../classcom_1_1capstone_1_1producer_1_1common_1_1bindings_1_1LiveTest.html',1,'com::capstone::producer::common::bindings']]]
+  ['injectflights_0',['injectFlights',['../classcom_1_1capstone_1_1producer_1_1controller_1_1_flight_injector.html#a64270a1dd5e958f5599fc9251a72a643',1,'com::capstone::producer::controller::FlightInjector']]]
 ];

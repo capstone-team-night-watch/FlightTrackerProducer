@@ -9,10 +9,7 @@ Where '{message}' is whatever you please.
 If you receive a 500 error it is likely that our AWS instance that is running the broker is stopped, as it costs 
 a decent amount to keep running 24/7, so we shut it down when not developing or testing.
 
-## Release Notes
-Milestone 2:  
-In this version our producer is mapped as a GET request that takes in a message String and pushes that string onto our broker's topic. Producer application can be run using its associated docker container:  
-https://hub.docker.com/r/ewagner2802/flighttrackerproducer  
+# Release Notes
 
 ## Milestone 1:
 Milestone was environment setup(Docker/Kafka).
